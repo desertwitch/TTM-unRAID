@@ -17,7 +17,7 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" support="" min="6.10.0" icon="tty">
 
 <CHANGES>
-## Tmux Terminal Manager (TTM) for UNRAID
+## TTerminal Manager (TTM) for UNRAID
 ###2024.12.13
 - release note: welcome to the first experimental version
 </CHANGES>
@@ -55,7 +55,7 @@ run the post-installation scripts
 <INLINE>
 echo ""
 echo "-------------------------------------------------------------"
-echo " Tmux Terminal Manager (TTM) has been installed."
+echo " TTerminal Manager (TTM) has been installed."
 echo " Version: &version; / Plugin Maintainer: &author;"
 echo "-------------------------------------------------------------"
 echo ""
@@ -75,7 +75,7 @@ rm -rf &emhttp;
 
 echo ""
 echo "-----------------------------------------------------------"
-echo " Tmux Terminal Manager (TTM) for UNRAID has been removed."
+echo " TTerminal Manager (TTM) for UNRAID has been removed."
 echo " Version: &version; / Plugin Maintainer: &author;"
 echo "-----------------------------------------------------------"
 echo ""

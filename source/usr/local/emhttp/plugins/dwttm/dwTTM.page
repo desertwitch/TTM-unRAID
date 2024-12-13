@@ -1,6 +1,6 @@
 Menu="Utilities"
 Type="xmenu"
-Title="Tmux Terminal Manager (TTM)"
+Title="TTerminal Manager (TTM)"
 Icon="tty"
 Tag="tty"
 Markdown="false"
@@ -15,18 +15,6 @@ Markdown="false"
         margin: 0;
         padding: 0;
     }
-    #sessions {
-        list-style-type: none;
-        padding: 0;
-    }
-    #sessions li {
-        cursor: pointer;
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-    }
-    #sessions li:hover {
-        background-color: #f0f0f0;
-    }
     #terminal-container {
         border: 1px solid #ccc;
         margin-top: 20px;
@@ -35,164 +23,93 @@ Markdown="false"
     }
 </style>
 
-<ul id="sessions"></ul>
 <div id="terminal-container"></div>
 
+<div id="session-list-container">
+    <ul id="session-list"></ul>
+</div>
+
 <script>
-    let ws; // WebSocket connection
-    let disposable; // Reference to the onData listener
+let ws; // WebSocket connection
+let disposable; // Reference to the onData listener
 
-    // Cleanup function to remove existing WebSocket and event listeners
-    function cleanup() {
-        if (ws) {
-            ws.close();
-            ws = null;
-        }
-
-        // Dispose of the previous onData listener
-        if (disposable) {
-            disposable.dispose();
-            disposable = null;
-        }
+// Cleanup function to remove existing WebSocket and event listeners
+function cleanup() {
+    if (ws) {
+        ws.close();
+        ws = null;
     }
 
-    function generateThumbnailFromText(text, options = {}) {
-        const {
-            width = 300, // Width of the canvas
-            height = 150, // Height of the canvas
-            fontFamily = 'monospace', // Font family
-            backgroundColor = '#000', // Background color
-            textColor = '#FFF', // Text color (green, for terminal style)
-        } = options;
-
-        // Create a canvas element
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-
-        // Initialize the canvas with a blank background
-        ctx.fillStyle = backgroundColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Split text into lines
-        const lines = text.split('\n');
-        const numLines = lines.length;
-
-        // Determine the font size dynamically to fit all lines and content width
-        const lineHeightRatio = 1.0; // Line height as a multiplier of font size
-        let fontSize = height / (numLines * lineHeightRatio); // Adjust to fit all lines in height
-        let charWidth = ctx.measureText('M').width; // Rough width of a monospace character
-        let maxChars = Math.max(...lines.map(line => line.length)); // Longest line
-
-        // Adjust font size further to fit the width
-        if (maxChars * charWidth > width) {
-            const widthFontSize = width / (maxChars * 0.6); // Scale down to fit width
-            fontSize = Math.min(fontSize, widthFontSize);
-        }
-
-        // Apply calculated font size
-        ctx.font = `${fontSize}px ${fontFamily}`;
-        charWidth = ctx.measureText('M').width; // Recalculate for the new font size
-        const lineHeight = fontSize * lineHeightRatio;
-
-        // Render text line by line within the canvas
-        const maxLines = Math.floor(height / lineHeight); // Limit to lines that fit
-        lines.slice(0, maxLines).forEach((line, index) => {
-            const clippedLine = line.slice(0, Math.floor(width / charWidth)); // Clip to fit width
-            ctx.fillStyle = textColor;
-            ctx.fillText(clippedLine, 5, index * lineHeight); // 5px padding from left
-        });
-
-        // Export the canvas as a thumbnail image
-        const thumbnailUrl = canvas.toDataURL('image/png');
-        return thumbnailUrl;
+    // Dispose of the previous onData listener
+    if (disposable) {
+        disposable.dispose();
+        disposable = null;
     }
+}
 
-    function fetchSessionPreviews(sessions) {
-        const sessionList = document.getElementById('sessions');
-        sessionList.innerHTML = ''; // Clear any previous sessions
+function fetchSessions() {
+    $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function(data) {
+        if (data.success) {
+            const sessions = data.response;
+            const $sessionList = $('#session-list');
+            $sessionList.empty(); // Clear any existing list items
 
-        sessions.forEach(session => {
-            const li = document.createElement('li');
-            li.style.cursor = 'pointer';
-            li.style.padding = '10px';
-            li.style.borderBottom = '1px solid #ccc';
-            li.onclick = () => connectToSession(session);
-
-            // Add a container for the thumbnail
-            const thumbnailDiv = document.createElement('div');
-            thumbnailDiv.style.marginBottom = '10px';
-
-            // Fetch the TMUX session content
-            fetch(`/session-preview/${session}`)
-                .then(response => response.json())
-                .then(data => {
-                    const thumbnailUrl = generateThumbnailFromText(data.content, {
-                        width: 400,
-                        height: 200,
+            $.each(sessions, function(index, sessionName) {
+                const $listItem = $('<li>');
+                const $link = $('<a>')
+                    .text(sessionName)
+                    .on('click', function() {
+                        connectToSession(sessionName);
+                        return false;
                     });
+                $listItem.append($link);
+                $sessionList.append($listItem);
+            });
+        } else {
+            console.error('Failed to fetch sessions:', data.message);
+        }
+    }).fail(function(xhr, status, error) {
+        console.error('Error fetching sessions:', error);
+    });
+}
 
-                    // Create an image element
-                    const img = document.createElement('img');
-                    img.src = thumbnailUrl;
-                    img.alt = `Thumbnail for session: ${session}`;
-                    //img.style.width = '100%'; // Scale thumbnail to fit
-                    thumbnailDiv.appendChild(img);
-                })
-                .catch(error => {
-                    console.error('Failed to fetch session preview:', error);
-                    thumbnailDiv.textContent = 'Failed to load preview';
-                });
+function connectToSession(session) {
+    cleanup(); // Clean up before starting a new session
 
-            li.appendChild(thumbnailDiv);
-            li.appendChild(document.createTextNode(session));
-            sessionList.appendChild(li);
-        });
-    }
-    
+    // Dynamically use the current host and port for WebSocket connection
+    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${session}`;
+    ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+        console.log(`Connected to TMUX session: ${session}`);
+        term.clear();
+    };
+
+    ws.onmessage = (event) => {
+        term.write(event.data); // Write data to the terminal
+    };
+
+    ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+
+    ws.onclose = () => {
+        console.log(`Disconnected from TMUX session: ${session}`);
+        term.write('\r\n*** Disconnected from session ***\r\n');
+    };
+
+    // Add a new onData listener and store its reference
+    disposable = term.onData(data => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(data); // Send input from xterm to the WebSocket
+        }
+    });
+}
+
+$(function() {
     const term = new Terminal();
     term.open(document.getElementById('terminal-container'));
+    fetchSessions();
+});
 
-    fetch('/list-sessions')
-    .then(response => response.json())
-    .then(sessions => {
-        fetchSessionPreviews(sessions);
-    })
-    .catch(error => {
-        console.error('Failed to fetch sessions:', error);
-    });
-
-    function connectToSession(session) {
-        cleanup(); // Clean up before starting a new session
-
-        // Dynamically use the current host and port for WebSocket connection
-        const wsUrl = `ws://${window.location.hostname}:${window.location.port}/ws?session=${session}`;
-        ws = new WebSocket(wsUrl);
-
-        ws.onopen = () => {
-            console.log(`Connected to TMUX session: ${session}`);
-            term.clear();
-        };
-
-        ws.onmessage = (event) => {
-            term.write(event.data); // Write data to the terminal
-        };
-
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
-        ws.onclose = () => {
-            console.log(`Disconnected from TMUX session: ${session}`);
-            term.write('\r\n*** Disconnected from session ***\r\n');
-        };
-
-        // Add a new onData listener and store its reference
-        disposable = term.onData(data => {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(data); // Send input from xterm to the WebSocket
-            }
-        });
-    }
 </script>
