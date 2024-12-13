@@ -7,6 +7,8 @@ Markdown="false"
 ---
 
 <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
+<script src="<?=autov('/plugins/dwttm/js/xterm-fit.js');?>"></script>
+
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
 
 <style>
@@ -19,7 +21,7 @@ Markdown="false"
         border: 1px solid #ccc;
         margin-top: 20px;
         width: auto;
-        height: 300px;
+        height: auto;
     }
 </style>
 
@@ -30,6 +32,7 @@ Markdown="false"
 </div>
 
 <script>
+const term = new Terminal();
 let ws; // WebSocket connection
 let disposable; // Reference to the onData listener
 
@@ -107,9 +110,12 @@ function connectToSession(session) {
 }
 
 $(function() {
-    const term = new Terminal();
+    const fitAddon = new FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
     term.open(document.getElementById('terminal-container'));
+    fitAddon.fit();
     fetchSessions();
+    connectToSession("0");
 });
 
 </script>
