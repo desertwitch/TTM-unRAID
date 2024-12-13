@@ -1,0 +1,85 @@
+<?xml version='1.0' standalone='yes'?>
+
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "dwttm">
+<!ENTITY author    "desertwitch">
+<!ENTITY version   "2024.11.24">
+<!ENTITY launch    "Settings/dwTTM">
+<!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/main">
+<!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
+<!ENTITY pkgURL    "&gitURL;/packages">
+<!ENTITY plgPATH   "/boot/config/plugins/&name;">
+<!ENTITY plgNAME   "dwsnap-2024.11.24-x86_64-1">
+<!ENTITY plgMD5    "f7f4a005ad1df15f481b0369dd8ba6a7">
+<!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" support="" min="6.10.0" icon="tty">
+
+<CHANGES>
+## TTM for UNRAID
+###2024.12.13
+- release note: welcome to the first experimental version
+</CHANGES>
+
+<!--
+stop already running instances before doing anything
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+killall ttmd
+exit 0
+</INLINE>
+</FILE>
+
+<!--
+install or upgrade dependency files
+-->
+<FILE Name="&plgPATH;/tmux-3.5a-x86_64-1.txz" Min="6.13.0" Run="upgradepkg --install-new">
+<URL>&pkgURL;/tmux-3.5a-x86_64-1.txz</URL>
+<MD5>a697e9a8aa8d4704ea8858914f2e2d7d</MD5>
+</FILE>
+
+<!--
+install or upgrade the plugin itself
+-->
+<FILE Name="&plgPATH;/&plgNAME;.txz" Min="6.10.0" Run="upgradepkg --install-new">
+<URL>&gitURL;/archive/&plgNAME;.txz</URL>
+<MD5>&plgMD5;</MD5>
+</FILE>
+
+<!--
+run the post-installation scripts
+-->
+<FILE Run="/bin/bash">
+<INLINE>
+echo ""
+echo "-------------------------------------------------------------"
+echo " TTM for UNRAID has been installed."
+echo " Version: &version; / Plugin Maintainer: &author;"
+echo "-------------------------------------------------------------"
+echo ""
+</INLINE>
+</FILE>
+
+<!--
+definition for uninstallation of the plugin
+-->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+killall ttmd
+
+removepkg &plgPATH;/*.txz
+rm -rf &plgPATH;
+rm -rf &emhttp;
+
+echo ""
+echo "-----------------------------------------------------------"
+echo " TTM for UNRAID has been removed."
+echo " Version: &version; / Plugin Maintainer: &author;"
+echo "-----------------------------------------------------------"
+echo ""
+</INLINE>
+</FILE>
+
+</PLUGIN>
