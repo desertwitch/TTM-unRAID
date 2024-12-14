@@ -73,6 +73,12 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 </tbody>
 </table>
 
+<br><br><hr><br>
+
+<div>
+    <span class="left" style="font-size:1.1rem;letter-spacing:1px;"><strong><i class="icon fa fa-cogs"></i>GENERAL SETTINGS</strong></span>
+</div><br>
+
 <form markdown="0" id="dwttm-settings" name="dwttm_settings" method="POST" action="/update.php" target="progressFrame">
 <input type="hidden" name="#file" value="dwttm/dwttm.cfg">
 <input type="hidden" id="dwttm-cmd" name="#command" value="/usr/local/emhttp/plugins/dwttm/scripts/none">
