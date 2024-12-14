@@ -1,4 +1,4 @@
-<?
+<?php
 /* Copyright Derek Macias (parts of code from NUT package)
  * Copyright macester (parts of code from NUT package)
  * Copyright gfjardim (parts of code from NUT package)
@@ -17,6 +17,7 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+
 $command = 'tmux list-sessions -F "#{session_name}"';
 
 $output = [];
@@ -32,8 +33,22 @@ if ($returnCode !== 0) {
 }
 
 $response = [];
+
 foreach ($output as $session) {
-    $response[] = $session;
+    // Fetch preview of the tmux session
+    $previewCommand = "tmux capture-pane -t {$session} -pS -10";
+    $previewOutput = [];
+    $previewReturnCode = 0;
+    exec($previewCommand, $previewOutput, $previewReturnCode);
+
+    $previewSuccess = ($previewReturnCode === 0);
+    $preview = $previewSuccess ? implode("\n", $previewOutput) : "Failed to retrieve preview for session {$session}.";
+
+    $response[] = [
+        "session_name" => $session,
+        "preview" => $preview,
+        "preview_success" => $previewSuccess
+    ];
 }
 
 echo json_encode([

@@ -144,28 +144,59 @@ function cleanup() {
     }
 }
 
+let terminalInstances = []; // Keep track of created terminals
+
 function fetchSessions() {
-    $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function(data) {
+    $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.success) {
             const sessions = data.response;
             const $sessionList = $('#session-list');
+
+            // Cleanup existing terminals
+            terminalInstances.forEach(terminal => terminal.dispose());
+            terminalInstances = [];
             $sessionList.empty(); // Clear any existing list items
 
-            $.each(sessions, function(index, sessionName) {
+            $.each(sessions, function (index, session) {
+                const sessionName = session.session_name;
+                const sessionPreview = session.preview;
+
+                // Create list item for the session
                 const $listItem = $('<li>');
+
+                // Add link to connect to the session
                 const $link = $('<a>')
                     .text(sessionName)
-                    .on('click', function() {
+                    .on('click', function () {
                         connectToSession(sessionName);
                         return false;
                     });
-                $listItem.append($link);
+
+                // Add preview area using xterm.js
+                const $previewContainer = $('<div>').addClass('preview-container');
+                const xtermContainer = document.createElement('div');
+                xtermContainer.classList.add('xterm-container');
+                $previewContainer.append(xtermContainer);
+
+                // Create a new xterm.js terminal instance
+                const terminal = new Terminal();
+                terminal.open(xtermContainer);
+                terminalInstances.push(terminal); // Track the terminal for future cleanup
+
+                // Write the preview text to the terminal
+                if (session.preview_success) {
+                    terminal.write(sessionPreview.replace(/\n/g, '\r\n'));
+                } else {
+                    terminal.write('Preview not available for this session.');
+                }
+
+                $listItem.append($link).append($previewContainer);
                 $sessionList.append($listItem);
             });
         } else {
             console.error('Failed to fetch sessions:', data.message);
         }
-    }).fail(function(xhr, status, error) {
+    }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
     });
 }
