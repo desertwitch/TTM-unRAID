@@ -34,14 +34,7 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
     #terminal-container {
-        border: 1px solid #ccc;
-        margin-top: 20px;
         width: auto;
         height: auto;
     }
