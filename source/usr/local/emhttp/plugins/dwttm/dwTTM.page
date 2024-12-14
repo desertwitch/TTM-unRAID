@@ -52,6 +52,49 @@ body {
  width: 100%;
  height: 430px;
 }
+
+#session-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.session-item {
+  width: 300px; /* Adjust based on desired preview width */
+  border: 1px solid #ddd;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.session-item canvas {
+  display: block;
+  margin: 0 auto 10px;
+  border: 1px solid #ccc;
+}
+
+.session-item .fallback-text {
+  font-size: 14px;
+  color: #666;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.session-link {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #007bff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.session-link:hover {
+  text-decoration: underline;
+}
 </style>
 
 <table class="tablesorter shift termtable">
@@ -80,7 +123,6 @@ body {
     <tr>
         <td>
             <div id="session-list-container">
-                <ul id="session-list"></ul>
             </div>
         </td>
     </tr>
@@ -148,73 +190,82 @@ function fetchSessions() {
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.success) {
             const sessions = data.response;
-            const $sessionList = $('#session-list');
-            $sessionList.empty();
+            const $sessionListContainer = $('#session-list-container');
+            $sessionListContainer.empty();
 
             $.each(sessions, function (index, session) {
                 const sessionName = session.session_name;
                 const sessionPreview = session.preview;
 
-                const $listItem = $('<li>');
+                // Create the session item container
+                const $sessionItem = $('<div>').addClass('session-item');
 
+                // Add session link
                 const $link = $('<a>')
+                    .addClass('session-link')
                     .text(sessionName)
                     .on('click', function () {
                         connectToSession(sessionName);
                         return false;
                     });
 
-                // Create a canvas element for the preview
-                const canvasWidth = 400;
-                const canvasHeight = 200;
-                const $canvas = $('<canvas>')
-                    .attr('width', canvasWidth) // Set canvas width
-                    .attr('height', canvasHeight) // Set canvas height
-                    .css({
-                        border: '1px solid #ccc',
-                        marginTop: '10px'
+                $sessionItem.append($link);
+
+                // If preview is available, create a canvas
+                if (session.preview_success) {
+                    const canvasWidth = 300;
+                    const canvasHeight = 150;
+                    const $canvas = $('<canvas>')
+                        .attr('width', canvasWidth)
+                        .attr('height', canvasHeight);
+
+                    const canvas = $canvas[0];
+                    const ctx = canvas.getContext('2d');
+
+                    // Set canvas background color
+                    ctx.fillStyle = '#000000';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // Set initial font size
+                    let fontSize = 14; // Default font size
+                    const padding = 5; // Padding around the canvas
+                    const lineHeightFactor = 1.2; // Line height as a factor of font size
+                    let lineHeight = fontSize * lineHeightFactor;
+
+                    // Prepare text content
+                    const lines = sessionPreview.split('\n');
+                    const totalLines = lines.length;
+
+                    // Calculate scaling factor
+                    const maxContentHeight = totalLines * lineHeight;
+                    const scalingFactor = Math.min(1, (canvasHeight - 2 * padding) / maxContentHeight);
+
+                    // Adjust font size and line height based on scaling factor
+                    fontSize = Math.floor(fontSize * scalingFactor);
+                    lineHeight = fontSize * lineHeightFactor;
+
+                    ctx.font = `${fontSize}px monospace`;
+                    ctx.fillStyle = '#ffffff';
+
+                    // Draw text lines
+                    lines.forEach((line, index) => {
+                        const y = padding + (index + 1) * lineHeight;
+                        if (y <= canvasHeight - padding) {
+                            ctx.fillText(line, padding, y);
+                        }
                     });
 
-                // Draw session preview on the canvas
-                const canvas = $canvas[0];
-                const ctx = canvas.getContext('2d');
+                    $sessionItem.append($canvas);
+                } else {
+                    // If no preview, display fallback text
+                    const $fallbackText = $('<div>')
+                        .addClass('fallback-text')
+                        .text("No preview available for this session.");
 
-                // Set canvas background color
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    $sessionItem.append($fallbackText);
+                }
 
-                // Set initial font size
-                let fontSize = 14; // Default font size
-                const padding = 10; // Padding around the canvas
-                const lineHeightFactor = 1.2; // Line height as a factor of font size
-                let lineHeight = fontSize * lineHeightFactor;
-
-                // Prepare text content
-                const lines = sessionPreview.split('\n');
-                const totalLines = lines.length;
-
-                // Calculate scaling factor based on content height and canvas height
-                const maxContentHeight = totalLines * lineHeight;
-                const scalingFactor = Math.min(1, (canvasHeight - 2 * padding) / maxContentHeight);
-
-                // Adjust font size and line height based on scaling factor
-                fontSize = Math.floor(fontSize * scalingFactor);
-                lineHeight = fontSize * lineHeightFactor;
-
-                ctx.font = `${fontSize}px monospace`;
-                ctx.fillStyle = '#000000';
-
-                // Draw text lines, scaling to fit
-                lines.forEach((line, index) => {
-                    const y = padding + (index + 1) * lineHeight;
-                    if (y <= canvasHeight - padding) {
-                        ctx.fillText(line, padding, y);
-                    }
-                });
-
-                // Append elements to the list item
-                $listItem.append($link).append($canvas);
-                $sessionList.append($listItem);
+                $sessionListContainer.append($sessionItem);
             });
         } else {
             console.error('Failed to fetch sessions:', data.message);
