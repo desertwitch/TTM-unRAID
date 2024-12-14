@@ -33,16 +33,31 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
 
 <style>
-    #terminal-container {
-        width: auto;
-        height: auto;
-    }
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrollbars */
+}
+
+.termtable {
+  width: 100%; /* Ensure the table doesn’t exceed the viewport */
+  table-layout: fixed;
+}
+
+.termtable td {
+  overflow: hidden; /* Prevent content overflow within the table cell */
+}
+
+#terminal-container {
+ width: 100%;
+ height: 430px;
+}
 </style>
 
-<table class="tablesorter shift">
+<table class="tablesorter shift termtable">
 <thead>
     <tr>
-        <th>Terminal</th>
+        <th></th>
     </tr>
 </thead>
 <tbody>
@@ -109,7 +124,9 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 </form>
 
 <script>
-const term = new Terminal();
+const term = new Terminal({ });
+const fitAddon = new FitAddon.FitAddon();
+
 let ws; // WebSocket connection
 let disposable; // Reference to the onData listener
 
@@ -206,9 +223,9 @@ $(function() {
     $('#SERVICE').change(checkTTMsettings);
 
     if ("<?=$dwttm_running;?>" == 1) {
-        const fitAddon = new FitAddon.FitAddon();
+        const terminalContainer = document.getElementById('terminal-container');
         term.loadAddon(fitAddon);
-        term.open(document.getElementById('terminal-container'));
+        term.open(terminalContainer);
         fitAddon.fit();
         fetchSessions();
     }
