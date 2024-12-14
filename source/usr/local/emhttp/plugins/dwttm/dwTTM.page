@@ -113,9 +113,9 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 <script>
 function checkTTMsettings() {
     if ($('#SERVICE').val() === 'enable')
-        $('#command').val('/usr/local/emhttp/plugins/dwttm/scripts/start');
+        $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/start');
     else
-        $('#command').val('/usr/local/emhttp/plugins/dwttm/scripts/stop');
+        $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/stop');
 
     if ("<?=$dwttm_running;?>" == 1){
         $('.dwttm-run').prop('disabled', true);
