@@ -5,9 +5,31 @@ Icon="tty"
 Tag="tty"
 Markdown="false"
 ---
+<?
+/* Copyright Derek Macias (parts of code from NUT package)
+ * Copyright macester (parts of code from NUT package)
+ * Copyright gfjardim (parts of code from NUT package)
+ * Copyright SimonF (parts of code from NUT package)
+ * Copyright Dan Landon (parts of code from Web GUI)
+ * Copyright Bergware International (parts of code from Web GUI)
+ * Copyright Lime Technology (any and all other parts of Unraid)
+ *
+ * Copyright desertwitch (as author and maintainer of this file)
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License 2
+ * as published by the Free Software Foundation.
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ */
+require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
+?>
 
 <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
 <script src="<?=autov('/plugins/dwttm/js/xterm-fit.js');?>"></script>
+<script src="<?=autov('/plugins/dwttm/js/dwttm.js');?>"></script>
 
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
 
@@ -25,97 +47,99 @@ Markdown="false"
     }
 </style>
 
-<div id="terminal-container"></div>
+<table class="tablesorter shift">
+<thead>
+    <tr>
+        <th>Terminal</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>
+            <div id="terminal-container"></div>
+        </td>
+    </tr>
+</tbody>
+</table>
 
-<div id="session-list-container">
-    <ul id="session-list"></ul>
-</div>
+
+<table class="tablesorter">
+<thead>
+    <tr>
+        <th>Terminal Sessions</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>
+            <div id="session-list-container">
+                <ul id="session-list"></ul>
+            </div>
+        </td>
+    </tr>
+</tbody>
+</table>
+
+<form markdown="0" id="dwttm-settings" name="dwttm_settings" method="POST" action="/update.php" target="progressFrame">
+<input type="hidden" name="#file" value="dwttm/dwttm.cfg">
+<input type="hidden" id="dwttm-cmd" name="#command" value="/usr/local/emhttp/plugins/dwttm/scripts/none">
+
+    <dl>
+        <dt><strong>Start TTM Service:</strong></dt>
+        <dd>
+            <select id="SERVICE" name="SERVICE" size="1">
+                <?=mk_option($dwttm_service, "disable", "No");?>
+                <?=mk_option($dwttm_service, "enable", "Yes");?>
+            </select>
+        </dd>
+    </dl>
+
+    <blockquote class="inline_help">
+        <p>Set to <strong><em>Yes</em></strong> to enable TTM and start the service, set to <strong><em>No</em></strong> to disable TTM and stop the service.</p>
+        <p>The setting <strong><em>Yes</em></strong> will also enable TTM services to start automatically on UNRAID boot.</p>
+    </blockquote>
+
+    <dl>
+        <dt>
+            <input type="submit" name="#default" value="Default">
+        </dt>
+        <dd>
+            <input type="submit" name="#apply" value="Apply">
+            <input type="button" value="Done" onclick="done()">
+        </dd>
+    </dl>
+</form>
 
 <script>
-const term = new Terminal();
-let ws; // WebSocket connection
-let disposable; // Reference to the onData listener
+function checkTTMsettings() {
+    if ($('#SERVICE').val() === 'enable')
+        $('#command').val('/usr/local/emhttp/plugins/dwttm/scripts/start');
+    else
+        $('#command').val('/usr/local/emhttp/plugins/dwttm/scripts/stop');
 
-// Cleanup function to remove existing WebSocket and event listeners
-function cleanup() {
-    if (ws) {
-        ws.close();
-        ws = null;
+    if ("<?=$dwttm_running;?>" == 1){
+        $('.dwttm-run').prop('disabled', true);
+    }else{
+        $('.dwttm-run').prop('disabled', false);
     }
-
-    // Dispose of the previous onData listener
-    if (disposable) {
-        disposable.dispose();
-        disposable = null;
-    }
-}
-
-function fetchSessions() {
-    $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function(data) {
-        if (data.success) {
-            const sessions = data.response;
-            const $sessionList = $('#session-list');
-            $sessionList.empty(); // Clear any existing list items
-
-            $.each(sessions, function(index, sessionName) {
-                const $listItem = $('<li>');
-                const $link = $('<a>')
-                    .text(sessionName)
-                    .on('click', function() {
-                        connectToSession(sessionName);
-                        return false;
-                    });
-                $listItem.append($link);
-                $sessionList.append($listItem);
-            });
-        } else {
-            console.error('Failed to fetch sessions:', data.message);
-        }
-    }).fail(function(xhr, status, error) {
-        console.error('Error fetching sessions:', error);
-    });
-}
-
-function connectToSession(session) {
-    cleanup(); // Clean up before starting a new session
-
-    // Dynamically use the current host and port for WebSocket connection
-    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${session}`;
-    ws = new WebSocket(wsUrl);
-
-    ws.onopen = () => {
-        console.log(`Connected to TMUX session: ${session}`);
-        term.clear();
-    };
-
-    ws.onmessage = (event) => {
-        term.write(event.data); // Write data to the terminal
-    };
-
-    ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-    };
-
-    ws.onclose = () => {
-        console.log(`Disconnected from TMUX session: ${session}`);
-        term.write('\r\n*** Disconnected from session ***\r\n');
-    };
-
-    // Add a new onData listener and store its reference
-    disposable = term.onData(data => {
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(data); // Send input from xterm to the WebSocket
-        }
-    });
 }
 
 $(function() {
-    const fitAddon = new FitAddon.FitAddon();
-    term.loadAddon(fitAddon);
-    term.open(document.getElementById('terminal-container'));
-    fitAddon.fit();
-    fetchSessions();
-    connectToSession("0");
-});
+    showStatus('ttmd');
 
+    checkTTMsettings();
+    $('#SERVICE').change(checkTTMsettings);
+
+    if ("<?=$dwttm_running;?>" == 1) {
+        const fitAddon = new FitAddon.FitAddon();
+        term.loadAddon(fitAddon);
+        term.open(document.getElementById('terminal-container'));
+        fitAddon.fit();
+        fetchSessions();
+    }
+    
+    if ( typeof caPluginUpdateCheck === "function" ) {
+        caPluginUpdateCheck("dwttm.plg",{name:"TTerminal Manager (TTM)"});
+    }
+});
 </script>

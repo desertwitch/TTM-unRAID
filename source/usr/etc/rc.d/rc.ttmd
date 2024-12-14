@@ -1,0 +1,76 @@
+#!/bin/bash
+#
+# Copyright Derek Macias (parts of code from NUT package)
+# Copyright macester (parts of code from NUT package)
+# Copyright gfjardim (parts of code from NUT package)
+# Copyright SimonF (parts of code from NUT package)
+# Copyright Lime Technology (any and all other parts of Unraid)
+#
+# Copyright desertwitch (as author and maintainer of this file)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License 2
+# as published by the Free Software Foundation.
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+ttmd_start() {
+    echo "Starting 'ttmd' service..."
+    if pgrep -x ttmd &>/dev/null; then
+        echo "'ttmd' service is already running."
+    else
+        nohup /usr/bin/ttmd >/dev/null 2>&1 &
+        TTMD_PID=$!
+        echo $TTMD_PID > /var/run/ttmd.pid
+        if pgrep -x ttmd &>/dev/null; then
+            echo "'ttmd' service was started with PID: $TTMD_PID"
+        fi
+    fi
+}
+
+ttmd_stop() {
+    echo "Stopping 'ttmd' service..."
+    if pgrep -x ttmd &>/dev/null; then
+        TIMER=0
+        while killall ttmd 2>/dev/null; do
+            sleep 1
+            TIMER=$((TIMER+1))
+            if [ $TIMER -ge 10 ]; then
+                echo "Hard-killing non-responsive 'ttmd' service..."
+                killall -9 ttmd 2>/dev/null
+                sleep 1
+                break
+            fi
+        done
+        if ! pgrep -x ttmd &>/dev/null; then
+            if [ -f /var/run/ttmd.pid ]; then
+                rm -f /var/run/ttmd.pid
+            fi
+            echo "'ttmd' service was stopped." 
+        fi
+    else
+        echo "'ttmd' service is not running."
+    fi
+}
+
+ttmd_restart() {
+  ttmd_stop
+  sleep 1
+  ttmd_start
+}
+
+case "$1" in
+  'start')
+    ttmd_start
+  ;;
+  'stop')
+    ttmd_stop
+  ;;
+  'restart')
+    ttmd_restart
+  ;;
+  *)
+    echo "Usage: $0 start|stop|restart"
+  ;;
+esac
