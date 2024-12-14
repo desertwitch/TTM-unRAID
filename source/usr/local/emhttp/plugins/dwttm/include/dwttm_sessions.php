@@ -18,41 +18,55 @@
  *
  */
 
-$command = 'tmux list-sessions -F "#{session_name}"';
-
-$output = [];
-$returnCode = 0;
-exec($command, $output, $returnCode);
-
-if ($returnCode !== 0) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Failed to retrieve tmux sessions."
-    ]);
-    exit;
-}
-
-$response = [];
-
-foreach ($output as $session) {
-    // Fetch preview of the tmux session
-    $previewCommand = "tmux capture-pane -t {$session} -pS -10";
-    $previewOutput = [];
-    $previewReturnCode = 0;
-    exec($previewCommand, $previewOutput, $previewReturnCode);
-
-    $previewSuccess = ($previewReturnCode === 0);
-    $preview = $previewSuccess ? implode("\n", $previewOutput) : "Failed to retrieve preview for session {$session}.";
-
-    $response[] = [
-        "session_name" => $session,
-        "preview" => $preview,
-        "preview_success" => $previewSuccess
-    ];
-}
-
-echo json_encode([
-    "success" => true,
-    "response" => $response
-]);
-?>
+ $command = 'tmux list-sessions -F "#{session_name}"';
+ $output = [];
+ $returnCode = 0;
+ exec($command, $output, $returnCode);
+ 
+ if ($returnCode !== 0) {
+     echo json_encode([
+         "success" => false,
+         "message" => "Failed to retrieve tmux sessions."
+     ]);
+     exit;
+ }
+ 
+ $response = [];
+ 
+ foreach ($output as $session) {
+     // Get the number of visible lines in the session's pane
+     $paneHeightCommand = "tmux display -p -t {$session}:0 '#{pane_height}'";
+     $paneHeightOutput = [];
+     exec($paneHeightCommand, $paneHeightOutput, $paneHeightReturnCode);
+ 
+     if ($paneHeightReturnCode !== 0 || empty($paneHeightOutput)) {
+         $response[] = [
+             "session_name" => $session,
+             "preview" => "Failed to determine pane height for session {$session}.",
+             "preview_success" => false
+         ];
+         continue;
+     }
+ 
+     $paneHeight = intval($paneHeightOutput[0]);
+ 
+     // Capture only the visible screen of the session
+     $captureCommand = "tmux capture-pane -t {$session}:0 -p";
+     $captureOutput = [];
+     exec($captureCommand, $captureOutput, $captureReturnCode);
+ 
+     $previewSuccess = ($captureReturnCode === 0);
+     $preview = $previewSuccess ? implode("\n", array_slice($captureOutput, -$paneHeight)) : "Failed to retrieve preview for session {$session}.";
+ 
+     $response[] = [
+         "session_name" => $session,
+         "preview" => $preview,
+         "preview_success" => $previewSuccess
+     ];
+ }
+ 
+ echo json_encode([
+     "success" => true,
+     "response" => $response
+ ]);
+ ?>

@@ -36,16 +36,16 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scrollbars */
+  overflow-x: hidden;
 }
 
 .termtable {
-  width: 100%; /* Ensure the table doesn’t exceed the viewport */
+  width: 100%;
   table-layout: fixed;
 }
 
 .termtable td {
-  overflow: hidden; /* Prevent content overflow within the table cell */
+  overflow: hidden;
 }
 
 #terminal-container {
@@ -144,27 +144,19 @@ function cleanup() {
     }
 }
 
-let terminalInstances = []; // Keep track of created terminals
-
 function fetchSessions() {
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.success) {
             const sessions = data.response;
             const $sessionList = $('#session-list');
-
-            // Cleanup existing terminals
-            terminalInstances.forEach(terminal => terminal.dispose());
-            terminalInstances = [];
-            $sessionList.empty(); // Clear any existing list items
+            $sessionList.empty();
 
             $.each(sessions, function (index, session) {
                 const sessionName = session.session_name;
                 const sessionPreview = session.preview;
 
-                // Create list item for the session
                 const $listItem = $('<li>');
 
-                // Add link to connect to the session
                 const $link = $('<a>')
                     .text(sessionName)
                     .on('click', function () {
@@ -172,25 +164,56 @@ function fetchSessions() {
                         return false;
                     });
 
-                // Add preview area using xterm.js
-                const $previewContainer = $('<div>').addClass('preview-container');
-                const xtermContainer = document.createElement('div');
-                xtermContainer.classList.add('xterm-container');
-                $previewContainer.append(xtermContainer);
+                // Create a canvas element for the preview
+                const canvasWidth = 400;
+                const canvasHeight = 200;
+                const $canvas = $('<canvas>')
+                    .attr('width', canvasWidth) // Set canvas width
+                    .attr('height', canvasHeight) // Set canvas height
+                    .css({
+                        border: '1px solid #ccc',
+                        marginTop: '10px'
+                    });
 
-                // Create a new xterm.js terminal instance
-                const terminal = new Terminal();
-                terminal.open(xtermContainer);
-                terminalInstances.push(terminal); // Track the terminal for future cleanup
+                // Draw session preview on the canvas
+                const canvas = $canvas[0];
+                const ctx = canvas.getContext('2d');
 
-                // Write the preview text to the terminal
-                if (session.preview_success) {
-                    terminal.write(sessionPreview.replace(/\n/g, '\r\n'));
-                } else {
-                    terminal.write('Preview not available for this session.');
-                }
+                // Set canvas background color
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                $listItem.append($link).append($previewContainer);
+                // Set initial font size
+                let fontSize = 14; // Default font size
+                const padding = 10; // Padding around the canvas
+                const lineHeightFactor = 1.2; // Line height as a factor of font size
+                let lineHeight = fontSize * lineHeightFactor;
+
+                // Prepare text content
+                const lines = sessionPreview.split('\n');
+                const totalLines = lines.length;
+
+                // Calculate scaling factor based on content height and canvas height
+                const maxContentHeight = totalLines * lineHeight;
+                const scalingFactor = Math.min(1, (canvasHeight - 2 * padding) / maxContentHeight);
+
+                // Adjust font size and line height based on scaling factor
+                fontSize = Math.floor(fontSize * scalingFactor);
+                lineHeight = fontSize * lineHeightFactor;
+
+                ctx.font = `${fontSize}px monospace`;
+                ctx.fillStyle = '#000000';
+
+                // Draw text lines, scaling to fit
+                lines.forEach((line, index) => {
+                    const y = padding + (index + 1) * lineHeight;
+                    if (y <= canvasHeight - padding) {
+                        ctx.fillText(line, padding, y);
+                    }
+                });
+
+                // Append elements to the list item
+                $listItem.append($link).append($canvas);
                 $sessionList.append($listItem);
             });
         } else {
