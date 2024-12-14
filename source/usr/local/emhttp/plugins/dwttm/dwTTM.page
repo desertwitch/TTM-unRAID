@@ -83,6 +83,21 @@ body {
   word-wrap: break-word;
 }
 
+/* Highlight styling for the connected session */
+.session-item.connected {
+  background-color: #333; /* Darker background */
+  color: #fff; /* Ensure text is visible on dark background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.session-item.connected .session-link {
+  color: #fff;
+}
+
+.session-item.connected canvas {
+  border-color: #555;
+}
+
 .session-link {
   display: block;
   font-weight: bold;
@@ -123,6 +138,7 @@ body {
     <tr>
         <td>
             <div id="session-list-container">
+                <ul id="session-list"></ul>
             </div>
         </td>
     </tr>
@@ -189,7 +205,21 @@ function cleanup() {
 function fetchSessions() {
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.success) {
-            const sessions = data.response;
+            let sessions = data.response;
+
+            sessions.sort((a, b) => {
+                const numA = parseInt(a.session_name, 10);
+                const numB = parseInt(b.session_name, 10);
+
+                // If both are numbers, sort numerically
+                if (!isNaN(numA) && !isNaN(numB)) {
+                    return numA - numB;
+                }
+
+                // Otherwise, sort as strings
+                return a.session_name.localeCompare(b.session_name);
+            });
+
             const $sessionListContainer = $('#session-list-container');
             $sessionListContainer.empty();
 
@@ -211,13 +241,17 @@ function fetchSessions() {
 
                 $sessionItem.append($link);
 
-                // If preview is available, create a canvas
                 if (session.preview_success) {
+                    // If preview is available, create a canvas
                     const canvasWidth = 300;
                     const canvasHeight = 150;
                     const $canvas = $('<canvas>')
                         .attr('width', canvasWidth)
-                        .attr('height', canvasHeight);
+                        .attr('height', canvasHeight)
+                        .css('cursor', 'pointer') // Indicate clickability
+                        .on('click', function () { // Add click event to connect
+                            connectToSession(sessionName);
+                        });
 
                     const canvas = $canvas[0];
                     const ctx = canvas.getContext('2d');
@@ -227,8 +261,8 @@ function fetchSessions() {
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                     // Set initial font size
-                    let fontSize = 14; // Default font size
-                    const padding = 5; // Padding around the canvas
+                    let fontSize = 12; // Default font size
+                    const padding = 10; // Padding around the canvas
                     const lineHeightFactor = 1.2; // Line height as a factor of font size
                     let lineHeight = fontSize * lineHeightFactor;
 
@@ -260,7 +294,11 @@ function fetchSessions() {
                     // If no preview, display fallback text
                     const $fallbackText = $('<div>')
                         .addClass('fallback-text')
-                        .text("No preview available for this session.");
+                        .text("No preview available for this session.")
+                        .on('click', function () { // Add click event to connect
+                            connectToSession(sessionName);
+                        })
+                        .css('cursor', 'pointer'); // Indicate clickability
 
                     $sessionItem.append($fallbackText);
                 }
@@ -282,6 +320,14 @@ function connectToSession(session) {
     const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${session}`;
     ws = new WebSocket(wsUrl);
 
+    // Remove the 'connected' class from all session items
+    $('.session-item').removeClass('connected');
+
+    // Highlight the currently connected session
+    $('.session-item').filter(function () {
+        return $(this).find('.session-link').text().trim() === session;
+    }).addClass('connected');
+
     ws.onopen = () => {
         console.log(`Connected to TMUX session: ${session}`);
         term.clear();
@@ -298,6 +344,11 @@ function connectToSession(session) {
     ws.onclose = () => {
         console.log(`Disconnected from TMUX session: ${session}`);
         term.write('\r\n*** Disconnected from session ***\r\n');
+
+        // Optionally remove the connected styling when the session is disconnected
+        $('.session-item').filter(function () {
+            return $(this).find('.session-link').text().trim() === session;
+        }).removeClass('connected');
     };
 
     // Add a new onData listener and store its reference
