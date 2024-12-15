@@ -98,6 +98,40 @@ body {
   border-color: #555;
 }
 
+/* Center content in the 'add-new' container */
+.session-item.add-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 300px; /* Match preview canvas width */
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* Indicate clickability */
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for 'add-new' container */
+.session-item.add-new:hover {
+  background-color: #e6f7ff;
+}
+
+/* Style for the plus icon */
+.plus-icon {
+  font-size: 50px;
+  color: #007bff;
+}
+
+/* Style for the 'Add New Session' text */
+.add-new-text {
+  font-size: 14px;
+  color: #007bff;
+  margin-top: 10px;
+}
+
 .session-link {
   display: block;
   font-weight: bold;
@@ -207,25 +241,35 @@ function fetchSessions() {
         if (data.success) {
             let sessions = data.response;
 
-            sessions.sort((a, b) => {
-                const numA = parseInt(a.session_name, 10);
-                const numB = parseInt(b.session_name, 10);
-
-                // If both are numbers, sort numerically
-                if (!isNaN(numA) && !isNaN(numB)) {
-                    return numA - numB;
-                }
-
-                // Otherwise, sort as strings
-                return a.session_name.localeCompare(b.session_name);
-            });
+            // Sort sessions by `created_at` in descending order
+            sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
             const $sessionListContainer = $('#session-list-container');
             $sessionListContainer.empty();
 
+            // Add the "Add New Session" button as the first item
+            const $newSessionItem = $('<div>')
+                .addClass('session-item add-new')
+                .on('click', function () {
+                    createNewSession(); // Call a function to create a new session
+                });
+
+            const $plusIcon = $('<div>')
+                .addClass('plus-icon')
+                .html('<i class="fa fa-plus"></i>');
+
+            const $newSessionText = $('<div>')
+                .addClass('add-new-text')
+                .text('Add New Session');
+
+            $newSessionItem.append($plusIcon).append($newSessionText);
+            $sessionListContainer.append($newSessionItem);
+
+            // Render all existing sessions
             $.each(sessions, function (index, session) {
                 const sessionName = session.session_name;
                 const sessionPreview = session.preview;
+                const createdAt = session.created_at;
 
                 // Create the session item container
                 const $sessionItem = $('<div>').addClass('session-item');
@@ -233,7 +277,7 @@ function fetchSessions() {
                 // Add session link
                 const $link = $('<a>')
                     .addClass('session-link')
-                    .text(sessionName)
+                    .text(`${sessionName}`)
                     .on('click', function () {
                         connectToSession(sessionName);
                         return false;
@@ -257,7 +301,7 @@ function fetchSessions() {
                     const ctx = canvas.getContext('2d');
 
                     // Set canvas background color
-                    ctx.fillStyle = '#000000';
+                    ctx.fillStyle = '#ffffff';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                     // Set initial font size
@@ -279,7 +323,7 @@ function fetchSessions() {
                     lineHeight = fontSize * lineHeightFactor;
 
                     ctx.font = `${fontSize}px monospace`;
-                    ctx.fillStyle = '#ffffff';
+                    ctx.fillStyle = '#000000';
 
                     // Draw text lines
                     lines.forEach((line, index) => {
@@ -310,6 +354,20 @@ function fetchSessions() {
         }
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
+    });
+}
+
+// Function to create a new session
+function createNewSession() {
+    console.log('Creating a new terminal session...');
+    // Add your logic to create a new tmux session here
+    $.post('/plugins/dwttm/include/create_session.php', function (response) {
+        if (response.success) {
+            console.log('New session created:', response.session_name);
+            fetchSessions(); // Refresh the list of sessions
+        } else {
+            console.error('Failed to create new session:', response.message);
+        }
     });
 }
 
