@@ -149,7 +149,7 @@ body {
 .trash-icon {
   position: absolute;
   top: 7px;
-  right: 10px;
+  left: 12px;
   font-size: 13px;
   color: #dc3545; /* Red color for delete */
   cursor: pointer;
@@ -160,6 +160,19 @@ body {
   color: #a71d2a; /* Darker red on hover */
 }
 
+.popup-icon {
+  position: absolute;
+  top: 7px;
+  right: 12px;
+  font-size: 13px;
+  color: #2E8B57;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.popup-icon:hover {
+ color: #3CB371;
+}
 </style>
 
 <table class="tablesorter shift termtable">
@@ -311,6 +324,17 @@ function fetchSessions() {
                     });
 
                 $sessionItem.append($trashIcon);
+
+                // Add popup icon for windowing the session
+                const $popupIcon = $('<div>')
+                    .addClass('popup-icon')
+                    .html('<i class="fa fa-window-restore"></i>') // Add the trashcan icon
+                    .on('click', function (e) {
+                        e.stopPropagation(); // Prevent triggering the session link click
+                        popupSession(sessionName);
+                    });
+
+                $sessionItem.append($popupIcon);
 
                 if (session.preview_success) {
                     // If preview is available, create a canvas
