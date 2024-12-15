@@ -466,11 +466,6 @@ function connectToSession(session) {
     ws.onclose = () => {
         console.log(`Disconnected from TMUX session: ${session}`);
         term.write('\r\n*** Disconnected from session ***\r\n');
-
-        // Optionally remove the connected styling when the session is disconnected
-        $('.session-item').filter(function () {
-            return $(this).find('.session-link').text().trim() === session;
-        }).removeClass('connected');
     };
 
     // Add a new onData listener and store its reference
