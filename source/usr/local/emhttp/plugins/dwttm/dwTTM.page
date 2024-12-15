@@ -61,6 +61,7 @@ body {
 }
 
 .session-item {
+  position: relative;
   width: 300px; /* Adjust based on desired preview width */
   border: 1px solid #ddd;
   padding: 10px;
@@ -144,6 +145,21 @@ body {
 .session-link:hover {
   text-decoration: underline;
 }
+
+.trash-icon {
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  font-size: 13px;
+  color: #dc3545; /* Red color for delete */
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.trash-icon:hover {
+  color: #a71d2a; /* Darker red on hover */
+}
+
 </style>
 
 <table class="tablesorter shift termtable">
@@ -285,6 +301,17 @@ function fetchSessions() {
 
                 $sessionItem.append($link);
 
+                // Add trashcan icon for closing the session
+                const $trashIcon = $('<div>')
+                    .addClass('trash-icon')
+                    .html('<i class="fa fa-trash"></i>') // Add the trashcan icon
+                    .on('click', function (e) {
+                        e.stopPropagation(); // Prevent triggering the session link click
+                        closeSession(sessionName);
+                    });
+
+                $sessionItem.append($trashIcon);
+
                 if (session.preview_success) {
                     // If preview is available, create a canvas
                     const canvasWidth = 300;
@@ -354,6 +381,19 @@ function fetchSessions() {
         }
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
+    });
+}
+
+// Function to close a session
+function closeSession(sessionName) {
+    console.log(`Closing session: ${sessionName}`);
+    $.post('/plugins/dwttm/include/close_session.php', { session_name: sessionName }, function (response) {
+        if (response.success) {
+            console.log(`Session ${sessionName} closed successfully.`);
+            fetchSessions(); // Refresh the session list after closing
+        } else {
+            console.error(`Failed to close session ${sessionName}:`, response.message);
+        }
     });
 }
 
