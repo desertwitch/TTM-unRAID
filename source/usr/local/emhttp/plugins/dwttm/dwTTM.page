@@ -504,6 +504,13 @@ $(function() {
         const terminalContainer = document.getElementById('terminal-container');
         term.loadAddon(fitAddon);
         term.open(terminalContainer);
+        term.write(" ______   ______   __    __    \r\n");
+        term.write("/\\__  _\\ /\\__  _\\ /\\ \"-./  \\   \r\n");
+        term.write("\\/_/\\ \\/ \\/_/\\ \\/ \\ \\ \\-./\\ \\  \r\n");
+        term.write("   \\ \\_\\    \\ \\_\\  \\ \\_\\ \\ \\_\\ \r\n");
+        term.write("    \\/_/     \\/_/   \\/_/  \\/_/ \r\n");
+        term.write("                               \r\n");
+        term.write("Waiting for you to pick a session...\r\n\r\n");
         fitAddon.fit();
         fetchSessions();
     }
