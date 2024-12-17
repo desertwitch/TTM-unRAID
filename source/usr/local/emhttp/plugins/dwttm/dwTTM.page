@@ -468,9 +468,9 @@ function connectToSession(sessionId) {
     });
 
     window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
+        top: 0
     });
+    term.focus();
 }
 
 function checkTTMsettings() {
