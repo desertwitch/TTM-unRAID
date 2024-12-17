@@ -171,7 +171,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
         function createNewSession() {
             fetch('/plugins/dwttm/include/dwttm_new_session.php', {
-                method: 'POST',
+                method: 'GET',
             })
             .then(response => response.json())
             .then(data => {
