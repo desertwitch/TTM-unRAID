@@ -1,34 +1,48 @@
 <?php
+/* Copyright Derek Macias (parts of code from NUT package)
+ * Copyright macester (parts of code from NUT package)
+ * Copyright gfjardim (parts of code from NUT package)
+ * Copyright SimonF (parts of code from NUT package)
+ * Copyright Dan Landon (parts of code from Web GUI)
+ * Copyright Bergware International (parts of code from Web GUI)
+ * Copyright Lime Technology (any and all other parts of Unraid)
+ *
+ * Copyright desertwitch (as author and maintainer of this file)
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License 2
+ * as published by the Free Software Foundation.
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ */
 header('Content-Type: application/json');
 
-// Check if the session variable is provided via GET
-if (!isset($_GET['session']) || empty($_GET['session'])) {
+if (!isset($_GET['session']) || !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
     echo json_encode([
         'success' => false,
-        'message' => 'No session ID provided.'
+        'message' => 'Invalid or missing session ID.'
     ]);
     exit;
 }
 
-$sessionID = escapeshellarg($_GET['session']); // Sanitize input
+$sessionID = escapeshellarg($_GET['session']);
 
-// Kill the tmux session (regardless of existence)
-$killCommand = "tmux kill-session -t {$sessionID} 2>/dev/null";
+$command = "tmux kill-session -t {$sessionID} 2>&1";
+$output = [];
+$returnCode = null;
+exec($command, $output, $returnCode);
 
-exec($killCommand, $nullOutput, $returnVar);
-
-// Check the result of the kill command
-if ($returnVar === 0) {
-    // Success: Session closed
+if ($returnCode === 0) {
     echo json_encode([
         'success' => true,
         'message' => "Session {$sessionID} has been successfully closed."
     ]);
 } else {
-    // Failure to close the session (could be due to invalid ID or other issues)
     echo json_encode([
         'success' => false,
-        'message' => "Failed to close session {$sessionID}. It may not exist."
+        'message' => implode("\n", $output)
     ]);
 }
 exit;

@@ -20,7 +20,7 @@
 header('Content-Type: application/json');
 
 $command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm /bin/bash'";
-$output = null;
+$output = [];
 $returnCode = null;
 exec($command, $output, $returnCode);
 
@@ -31,8 +31,7 @@ if ($returnCode === 0 && !empty($output)) {
     ]);
 } else {
     echo json_encode([
-        'success' => false,
-        'message' => 'Failed to create new session.'
+        'success' => false
     ]);
 }
 exit;

@@ -73,6 +73,7 @@ body {
     border-radius: 5px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
 .session-item canvas {
@@ -94,14 +95,6 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.session-item.connected .session-link {
-    color: #fff;
-}
-
-.session-item.connected canvas {
-    border-color: #555;
-}
-
 .session-item.add-new {
     display: flex;
     flex-direction: column;
@@ -113,12 +106,16 @@ body {
     border-radius: 5px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .session-item.add-new:hover {
     background-color: #e6f7ff;
+}
+
+.session-item .info-header, .session-item .info-footer {
+    font-family: monospace;
+    font-weight: bold;
 }
 
 .plus-icon {
@@ -132,26 +129,12 @@ body {
     margin-top: 10px;
 }
 
-.session-link {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #007bff;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.session-link:hover {
-    text-decoration: underline;
-}
-
 .trash-icon {
     position: absolute;
     top: 7px;
     left: 12px;
     font-size: 13px;
     color: #dc3545;
-    cursor: pointer;
     transition: color 0.2s ease;
 }
 
@@ -165,7 +148,6 @@ body {
     right: 12px;
     font-size: 13px;
     color: #2E8B57;
-    cursor: pointer;
     transition: color 0.2s ease;
 }
 
@@ -253,7 +235,8 @@ let ws;
 let disposable;
 let connectedSessionId;
 
-function cleanup() {
+function freeSession() {
+// CHECKED - OK
     if (ws) {
         ws.close();
         ws = null;
@@ -270,6 +253,7 @@ function cleanup() {
 }
 
 function fetchSessions() {
+// CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.success) {
             let sessions = data.response;
@@ -281,7 +265,8 @@ function fetchSessions() {
 
             const $newSessionItem = $('<div>')
                 .addClass('session-item add-new')
-                .on('click', function () {
+                .on('click', function (e) {
+                    e.stopPropagation();
                     createNewSession();
                 });
 
@@ -302,29 +287,30 @@ function fetchSessions() {
                 const sessionPreview = session.preview;
                 const createdAt = session.created_at;
 
-                const $sessionItem = $('<div>').addClass('session-item');
-
+                const $sessionItem = $('<div>')
+                    .addClass('session-item')
+                    .on('click', function (e) {
+                        e.stopPropagation();
+                        connectToSession(sessionId);
+                    });
+            
                 $sessionItem.attr('data-session-id', sessionId);
 
                 if(sessionId === connectedSessionId) {
                     $sessionItem.addClass('connected');
                 }
                 
-                const $link = $('<a>')
-                    .addClass('session-link')
-                    .text(`${sessionName}`)
-                    .on('click', function () {
-                        connectToSession(sessionId);
-                        return false;
-                    });
+                const $infoHead = $('<div>')
+                    .addClass('info-header')
+                    .text(sessionName);
 
-                $sessionItem.append($link);
+                $sessionItem.append($infoHead);
 
                 const $trashIcon = $('<div>')
                     .addClass('trash-icon')
                     .html('<i class="fa fa-trash"></i>')
                     .on('click', function (e) {
-                        e.stopPropagation(); // Prevent triggering the session link click
+                        e.stopPropagation();
                         closeSession(sessionId);
                     });
 
@@ -334,7 +320,7 @@ function fetchSessions() {
                     .addClass('popup-icon')
                     .html('<i class="fa fa-window-restore"></i>')
                     .on('click', function (e) {
-                        e.stopPropagation(); // Prevent triggering the session link click
+                        e.stopPropagation();
                         popupSession(sessionId);
                     });
 
@@ -345,11 +331,7 @@ function fetchSessions() {
                     const canvasHeight = 150;
                     const $canvas = $('<canvas>')
                         .attr('width', canvasWidth)
-                        .attr('height', canvasHeight)
-                        .css('cursor', 'pointer')
-                        .on('click', function () {
-                            connectToSession(sessionId);
-                        });
+                        .attr('height', canvasHeight);
 
                     const canvas = $canvas[0];
                     const ctx = canvas.getContext('2d');
@@ -385,14 +367,16 @@ function fetchSessions() {
                 } else {
                     const $fallbackText = $('<div>')
                         .addClass('fallback-text')
-                        .text("No preview available for this session.")
-                        .on('click', function () { 
-                            connectToSession(sessionId);
-                        })
-                        .css('cursor', 'pointer');
+                        .text("No preview available for this session.");
 
                     $sessionItem.append($fallbackText);
                 }
+
+                const $infoFooter = $('<div>')
+                    .addClass('info-footer')
+                    .text(`${session.created_at}`);
+                $sessionItem.append($infoFooter);
+
                 $sessionListContainer.append($sessionItem);
             });
         } else {
@@ -405,28 +389,38 @@ function fetchSessions() {
     timers.fetchSessions = setTimeout(fetchSessions, 3000);
 }
 
+function createNewSession() {
+// CHECKED - OK
+    $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
+        if (response.success && response.session_id) {
+            fetchSessions();
+            connectToSession(response.session_id);
+        } else {
+            alert('Failed to create a new session.');
+        }
+    }).fail(function (xhr, status, error) {
+        console.error('Error creating session:', error);
+    });
+}
+
 function closeSession(sessionId) {
+// CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_close_session.php', { session: sessionId }, function (response) {
         if (response.success) {
             fetchSessions();
         } else {
-            console.error(`Failed to close session ${sessionId}:`, response.message);
+            alert(`Failed to close session ${sessionId}: ${response.message}`);
         }
-    });
-}
-
-function createNewSession() {
-    $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
-        if (response.success) {
-            fetchSessions();
-            connectToSession(response.session_id);
-        } else {
-            console.error('Failed to create new session:', response.message);
-        }
-    });
+    }).fail(function (xhr, status, error) {
+        console.error('Error closing session:', error);
+    });;
 }
 
 function popupSession(sessionId) {
+// CHECKED - OK
+    const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
+    const windowName = `${sessionId}: TTerminal`;
+
     const width = 780;
     const height = 480;
 
@@ -434,9 +428,6 @@ function popupSession(sessionId) {
     if (!top || top < 0) { top = 0; }
     let left = (screen.width - width) / 2;
     if (!left || left < 0) { left = 0; }
-
-    const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
-    const windowName = `${sessionId}: TTerminal`;
 
     window.open(
         url,
@@ -446,12 +437,11 @@ function popupSession(sessionId) {
 }
 
 function connectToSession(sessionId) {
-    cleanup();
+// CHECKED - OK
+    freeSession();
 
     const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${sessionId}`;
     ws = new WebSocket(wsUrl);
-
-    connectedSessionId = sessionId;
 
     $('.session-item').removeClass('connected');
 
@@ -460,7 +450,6 @@ function connectToSession(sessionId) {
     }).addClass('connected');
 
     ws.onopen = () => {
-        console.log(`Connected to TMUX session: ${sessionId}`);
         term.clear();
     };
 
@@ -473,7 +462,6 @@ function connectToSession(sessionId) {
     };
 
     ws.onclose = () => {
-        console.log(`Disconnected from TMUX session: ${sessionId}`);
         term.write('\r\n*** Disconnected from session ***\r\n');
     };
 
@@ -483,14 +471,18 @@ function connectToSession(sessionId) {
         }
     });
 
+    connectedSessionId = sessionId;
+
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
     });
+
     term.focus();
 }
 
 function checkTTMsettings() {
+// CHECKED - OK
     if ($('#SERVICE').val() === 'enable')
         $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/start');
     else
@@ -504,6 +496,7 @@ function checkTTMsettings() {
 }
 
 $(function() {
+// CHECKED - OK
     showStatus('ttmd');
 
     checkTTMsettings();
