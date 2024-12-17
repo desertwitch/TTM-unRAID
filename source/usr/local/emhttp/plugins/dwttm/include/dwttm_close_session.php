@@ -22,7 +22,7 @@ header('Content-Type: application/json');
 if (!isset($_GET['session']) || !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
     echo json_encode([
         'success' => false,
-        'message' => 'Invalid or missing session ID.'
+        'error' => 'Invalid or missing session ID.'
     ]);
     exit;
 }
@@ -36,13 +36,13 @@ exec($command, $output, $returnCode);
 
 if ($returnCode === 0) {
     echo json_encode([
-        'success' => true,
-        'message' => "Session {$sessionID} has been successfully closed."
+        'success' => true
     ]);
 } else {
     echo json_encode([
         'success' => false,
-        'message' => implode("\n", $output)
+        'message' => 'Failed to close tmux session.',
+        'error' => implode("\n", $output)
     ]);
 }
 exit;

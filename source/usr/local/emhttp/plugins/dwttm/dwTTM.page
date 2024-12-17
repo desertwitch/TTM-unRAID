@@ -403,7 +403,7 @@ function closeSession(sessionId) {
         if (response.success) {
             fetchSessions();
         } else {
-            alert(`Failed to close session ${sessionId}: ${response.message}`);
+            alert(`Failed to close session ${sessionId}: ${response.error}`);
         }
     }).fail(function (xhr, status, error) {
         console.error('Error closing session:', error);
