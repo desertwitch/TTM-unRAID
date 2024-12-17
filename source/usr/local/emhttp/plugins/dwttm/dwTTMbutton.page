@@ -27,11 +27,14 @@ Cond="@shell_exec('pgrep -x ttmd 2>/dev/null')"
 function dwTTMbutton() {
     const width = 780;
     const height = 480;
-    const left = 0;
-    const top = 0;
+
+    let top = (screen.height-height)/2;
+    if (!top || top < 0) {top = 0;}
+    let left = (screen.width-width)/2;
+    if (!left || left < 0) {left = 0;}
 
     window.open(
-        '/plugins/dwttm/terminal.php',
+        '/plugins/dwttm/tterminal.php',
         'TTerminal',
         `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no`
     );
