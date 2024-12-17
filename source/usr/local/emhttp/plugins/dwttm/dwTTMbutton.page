@@ -1,0 +1,39 @@
+Menu="Buttons:3_"
+Title="TTerminal"
+Icon="tty"
+Cond="@shell_exec('pgrep -x ttmd 2>/dev/null')"
+---
+<?
+/* Copyright Derek Macias (parts of code from NUT package)
+ * Copyright macester (parts of code from NUT package)
+ * Copyright gfjardim (parts of code from NUT package)
+ * Copyright SimonF (parts of code from NUT package)
+ * Copyright Dan Landon (parts of code from Web GUI)
+ * Copyright Bergware International (parts of code from Web GUI)
+ * Copyright Lime Technology (any and all other parts of Unraid)
+ *
+ * Copyright desertwitch (as author and maintainer of this file)
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License 2
+ * as published by the Free Software Foundation.
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ */
+?>
+<script>
+function dwTTMbutton() {
+    const width = 780;
+    const height = 480;
+    const left = 0;
+    const top = 0;
+
+    window.open(
+        '/plugins/dwttm/terminal.php',
+        'TTerminal',
+        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no`
+    );
+}
+</script>
