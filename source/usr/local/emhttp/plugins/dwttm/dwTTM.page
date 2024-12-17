@@ -34,151 +34,151 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 
 <style>
 body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
 .termtable {
-  width: 100%;
-  table-layout: fixed;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .termtable td {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 #terminal-container {
- width: 100%;
- height: 430px;
+    width: 100%;
+    height: 430px;
+}
+
+.xterm .xterm-viewport {
+    overflow: hidden;
 }
 
 #session-list-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
 }
 
 .session-item {
-  position: relative;
-  width: 300px; /* Adjust based on desired preview width */
-  border: 1px solid #ddd;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    width: 300px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .session-item canvas {
-  display: block;
-  margin: 0 auto 10px;
-  border: 1px solid #ccc;
+    display: block;
+    margin: 0 auto 10px;
+    border: 1px solid #ccc;
 }
 
 .session-item .fallback-text {
-  font-size: 14px;
-  color: #666;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+    font-size: 14px;
+    color: #666;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-/* Highlight styling for the connected session */
 .session-item.connected {
-  background-color: #333; /* Darker background */
-  color: #fff; /* Ensure text is visible on dark background */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .session-item.connected .session-link {
-  color: #fff;
+    color: #fff;
 }
 
 .session-item.connected canvas {
-  border-color: #555;
+    border-color: #555;
 }
 
-/* Center content in the 'add-new' container */
 .session-item.add-new {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 300px; /* Match preview canvas width */
-  border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer; /* Indicate clickability */
-  transition: background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Hover effect for 'add-new' container */
 .session-item.add-new:hover {
-  background-color: #e6f7ff;
+    background-color: #e6f7ff;
 }
 
-/* Style for the plus icon */
 .plus-icon {
-  font-size: 50px;
-  color: #007bff;
+    font-size: 50px;
+    color: #007bff;
 }
 
-/* Style for the 'Add New Session' text */
 .add-new-text {
-  font-size: 14px;
-  color: #007bff;
-  margin-top: 10px;
+    font-size: 14px;
+    color: #007bff;
+    margin-top: 10px;
 }
 
 .session-link {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #007bff;
-  text-decoration: none;
-  cursor: pointer;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .session-link:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .trash-icon {
-  position: absolute;
-  top: 7px;
-  left: 12px;
-  font-size: 13px;
-  color: #dc3545; /* Red color for delete */
-  cursor: pointer;
-  transition: color 0.2s ease;
+    position: absolute;
+    top: 7px;
+    left: 12px;
+    font-size: 13px;
+    color: #dc3545;
+    cursor: pointer;
+    transition: color 0.2s ease;
 }
 
 .trash-icon:hover {
-  color: #a71d2a; /* Darker red on hover */
+    color: #a71d2a;
 }
 
 .popup-icon {
-  position: absolute;
-  top: 7px;
-  right: 12px;
-  font-size: 13px;
-  color: #2E8B57;
-  cursor: pointer;
-  transition: color 0.2s ease;
+    position: absolute;
+    top: 7px;
+    right: 12px;
+    font-size: 13px;
+    color: #2E8B57;
+    cursor: pointer;
+    transition: color 0.2s ease;
 }
 
 .popup-icon:hover {
- color: #3CB371;
+    color: #3CB371;
 }
 </style>
 
+<?if($dwttm_running):?>
 <table class="tablesorter shift termtable">
 <thead>
     <tr>
-        <th></th>
+        <th><strong>TTerminal</strong></th>
     </tr>
 </thead>
 <tbody>
@@ -194,7 +194,7 @@ body {
 <table class="tablesorter">
 <thead>
     <tr>
-        <th>Terminal Sessions</th>
+        <th><strong>TTerminal Session Management</strong></th>
     </tr>
 </thead>
 <tbody>
@@ -209,6 +209,7 @@ body {
 </table>
 
 <br><br><hr><br>
+<?endif;?>
 
 <div>
     <span class="left" style="font-size:1.1rem;letter-spacing:1px;"><strong><i class="icon fa fa-cogs"></i>GENERAL SETTINGS</strong></span>
@@ -245,20 +246,18 @@ body {
 </form>
 
 <script>
-const term = new Terminal({ });
+const term = new Terminal({ scrollback: 0 });
 const fitAddon = new FitAddon.FitAddon();
 
-let ws; // WebSocket connection
-let disposable; // Reference to the onData listener
+let ws;
+let disposable;
 
-// Cleanup function to remove existing WebSocket and event listeners
 function cleanup() {
     if (ws) {
         ws.close();
         ws = null;
     }
 
-    // Dispose of the previous onData listener
     if (disposable) {
         disposable.dispose();
         disposable = null;
@@ -270,17 +269,15 @@ function fetchSessions() {
         if (data.success) {
             let sessions = data.response;
 
-            // Sort sessions by `created_at` in descending order
             sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
             const $sessionListContainer = $('#session-list-container');
             $sessionListContainer.empty();
 
-            // Add the "Add New Session" button as the first item
             const $newSessionItem = $('<div>')
                 .addClass('session-item add-new')
                 .on('click', function () {
-                    createNewSession(); // Call a function to create a new session
+                    createNewSession();
                 });
 
             const $plusIcon = $('<div>')
@@ -294,16 +291,13 @@ function fetchSessions() {
             $newSessionItem.append($plusIcon).append($newSessionText);
             $sessionListContainer.append($newSessionItem);
 
-            // Render all existing sessions
             $.each(sessions, function (index, session) {
                 const sessionName = session.session_name;
                 const sessionPreview = session.preview;
                 const createdAt = session.created_at;
 
-                // Create the session item container
                 const $sessionItem = $('<div>').addClass('session-item');
 
-                // Add session link
                 const $link = $('<a>')
                     .addClass('session-link')
                     .text(`${sessionName}`)
@@ -314,10 +308,9 @@ function fetchSessions() {
 
                 $sessionItem.append($link);
 
-                // Add trashcan icon for closing the session
                 const $trashIcon = $('<div>')
                     .addClass('trash-icon')
-                    .html('<i class="fa fa-trash"></i>') // Add the trashcan icon
+                    .html('<i class="fa fa-trash"></i>')
                     .on('click', function (e) {
                         e.stopPropagation(); // Prevent triggering the session link click
                         closeSession(sessionName);
@@ -325,10 +318,9 @@ function fetchSessions() {
 
                 $sessionItem.append($trashIcon);
 
-                // Add popup icon for windowing the session
                 const $popupIcon = $('<div>')
                     .addClass('popup-icon')
-                    .html('<i class="fa fa-window-restore"></i>') // Add the trashcan icon
+                    .html('<i class="fa fa-window-restore"></i>')
                     .on('click', function (e) {
                         e.stopPropagation(); // Prevent triggering the session link click
                         popupSession(sessionName);
@@ -337,46 +329,39 @@ function fetchSessions() {
                 $sessionItem.append($popupIcon);
 
                 if (session.preview_success) {
-                    // If preview is available, create a canvas
                     const canvasWidth = 300;
                     const canvasHeight = 150;
                     const $canvas = $('<canvas>')
                         .attr('width', canvasWidth)
                         .attr('height', canvasHeight)
-                        .css('cursor', 'pointer') // Indicate clickability
-                        .on('click', function () { // Add click event to connect
+                        .css('cursor', 'pointer')
+                        .on('click', function () {
                             connectToSession(sessionName);
                         });
 
                     const canvas = $canvas[0];
                     const ctx = canvas.getContext('2d');
 
-                    // Set canvas background color
-                    ctx.fillStyle = '#ffffff';
+                    ctx.fillStyle = '#000000';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    // Set initial font size
-                    let fontSize = 12; // Default font size
-                    const padding = 10; // Padding around the canvas
-                    const lineHeightFactor = 1.2; // Line height as a factor of font size
+                    let fontSize = 12;
+                    const padding = 10;
+                    const lineHeightFactor = 1.2;
                     let lineHeight = fontSize * lineHeightFactor;
 
-                    // Prepare text content
                     const lines = sessionPreview.split('\n');
                     const totalLines = lines.length;
 
-                    // Calculate scaling factor
                     const maxContentHeight = totalLines * lineHeight;
                     const scalingFactor = Math.min(1, (canvasHeight - 2 * padding) / maxContentHeight);
 
-                    // Adjust font size and line height based on scaling factor
                     fontSize = Math.floor(fontSize * scalingFactor);
                     lineHeight = fontSize * lineHeightFactor;
 
                     ctx.font = `${fontSize}px monospace`;
-                    ctx.fillStyle = '#000000';
+                    ctx.fillStyle = '#ffffff';
 
-                    // Draw text lines
                     lines.forEach((line, index) => {
                         const y = padding + (index + 1) * lineHeight;
                         if (y <= canvasHeight - padding) {
@@ -386,18 +371,16 @@ function fetchSessions() {
 
                     $sessionItem.append($canvas);
                 } else {
-                    // If no preview, display fallback text
                     const $fallbackText = $('<div>')
                         .addClass('fallback-text')
                         .text("No preview available for this session.")
-                        .on('click', function () { // Add click event to connect
+                        .on('click', function () { 
                             connectToSession(sessionName);
                         })
-                        .css('cursor', 'pointer'); // Indicate clickability
+                        .css('cursor', 'pointer');
 
                     $sessionItem.append($fallbackText);
                 }
-
                 $sessionListContainer.append($sessionItem);
             });
         } else {
@@ -406,29 +389,28 @@ function fetchSessions() {
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
     });
+    clearTimeout(timers.fetchSessions);
+    timers.fetchSessions = setTimeout(fetchSessions, 3000);
 }
 
-// Function to close a session
 function closeSession(sessionName) {
     console.log(`Closing session: ${sessionName}`);
     $.post('/plugins/dwttm/include/close_session.php', { session_name: sessionName }, function (response) {
         if (response.success) {
             console.log(`Session ${sessionName} closed successfully.`);
-            fetchSessions(); // Refresh the session list after closing
+            fetchSessions();
         } else {
             console.error(`Failed to close session ${sessionName}:`, response.message);
         }
     });
 }
 
-// Function to create a new session
 function createNewSession() {
     console.log('Creating a new terminal session...');
-    // Add your logic to create a new tmux session here
     $.post('/plugins/dwttm/include/create_session.php', function (response) {
         if (response.success) {
             console.log('New session created:', response.session_name);
-            fetchSessions(); // Refresh the list of sessions
+            fetchSessions();
         } else {
             console.error('Failed to create new session:', response.message);
         }
@@ -436,16 +418,13 @@ function createNewSession() {
 }
 
 function connectToSession(session) {
-    cleanup(); // Clean up before starting a new session
+    cleanup();
 
-    // Dynamically use the current host and port for WebSocket connection
     const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${session}`;
     ws = new WebSocket(wsUrl);
 
-    // Remove the 'connected' class from all session items
     $('.session-item').removeClass('connected');
 
-    // Highlight the currently connected session
     $('.session-item').filter(function () {
         return $(this).find('.session-link').text().trim() === session;
     }).addClass('connected');
@@ -456,7 +435,7 @@ function connectToSession(session) {
     };
 
     ws.onmessage = (event) => {
-        term.write(event.data); // Write data to the terminal
+        term.write(event.data);
     };
 
     ws.onerror = (error) => {
@@ -468,10 +447,9 @@ function connectToSession(session) {
         term.write('\r\n*** Disconnected from session ***\r\n');
     };
 
-    // Add a new onData listener and store its reference
     disposable = term.onData(data => {
         if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(data); // Send input from xterm to the WebSocket
+            ws.send(data);
         }
     });
 }
@@ -495,20 +473,25 @@ $(function() {
     checkTTMsettings();
     $('#SERVICE').change(checkTTMsettings);
 
-    if ("<?=$dwttm_running;?>" == 1) {
+    <?if($dwttm_running):?>
         const terminalContainer = document.getElementById('terminal-container');
+
         term.loadAddon(fitAddon);
         term.open(terminalContainer);
-        term.write(" ______   ______   __    __    \r\n");
-        term.write("/\\__  _\\ /\\__  _\\ /\\ \"-./  \\   \r\n");
-        term.write("\\/_/\\ \\/ \\/_/\\ \\/ \\ \\ \\-./\\ \\  \r\n");
-        term.write("   \\ \\_\\    \\ \\_\\  \\ \\_\\ \\ \\_\\ \r\n");
-        term.write("    \\/_/     \\/_/   \\/_/  \\/_/ \r\n");
-        term.write("                               \r\n");
-        term.write("Waiting for you to pick a session...\r\n\r\n");
         fitAddon.fit();
+
+        term.write("\r\n");
+        term.write("   ______   ______   __    __    \r\n");
+        term.write("  /\\__  _\\ /\\__  _\\ /\\ \"-./  \\   \r\n");
+        term.write("  \\/_/\\ \\/ \\/_/\\ \\/ \\ \\ \\-./\\ \\  \r\n");
+        term.write("     \\ \\_\\    \\ \\_\\  \\ \\_\\ \\ \\_\\ \r\n");
+        term.write("      \\/_/     \\/_/   \\/_/  \\/_/ \r\n");
+        term.write("                                 \r\n");
+        term.write("  Waiting for you to pick a session...\r\n\r\n");
+        term.write("  ");
+
         fetchSessions();
-    }
+    <?endif;?>
     
     if ( typeof caPluginUpdateCheck === "function" ) {
         caPluginUpdateCheck("dwttm.plg",{name:"TTerminal Manager (TTM)"});

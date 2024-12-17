@@ -201,7 +201,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             ws.onopen = () => term.clear();
             ws.onmessage = (event) => term.write(event.data);
             ws.onerror = (error) => console.error('WebSocket error:', error);
-            ws.onclose = () => term.write('\r\n*** Disconnected ***\r\n');
+            ws.onclose = () => term.write('\r\n*** Disconnected from session ***\r\n');
 
             term.onData((data) => {
                 if (ws.readyState === WebSocket.OPEN) {
