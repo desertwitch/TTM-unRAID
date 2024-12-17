@@ -436,10 +436,11 @@ function popupSession(sessionId) {
     if (!left || left < 0) { left = 0; }
 
     const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
+    const windowName = `${sessionId}: TTerminal`;
 
     window.open(
         url,
-        'TTerminal',
+        windowName,
         `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no`
     );
 }
