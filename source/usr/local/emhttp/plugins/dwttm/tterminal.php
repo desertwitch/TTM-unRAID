@@ -170,13 +170,13 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function createNewSession() {
-            fetch('/plugins/dwttm/include/create_session.php', {
+            fetch('/plugins/dwttm/include/dwttm_new_session.php', {
                 method: 'POST',
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    connectToSession(data.session_name);
+                    connectToSession(data.session_id);
                 } else {
                     alert('Failed to create session: ' + data.message);
                 }
