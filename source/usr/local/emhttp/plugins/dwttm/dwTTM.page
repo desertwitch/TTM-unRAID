@@ -452,6 +452,11 @@ function connectToSession(session) {
             ws.send(data);
         }
     });
+
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }
 
 function checkTTMsettings() {
