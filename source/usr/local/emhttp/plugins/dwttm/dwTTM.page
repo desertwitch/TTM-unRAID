@@ -100,12 +100,6 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 300px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
 }
 
@@ -380,7 +374,7 @@ function fetchSessions() {
                 $sessionListContainer.append($sessionItem);
             });
         } else {
-            console.error('Failed to fetch sessions:', data.message);
+            console.error('Failed to fetch sessions:', data.error);
         }
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
@@ -440,7 +434,7 @@ function connectToSession(sessionId) {
 // CHECKED - OK
     freeSession();
 
-    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${sessionId}`;
+    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${encodeURIComponent(sessionId)}`;
     ws = new WebSocket(wsUrl);
 
     $('.session-item').removeClass('connected');

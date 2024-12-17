@@ -131,17 +131,15 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const fitAddon = new FitAddon.FitAddon();
         const dropdown = document.getElementById('session-dropdown');
 
-        term.loadAddon(fitAddon);
-
         function fetchSessions() {
+        // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         const sessions = data.response;
 
-                        const urlParams = new URLSearchParams(window.location.search);
-                        const currentSession = urlParams.get('session');
+                        const currentSession = <?= json_encode($currentSession); ?>;
 
                         sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
@@ -160,25 +158,19 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                                 document.title = `${session.session_name}: TTerminal`;
                             }
                         });
-
-                        dropdown.addEventListener('change', (event) => {
-                            const selectedSession = event.target.value;
-                            if (selectedSession) {
-                                connectToSession(selectedSession);
-                            }
-                        });
                     } else {
-                        console.error('Failed to fetch sessions:', data.message);
+                        console.error('Failed to fetch sessions:', data.error);
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching sessions:', error);
                 });
                 clearTimeout(ttimers.fetchSessions);
-                ttimers.fetchSessions = setTimeout(fetchSessions, 1000);
+                ttimers.fetchSessions = setTimeout(fetchSessions, 3000);
         }
 
         function connectToSession(session) {
+        // CHECKED - OK
             if (!session) {
                 const urlWithoutParams = window.location.origin + window.location.pathname;
                 window.location.href = urlWithoutParams;
@@ -191,6 +183,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function createNewSession() {
+        // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_new_session.php', {
                 method: 'GET',
             })
@@ -199,37 +192,59 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 if (data.success) {
                     connectToSession(data.session_id);
                 } else {
-                    alert('Failed to create session: ' + data.message);
+                    alert('Failed to create a new session.');
                 }
             })
             .catch(error => console.error('Error creating session:', error));
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+        // CHECKED - OK
             <?php if ($currentSession): ?>
             const terminalContainer = document.getElementById('terminal-container');
+
+            term.loadAddon(fitAddon);
             term.open(terminalContainer);
             fitAddon.fit();
 
-            const ws = new WebSocket(`ws://${window.location.hostname}:3000/ws?session=<?= htmlspecialchars($currentSession); ?>`);
-            ws.onopen = () => term.clear();
-            ws.onmessage = (event) => term.write(event.data);
-            ws.onerror = (error) => console.error('WebSocket error:', error);
-            ws.onclose = () => term.write('\r\n*** Disconnected from session ***\r\n');
+            const currentSession = <?= json_encode($currentSession); ?>;
+            
+            const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${encodeURIComponent(currentSession)}`;
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                term.clear();
+            };
+
+            ws.onmessage = (event) => {
+                term.write(event.data);
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            ws.onclose = () => {
+                term.write('\r\n*** Disconnected from session ***\r\n');
+            };
 
             term.onData((data) => {
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.send(data);
                 }
             });
+
             term.focus();
             <?php endif; ?>
             fetchSessions();
         });
         
-        dropdown.addEventListener('change', (event) => {
-            const selectedSession = event.target.value;
-            connectToSession(selectedSession);
+        document.addEventListener('change', (event) => {
+        // CHECKED - OK
+            if (event.target && event.target.id === 'session-dropdown') {
+                const selectedSession = event.target.value;
+                connectToSession(selectedSession);
+            }
         });
     </script>
 </body>
