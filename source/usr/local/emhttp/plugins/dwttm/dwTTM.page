@@ -251,6 +251,7 @@ const fitAddon = new FitAddon.FitAddon();
 
 let ws;
 let disposable;
+let connectedSession;
 
 function cleanup() {
     if (ws) {
@@ -261,6 +262,10 @@ function cleanup() {
     if (disposable) {
         disposable.dispose();
         disposable = null;
+    }
+
+    if(connectedSession) {
+        connectedSession = null;
     }
 }
 
@@ -292,17 +297,24 @@ function fetchSessions() {
             $sessionListContainer.append($newSessionItem);
 
             $.each(sessions, function (index, session) {
+                const sessionId = session.session_id;
                 const sessionName = session.session_name;
                 const sessionPreview = session.preview;
                 const createdAt = session.created_at;
 
                 const $sessionItem = $('<div>').addClass('session-item');
 
+                $sessionItem.attr('data-session-id', sessionId);
+
+                if(sessionId === connectedSession) {
+                    $sessionItem.addClass('connected');
+                }
+                
                 const $link = $('<a>')
                     .addClass('session-link')
                     .text(`${sessionName}`)
                     .on('click', function () {
-                        connectToSession(sessionName);
+                        connectToSession(sessionId);
                         return false;
                     });
 
@@ -313,7 +325,7 @@ function fetchSessions() {
                     .html('<i class="fa fa-trash"></i>')
                     .on('click', function (e) {
                         e.stopPropagation(); // Prevent triggering the session link click
-                        closeSession(sessionName);
+                        closeSession(sessionId);
                     });
 
                 $sessionItem.append($trashIcon);
@@ -323,7 +335,7 @@ function fetchSessions() {
                     .html('<i class="fa fa-window-restore"></i>')
                     .on('click', function (e) {
                         e.stopPropagation(); // Prevent triggering the session link click
-                        popupSession(sessionName);
+                        popupSession(sessionId);
                     });
 
                 $sessionItem.append($popupIcon);
@@ -336,7 +348,7 @@ function fetchSessions() {
                         .attr('height', canvasHeight)
                         .css('cursor', 'pointer')
                         .on('click', function () {
-                            connectToSession(sessionName);
+                            connectToSession(sessionId);
                         });
 
                     const canvas = $canvas[0];
@@ -375,7 +387,7 @@ function fetchSessions() {
                         .addClass('fallback-text')
                         .text("No preview available for this session.")
                         .on('click', function () { 
-                            connectToSession(sessionName);
+                            connectToSession(sessionId);
                         })
                         .css('cursor', 'pointer');
 
@@ -393,7 +405,7 @@ function fetchSessions() {
     timers.fetchSessions = setTimeout(fetchSessions, 3000);
 }
 
-function closeSession(sessionName) {
+function closeSession(sessionId) {
     console.log(`Closing session: ${sessionName}`);
     $.post('/plugins/dwttm/include/close_session.php', { session_name: sessionName }, function (response) {
         if (response.success) {
@@ -417,20 +429,22 @@ function createNewSession() {
     });
 }
 
-function connectToSession(session) {
+function connectToSession(sessionId) {
     cleanup();
 
-    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${session}`;
+    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${sessionId}`;
     ws = new WebSocket(wsUrl);
+
+    connectedSession = sessionId;
 
     $('.session-item').removeClass('connected');
 
     $('.session-item').filter(function () {
-        return $(this).find('.session-link').text().trim() === session;
+        return $(this).attr('data-session-id') === sessionId;
     }).addClass('connected');
 
     ws.onopen = () => {
-        console.log(`Connected to TMUX session: ${session}`);
+        console.log(`Connected to TMUX session: ${sessionId}`);
         term.clear();
     };
 

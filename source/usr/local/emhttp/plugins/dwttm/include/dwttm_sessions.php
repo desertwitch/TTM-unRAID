@@ -17,7 +17,7 @@
  * included in all copies or substantial portions of the Software.
  *
  */
-$command = 'tmux list-sessions -F "#{session_name} #{session_created}"';
+$command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}"';
 $output = [];
 $returnCode = 0;
 exec($command, $output, $returnCode);
@@ -33,11 +33,9 @@ if ($returnCode !== 0) {
 $response = [];
 
 foreach ($output as $line) {
-    // Split the output line into session name and creation time
-    list($sessionName, $sessionCreated) = explode(' ', $line, 2);
+    list($sessionId, $sessionName, $sessionCreated) = explode('/', $line, 3);
 
-    // Get only the visible lines of the session's active pane
-    $captureCommand = "tmux capture-pane -t {$sessionName} -p";
+    $captureCommand = "tmux capture-pane -t \\{$sessionId}:0 -p";
     $captureOutput = [];
     $captureReturnCode = 0;
     exec($captureCommand, $captureOutput, $captureReturnCode);
@@ -46,6 +44,7 @@ foreach ($output as $line) {
     $preview = $previewSuccess ? implode("\n", $captureOutput) : "Failed to retrieve preview for session {$sessionName}.";
 
     $response[] = [
+        "session_id" => $sessionId,
         "session_name" => $sessionName,
         "created_at" => date('Y-m-d H:i:s', intval($sessionCreated)), // Convert UNIX timestamp to readable format
         "preview" => $preview,
