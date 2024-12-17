@@ -26,7 +26,7 @@ exec($command, $output, $returnVar);
 if ($returnVar === 0 && !empty($output)) {
     echo json_encode([
         'success' => true,
-        'session_id' => trim($output[0]);
+        'session_id' => trim($output[0])
     ]);
 } else {
     echo json_encode([
