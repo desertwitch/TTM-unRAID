@@ -17,17 +17,31 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+header('Content-Type: application/json');
+
 $command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}"';
 $output = [];
-$returnCode = 0;
-exec($command, $output, $returnCode);
+$returnCode = null;
+exec($command . " 2>&1", $output, $returnCode);
 
 if ($returnCode !== 0) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Failed to retrieve tmux sessions."
-    ]);
-    exit;
+    $outputString = implode("\n", $output);
+    if (strpos($outputString, 'no server running') !== false) {
+        echo json_encode([
+            "success" => true,
+            "message" => "No active tmux sessions.",
+            "response" => []
+        ]);
+        exit;
+    }
+    else {
+        echo json_encode([
+            "success" => false,
+            "message" => "Failed to retrieve tmux sessions.",
+            "error" => $outputString
+        ]);
+        exit;
+    }
 }
 
 $response = [];
@@ -35,7 +49,7 @@ $response = [];
 foreach ($output as $line) {
     list($sessionId, $sessionName, $sessionCreated) = explode('/', $line, 3);
 
-    $captureCommand = "tmux capture-pane -t \\{$sessionId}:0 -p";
+    $captureCommand = "tmux capture-pane -t '{$sessionId}:0' -p";
     $captureOutput = [];
     $captureReturnCode = 0;
     exec($captureCommand, $captureOutput, $captureReturnCode);
@@ -46,7 +60,7 @@ foreach ($output as $line) {
     $response[] = [
         "session_id" => $sessionId,
         "session_name" => $sessionName,
-        "created_at" => date('Y-m-d H:i:s', intval($sessionCreated)), // Convert UNIX timestamp to readable format
+        "created_at" => date('Y-m-d H:i:s', intval($sessionCreated)), 
         "preview" => $preview,
         "preview_success" => $previewSuccess
     ];
@@ -56,4 +70,5 @@ echo json_encode([
     "success" => true,
     "response" => $response
 ]);
+exit;
 ?>

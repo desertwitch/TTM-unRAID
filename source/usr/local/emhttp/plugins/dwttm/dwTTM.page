@@ -410,7 +410,7 @@ function closeSession(sessionId) {
         if (response.success) {
             fetchSessions();
         } else {
-            console.error(`Failed to close session ${sessionName}:`, response.message);
+            console.error(`Failed to close session ${sessionId}:`, response.message);
         }
     });
 }

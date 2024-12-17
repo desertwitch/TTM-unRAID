@@ -17,13 +17,14 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+header('Content-Type: application/json');
+
 $command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm /bin/bash'";
-
 $output = null;
-$returnVar = null;
-exec($command, $output, $returnVar);
+$returnCode = null;
+exec($command, $output, $returnCode);
 
-if ($returnVar === 0 && !empty($output)) {
+if ($returnCode === 0 && !empty($output)) {
     echo json_encode([
         'success' => true,
         'session_id' => trim($output[0])
@@ -34,4 +35,5 @@ if ($returnVar === 0 && !empty($output)) {
         'message' => 'Failed to create new session.'
     ]);
 }
+exit;
 ?>
