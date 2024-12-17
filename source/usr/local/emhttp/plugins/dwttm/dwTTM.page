@@ -406,10 +406,8 @@ function fetchSessions() {
 }
 
 function closeSession(sessionId) {
-    console.log(`Closing session: ${sessionName}`);
-    $.post('/plugins/dwttm/include/close_session.php', { session_name: sessionName }, function (response) {
+    $.getJSON('/plugins/dwttm/include/dwttm_close_session.php', { session: sessionId }, function (response) {
         if (response.success) {
-            console.log(`Session ${sessionName} closed successfully.`);
             fetchSessions();
         } else {
             console.error(`Failed to close session ${sessionName}:`, response.message);
@@ -418,8 +416,7 @@ function closeSession(sessionId) {
 }
 
 function createNewSession() {
-    console.log('Creating a new terminal session...');
-    $.post('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
+    $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
         if (response.success) {
             fetchSessions();
             connectToSession(response.session_id);
