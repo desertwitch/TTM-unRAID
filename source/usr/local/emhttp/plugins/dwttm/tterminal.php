@@ -17,6 +17,22 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+if (!function_exists('autov')) {
+    function autov($file, $ret = false) {
+        $docroot ??= ($_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp');
+        $path = $docroot . $file;
+        clearstatcache(true, $path);
+        $time = file_exists($path) ? filemtime($path) : 'autov_fileDoesntExist';
+        $newFile = "$file?v=" . $time;
+        
+        if ($ret) {
+            return $newFile;
+        } else {
+            echo $newFile;
+        }
+    }
+}
+
 $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 ?>
 
@@ -26,9 +42,9 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTerminal</title>
-    <script src="/plugins/dwttm/js/xterm.js"></script>
-    <script src="/plugins/dwttm/js/xterm-fit.js"></script>
-    <link type="text/css" rel="stylesheet" href="/plugins/dwttm/css/xterm.css">
+    <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
+    <script src="<?=autov('/plugins/dwttm/js/xterm-fit.js');?>"></script>
+    <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
     <style>
         body {
             margin: 0;
@@ -141,6 +157,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
                             if (session.session_id === currentSession) {
                                 option.selected = true; 
+                                document.title = `${session.session_name}: TTerminal`;
                             }
                         });
 
