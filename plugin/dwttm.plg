@@ -53,6 +53,18 @@ run the post-installation scripts
 -->
 <FILE Run="/bin/bash">
 <INLINE>
+CONFIG=&plgPATH;/&name;.cfg
+
+echo "Reading configuration..."
+if [ -e "$CONFIG" ]; then
+    source "$CONFIG"
+fi
+
+if [ "$SERVICE" == "enable" ]; then
+    echo "Starting backend services..."
+    /etc/rc.d/rc.ttmd start 2>&amp;1 | logger -t "rc.ttmd"
+fi
+
 echo ""
 echo "-------------------------------------------------------------"
 echo " TTerminal Manager (TTM) has been installed."
