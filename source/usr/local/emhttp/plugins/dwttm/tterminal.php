@@ -205,6 +205,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     ws.send(data);
                 }
             });
+            term.focus();
             <?php endif; ?>
             fetchSessions();
         });
