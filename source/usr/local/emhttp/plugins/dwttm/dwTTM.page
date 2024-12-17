@@ -212,7 +212,7 @@ body {
 <?endif;?>
 
 <div>
-    <span class="left" style="font-size:1.1rem;letter-spacing:1px;"><strong><i class="icon fa fa-cogs"></i>GENERAL SETTINGS</strong></span>
+    <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-cogs"></i>GENERAL SETTINGS</strong></span>
 </div><br>
 
 <form markdown="0" id="dwttm-settings" name="dwttm_settings" method="POST" action="/update.php" target="progressFrame">
