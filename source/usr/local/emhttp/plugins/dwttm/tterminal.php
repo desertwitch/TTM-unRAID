@@ -66,39 +66,43 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
         .plus-icon {
             font-size: 50px;
-            color: #007bff;
+            color: white;
             margin-bottom: 10px;
         }
 
         .new-session-container {
-            width: 100%;
-            height: 100%;
-            padding: 10px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .new-session-container:hover {
+            background-color: #222;
         }
 
         .new-session-text {
             font-size: 16px;
-            color: #007bff;
+            color: white;
+            font-weight: bold;
             cursor: pointer;
             text-align: center;
         }
-
-        .new-session-text:hover {
-            text-decoration: underline;
-        }
-    </style>
+</style>
 </head>
 <body>
     <select id="session-dropdown"></select>
 
     <div id="content">
         <?php if (!$currentSession): ?>
-            <div class="new-session-container" id="new-session-container">
+            <div class="new-session-container" id="new-session-container" onclick="createNewSession()">
                 <div class="plus-icon">+</div>
-                <div class="new-session-text" onclick="createNewSession()">New Session</div>
+                <div class="new-session-text">New Session</div>
             </div>
         <?php else: ?>
             <div id="terminal-container"></div>
