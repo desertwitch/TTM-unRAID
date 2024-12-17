@@ -503,15 +503,18 @@ $(function() {
         term.open(terminalContainer);
         fitAddon.fit();
 
-        term.write("\r\n");
-        term.write("   ______   ______   __    __    \r\n");
-        term.write("  /\\__  _\\ /\\__  _\\ /\\ \"-./  \\   \r\n");
-        term.write("  \\/_/\\ \\/ \\/_/\\ \\/ \\ \\ \\-./\\ \\  \r\n");
-        term.write("     \\ \\_\\    \\ \\_\\  \\ \\_\\ \\ \\_\\ \r\n");
-        term.write("      \\/_/     \\/_/   \\/_/  \\/_/ \r\n");
-        term.write("                                 \r\n");
-        term.write("  Waiting for you to pick a session...\r\n\r\n");
-        term.write("  ");
+        term.write("\r\n\r\n");
+        term.write("\t\t        ##########        \r\n");
+        term.write("\t\t   ####################   \r\n");
+        term.write("\t\t  ######          ######  \r\n");
+        term.write("\t\t  ######          ######  \r\n");
+        term.write("\t\t                          \r\n");
+        term.write("\t\t  ###  ### -### ###  ###  \r\n");
+        term.write("\t\t                          \r\n");
+        term.write("\t\t    #### ###  ###  ###    \r\n");
+        term.write("\t\t    ###. ###  ###  ###    \r\n");
+        term.write("\r\n\t\"TTerminal Manager (TTM) for UNRAID\"\r\n");
+        term.write("\t\t Please pick a terminal session...\r\n\r\n");
 
         fetchSessions();
     <?endif;?>
