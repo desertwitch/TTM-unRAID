@@ -426,6 +426,24 @@ function createNewSession() {
     });
 }
 
+function popupSession(sessionId) {
+    const width = 780;
+    const height = 480;
+
+    let top = (screen.height - height) / 2;
+    if (!top || top < 0) { top = 0; }
+    let left = (screen.width - width) / 2;
+    if (!left || left < 0) { left = 0; }
+
+    const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
+
+    window.open(
+        url,
+        'TTerminal',
+        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no`
+    );
+}
+
 function connectToSession(sessionId) {
     cleanup();
 
