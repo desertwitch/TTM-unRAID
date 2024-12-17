@@ -419,10 +419,10 @@ function closeSession(sessionId) {
 
 function createNewSession() {
     console.log('Creating a new terminal session...');
-    $.get('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
+    $.post('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
         if (response.success) {
-            console.log('New session created:', response.session_name);
             fetchSessions();
+            connectToSession(response.session_id);
         } else {
             console.error('Failed to create new session:', response.message);
         }
