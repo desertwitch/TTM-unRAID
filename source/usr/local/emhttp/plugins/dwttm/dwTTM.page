@@ -251,7 +251,7 @@ const fitAddon = new FitAddon.FitAddon();
 
 let ws;
 let disposable;
-let connectedSession;
+let connectedSessionId;
 
 function cleanup() {
     if (ws) {
@@ -264,8 +264,8 @@ function cleanup() {
         disposable = null;
     }
 
-    if(connectedSession) {
-        connectedSession = null;
+    if(connectedSessionId) {
+        connectedSessionId = null;
     }
 }
 
@@ -306,7 +306,7 @@ function fetchSessions() {
 
                 $sessionItem.attr('data-session-id', sessionId);
 
-                if(sessionId === connectedSession) {
+                if(sessionId === connectedSessionId) {
                     $sessionItem.addClass('connected');
                 }
                 
@@ -435,7 +435,7 @@ function connectToSession(sessionId) {
     const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${sessionId}`;
     ws = new WebSocket(wsUrl);
 
-    connectedSession = sessionId;
+    connectedSessionId = sessionId;
 
     $('.session-item').removeClass('connected');
 
@@ -457,7 +457,7 @@ function connectToSession(sessionId) {
     };
 
     ws.onclose = () => {
-        console.log(`Disconnected from TMUX session: ${session}`);
+        console.log(`Disconnected from TMUX session: ${sessionId}`);
         term.write('\r\n*** Disconnected from session ***\r\n');
     };
 
