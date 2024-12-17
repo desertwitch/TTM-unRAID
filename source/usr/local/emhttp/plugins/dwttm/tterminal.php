@@ -92,14 +92,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
     </style>
 </head>
 <body>
-    <select id="session-dropdown">
-        <option value="">Select a session</option>
-        <?php foreach ($sessions as $session): ?>
-            <option value="<?= htmlspecialchars($session); ?>" <?= $currentSession === $session ? 'selected' : ''; ?>>
-                <?= htmlspecialchars($session); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <select id="session-dropdown"></select>
 
     <div id="content">
         <?php if (!$currentSession): ?>
@@ -138,11 +131,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
                         sessions.forEach(session => {
                             const option = document.createElement('option');
-                            option.value = session.session_name;
+                            option.value = session.session_id;
                             option.textContent = session.session_name;
                             dropdown.appendChild(option);
 
-                            if (session.session_name === currentSession) {
+                            if (session.session_id === currentSession) {
                                 option.selected = true; 
                             }
                         });
