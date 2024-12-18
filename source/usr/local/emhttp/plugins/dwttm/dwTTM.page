@@ -417,7 +417,7 @@ function fetchSessions() {
             console.error('Failed to fetch sessions - invalid response.');
         }
         if (!data.success && data.error) {
-            console.warn('Error while fetching sessions:', data.error)
+            console.warn('Error processing sessions:', data.error)
         }
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
