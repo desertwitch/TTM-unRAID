@@ -411,7 +411,7 @@ function fetchSessions() {
         } else {
             console.error('Failed to fetch sessions - invalid response.');
         }
-        if (data.error) {
+        if (!data.success && data.error) {
             console.warn('Error while fetching sessions:', data.error)
         }
     }).fail(function (xhr, status, error) {
@@ -432,6 +432,7 @@ function createNewSession() {
         }
     }).fail(function (xhr, status, error) {
         console.error('Error creating session:', error);
+        alert(`Error creating session: ${error}`);
     });
 }
 
@@ -445,7 +446,8 @@ function closeSession(sessionId) {
         }
     }).fail(function (xhr, status, error) {
         console.error('Error closing session:', error);
-    });;
+        alert(`Error closing session ${sessionId}: ${error}`);
+    });
 }
 
 function popupSession(sessionId) {

@@ -26,23 +26,12 @@ exec($command . " 2>&1", $output, $returnCode);
 
 if ($returnCode !== 0) {
     $outputString = implode("\n", $output);
-    if (strpos($outputString, 'no server running') !== false) {
-        echo json_encode([
-            "success" => true,
-            "message" => "No active tmux sessions.",
-            "response" => []
-        ]);
-        exit;
-    }
-    else {
-        echo json_encode([
-            "success" => false,
-            "message" => "Failed to retrieve tmux sessions.",
-            "error" => $outputString,
-            "response" => []
-        ]);
-        exit;
-    }
+    echo json_encode([
+        "success" => false,
+        "error" => $outputString,
+        "response" => []
+    ]);
+    exit;
 }
 
 $response = [];

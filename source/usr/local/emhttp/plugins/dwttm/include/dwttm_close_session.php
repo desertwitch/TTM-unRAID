@@ -41,7 +41,6 @@ if ($returnCode === 0) {
 } else {
     echo json_encode([
         'success' => false,
-        'message' => 'Failed to close tmux session.',
         'error' => implode("\n", $output)
     ]);
 }
