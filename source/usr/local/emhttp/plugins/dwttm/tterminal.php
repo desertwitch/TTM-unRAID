@@ -43,7 +43,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTerminal</title>
     <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
-    <script src="<?=autov('/plugins/dwttm/js/xterm-addon-fit.js');?>"></script>
+    <script src="<?=autov('/plugins/dwttm/js/addon-fit.js');?>"></script>
     <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
     <style>
         body {

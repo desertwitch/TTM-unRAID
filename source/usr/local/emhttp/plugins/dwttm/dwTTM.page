@@ -28,7 +28,7 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 ?>
 
 <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
-<script src="<?=autov('/plugins/dwttm/js/xterm-addon-fit.js');?>"></script>
+<script src="<?=autov('/plugins/dwttm/js/addon-fit.js');?>"></script>
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
 
 <style>
