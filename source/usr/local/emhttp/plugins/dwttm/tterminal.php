@@ -132,7 +132,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const dropdown = document.getElementById('session-dropdown');
 
         function fetchSessions() {
-        // CHECKED - OK
+        // CHECKED - OK 
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
                 .then(response => response.json())
                 .then(data => {
