@@ -38,7 +38,7 @@ if ($returnCode !== 0) {
         echo json_encode([
             "success" => false,
             "message" => "Failed to retrieve tmux sessions.",
-            "error" => $outputString
+            "error" => $outputString,
             "response" => []
         ]);
         exit;
