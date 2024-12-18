@@ -207,7 +207,7 @@ body {
 
     <dl>
         <dt>Tmux Backend Available:</dt>
-        <dd><strong><?=($dwttm_tmux_available ? "Yes ($dwttm_tmux_version)" : "No")?></strong></dd>
+        <dd><strong><?=($dwttm_tmux_available ? "Yes ($dwttm_tmux_version)" : "No ($dwttm_tmux_version)")?></strong></dd>
     </dl>
 
     <dl>
