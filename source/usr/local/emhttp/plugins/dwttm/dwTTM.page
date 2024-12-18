@@ -198,12 +198,22 @@ body {
 <input type="hidden" id="dwttm-cmd" name="#command" value="/usr/local/emhttp/plugins/dwttm/scripts/none">
 
     <dl>
+        <dt>Tmux Backend Available:</dt>
+        <dd><strong><?=($dwttm_tmux_available ? "Yes ($dwttm_tmux_backend)" : "No")?></strong></dd>
+    </dl>
+
+    <dl>
         <dt><strong>Start TTM Service:</strong></dt>
         <dd>
             <select id="SERVICE" name="SERVICE" size="1">
                 <?=mk_option($dwttm_service, "disable", "No");?>
                 <?=mk_option($dwttm_service, "enable", "Yes");?>
             </select>
+            <?if(file_exists("/var/log/ttmd.log")):?>
+            <a onclick="openTerminal('log','ttmd','ttmd.log')" style="color:inherit;margin-left:5px;cursor:pointer;">
+                <i class="fa fa-book" title="TTM Service Logs"></i>
+            </a>
+            <?endif;?>
         </dd>
     </dl>
 

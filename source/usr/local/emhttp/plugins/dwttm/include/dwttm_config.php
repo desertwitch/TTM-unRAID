@@ -21,6 +21,8 @@ $dwttm_cfg = parse_ini_file("/boot/config/plugins/dwttm/dwttm.cfg");
 $dwttm_service = trim(isset($dwttm_cfg['SERVICE']) ? htmlspecialchars($dwttm_cfg['SERVICE']) : 'disable');
 
 $dwttm_running      = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
+
+$dwttm_tmux_available = !empty(shell_exec("type tmux 2>/dev/null"));
 $dwttm_tmux_backend = htmlspecialchars(trim(shell_exec("find /var/log/packages/ -type f -iname 'tmux*' -printf '%f\n' 2>/dev/null") ?? "n/a"));
 
 ?>

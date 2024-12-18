@@ -84,6 +84,7 @@ killall ttmd
 removepkg &plgPATH;/*.txz
 rm -rf &plgPATH;
 rm -rf &emhttp;
+rm -f /var/log/ttmd.log
 
 echo ""
 echo "-----------------------------------------------------------"

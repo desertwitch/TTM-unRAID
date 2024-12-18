@@ -20,7 +20,7 @@ ttmd_start() {
     if pgrep -x ttmd &>/dev/null; then
         echo "'ttmd' service is already running."
     else
-        nohup /usr/bin/ttmd &>/tmp/ttmd.log &
+        nohup /usr/bin/ttmd &>/var/log/ttmd.log &
         TTMD_PID=$!
         echo $TTMD_PID > /var/run/ttmd.pid
         if pgrep -x ttmd &>/dev/null; then
