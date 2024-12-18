@@ -127,7 +127,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
     <script>
         const ttimers = {};
-        const term = new Terminal({ scrollback: 0 });
+        const term = new Terminal({ scrollback: 0, cursorBlink: true });
         const fitAddon = new FitAddon.FitAddon();
         const dropdown = document.getElementById('session-dropdown');
 
