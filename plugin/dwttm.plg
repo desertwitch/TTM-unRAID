@@ -61,8 +61,14 @@ if [ -e "$CONFIG" ]; then
 fi
 
 if [ "$SERVICE" == "enable" ]; then
-    echo "Starting backend services..."
-    /etc/rc.d/rc.ttmd start 2>&amp;1 | logger -t "rc.ttmd"
+    if type tmux >/dev/null 2>&amp;1 && tmux -V >/dev/null 2>&amp;1; then
+        echo "Starting backend services..."
+        /etc/rc.d/rc.ttmd start 2>&amp;1 | logger -t "rc.ttmd"
+    else
+        echo "Starting backend services..."
+        echo "Error: Unable to start 'ttmd' - Tmux not found or not functional."
+        echo "Error: Please refer to the 'TTM Settings' for more information on this issue."
+    fi
 fi
 
 echo ""

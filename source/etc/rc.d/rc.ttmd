@@ -17,15 +17,20 @@
 #
 ttmd_start() {
     echo "Starting 'ttmd' service..."
-    if pgrep -x ttmd &>/dev/null; then
-        echo "'ttmd' service is already running."
-    else
-        nohup /usr/bin/ttmd &>/var/log/ttmd.log &
-        TTMD_PID=$!
-        echo $TTMD_PID > /var/run/ttmd.pid
+    if type tmux >/dev/null 2>&1 && tmux -V >/dev/null 2>&1; then
         if pgrep -x ttmd &>/dev/null; then
-            echo "'ttmd' service was started with PID: $TTMD_PID"
+            echo "'ttmd' service is already running."
+        else
+            nohup /usr/bin/ttmd &>/var/log/ttmd.log &
+            TTMD_PID=$!
+            echo $TTMD_PID > /var/run/ttmd.pid
+            if pgrep -x ttmd &>/dev/null; then
+                echo "'ttmd' service was started with PID: $TTMD_PID"
+            fi
         fi
+    else
+        echo "Error: Unable to start 'ttmd' - Tmux not found or not functional."
+        echo "Error: Please refer to the 'TTM Settings' for more information on this issue."
     fi
 }
 
