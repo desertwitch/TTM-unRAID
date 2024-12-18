@@ -44,8 +44,10 @@ install or upgrade dependency files
 <INLINE>
 if ! type tmux >/dev/null 2>&amp;1; then
     upgradepkg --install-new &plgPATH;/tmux-3.5a-x86_64-1.txz
+    rm -f &plgPATH;/custom
 else
     echo "Tmux is already present on the system, not reinstalling..."
+    touch &plgPATH;/custom
 fi
 exit 0
 </INLINE>
@@ -60,8 +62,10 @@ exit 0
 <INLINE>
 if ! type tmux >/dev/null 2>&amp;1; then
     upgradepkg --install-new &plgPATH;/tmux-3.2a-x86_64-1.txz
+    rm -f &plgPATH;/custom
 else
     echo "Tmux is already present on the system, not reinstalling..."
+    touch &plgPATH;/custom
 fi
 exit 0
 </INLINE>
@@ -114,7 +118,11 @@ definition for uninstallation of the plugin
 <INLINE>
 killall ttmd
 
+if [ -f &plgPATH;/custom ]; then
+    rm -f &plgPATH;/tmux*.txz
+fi
 removepkg &plgPATH;/*.txz
+
 rm -rf &plgPATH;
 rm -rf &emhttp;
 rm -f /var/log/ttmd.log
