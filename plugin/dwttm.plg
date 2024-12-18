@@ -35,9 +35,36 @@ exit 0
 <!--
 install or upgrade dependency files
 -->
-<FILE Name="&plgPATH;/tmux-3.5a-x86_64-1.txz" Min="6.13.0" Run="upgradepkg --install-new">
+<FILE Name="&plgPATH;/tmux-3.5a-x86_64-1.txz" Min="6.13.0">
 <URL>&pkgURL;/tmux-3.5a-x86_64-1.txz</URL>
 <MD5>a697e9a8aa8d4704ea8858914f2e2d7d</MD5>
+</FILE>
+
+<FILE Run="/bin/bash" Min="6.13.0">
+<INLINE>
+if ! type tmux >/dev/null 2>&amp;1; then
+    upgradepkg --install-new &plgPATH;/tmux-3.5a-x86_64-1.txz
+else
+    echo "Tmux is already present on the system, not reinstalling..."
+fi
+exit 0
+</INLINE>
+</FILE>
+
+<FILE Name="&plgPATH;/tmux-3.2a-x86_64-1.txz" Min="6.10.0" Max="6.12.99">
+<URL>&pkgURL;/tmux-3.2a-x86_64-1.txz</URL>
+<MD5>220b451abced504bb53d5764cbb51955</MD5>
+</FILE>
+
+<FILE Run="/bin/bash" Min="6.10.0" Max="6.12.99">
+<INLINE>
+if ! type tmux >/dev/null 2>&amp;1; then
+    upgradepkg --install-new &plgPATH;/tmux-3.2a-x86_64-1.txz
+else
+    echo "Tmux is already present on the system, not reinstalling..."
+fi
+exit 0
+</INLINE>
 </FILE>
 
 <!--
