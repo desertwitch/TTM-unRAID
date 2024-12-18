@@ -193,34 +193,54 @@ body {
     <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-cogs"></i>GENERAL SETTINGS</strong></span>
 </div><br>
 
+<?if (!$dwttm_tmux_functional):?>
+<div class="red-text" style="border: 1px solid red;padding: 5px;">
+    The Tmux installation on your system is either not available or not functional.<br>
+    Please remove any custom Tmux installations and either reboot the system or reinstall the plugin.<br>
+    The plugin will then automatically install a functional Tmux installation that is tailored to your OS version.
+</div><br>
+<?endif;?>
+
 <form markdown="0" id="dwttm-settings" name="dwttm_settings" method="POST" action="/update.php" target="progressFrame">
 <input type="hidden" name="#file" value="dwttm/dwttm.cfg">
 <input type="hidden" id="dwttm-cmd" name="#command" value="/usr/local/emhttp/plugins/dwttm/scripts/none">
 
     <dl>
         <dt>Tmux Backend Available:</dt>
-        <dd><strong><?=($dwttm_tmux_available ? "Yes ($dwttm_tmux_backend)" : "No")?></strong></dd>
+        <dd><strong><?=($dwttm_tmux_available ? "Yes" : "No")?></strong></dd>
     </dl>
 
     <dl>
-        <dt><strong>Start TTM Service:</strong></dt>
-        <dd>
-            <select id="SERVICE" name="SERVICE" size="1">
-                <?=mk_option($dwttm_service, "disable", "No");?>
-                <?=mk_option($dwttm_service, "enable", "Yes");?>
-            </select>
-            <?if(file_exists("/var/log/ttmd.log")):?>
-            <a onclick="openTerminal('log','ttmd','ttmd.log')" style="color:inherit;margin-left:5px;cursor:pointer;">
-                <i class="fa fa-book" title="TTM Service Logs"></i>
-            </a>
-            <?endif;?>
-        </dd>
+        <dt>Tmux Backend Version:</dt>
+        <dd><strong><?=$dwttm_tmux_version;?></strong></dd>
     </dl>
 
-    <blockquote class="inline_help">
-        <p>Set to <strong><em>Yes</em></strong> to enable TTM and start the service, set to <strong><em>No</em></strong> to disable TTM and stop the service.</p>
-        <p>The setting <strong><em>Yes</em></strong> will also enable TTM services to start automatically on UNRAID boot.</p>
-    </blockquote>
+    <dl>
+        <dt>Tmux Backend Package:</dt>
+        <dd><strong><?=$dwttm_tmux_package;?></strong></dd>
+    </dl>
+
+    <div id="TTMsettings" style="<?=($dwttm_tmux_functional ? '' : 'display:none;')?>">
+        <dl>
+            <dt><strong>Start TTM Service:</strong></dt>
+            <dd>
+                <select id="SERVICE" name="SERVICE" size="1">
+                    <?=mk_option($dwttm_service, "disable", "No");?>
+                    <?=mk_option($dwttm_service, "enable", "Yes");?>
+                </select>
+                <?if(file_exists("/var/log/ttmd.log")):?>
+                <a onclick="openTerminal('log','ttmd','ttmd.log')" style="color:inherit;margin-left:5px;cursor:pointer;">
+                    <i class="fa fa-book" title="TTM Service Logs"></i>
+                </a>
+                <?endif;?>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Set to <strong><em>Yes</em></strong> to enable TTM and start the service, set to <strong><em>No</em></strong> to disable TTM and stop the service.</p>
+            <p>The setting <strong><em>Yes</em></strong> will also enable TTM services to start automatically on UNRAID boot.</p>
+        </blockquote>
+    </div>
 
     <dl>
         <dt>

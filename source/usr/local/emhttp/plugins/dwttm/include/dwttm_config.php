@@ -23,6 +23,8 @@ $dwttm_service = trim(isset($dwttm_cfg['SERVICE']) ? htmlspecialchars($dwttm_cfg
 $dwttm_running      = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
 
 $dwttm_tmux_available = !empty(shell_exec("type tmux 2>/dev/null"));
-$dwttm_tmux_backend = htmlspecialchars(trim(shell_exec("find /var/log/packages/ -type f -iname 'tmux*' -printf '%f\n' 2>/dev/null") ?? "n/a"));
+$dwttm_tmux_version = htmlspecialchars(trim(shell_exec("tmux -V") ?? "n/a"));
+$dwttm_tmux_package = htmlspecialchars(trim(shell_exec("find /var/log/packages/ -type f -iname 'tmux*' -printf '%f\n' 2>/dev/null") ?? "n/a"));
+$dwttm_tmux_functional = ($dwttm_tmux_available && !empty($dwttm_tmux_version) && $dwttm_tmux_version !== "n/a");
 
 ?>
