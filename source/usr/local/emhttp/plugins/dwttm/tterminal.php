@@ -21,8 +21,8 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 
 if($dwttm_running && !$dwttm_tmux_functional) {
     @shell_exec("/etc/rc.d/rc.ttmd stop &>/dev/null");
-    echo("Error: Tmux not found or not functional.<br>");
-    echo("Error: Please refer to the 'TTM Settings' for more information on this issue.");
+    echo("<b>Error: Tmux not found or not functional.</b><br>");
+    echo("<b>Error: Please refer to the 'TTM Settings' for more information on this issue.</b>");
     die();
 }
 
