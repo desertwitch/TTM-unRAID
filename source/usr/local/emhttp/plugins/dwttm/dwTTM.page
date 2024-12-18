@@ -284,7 +284,7 @@ function freeSession() {
 function fetchSessions() {
 // CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
-        if (data.success) {
+        if (data.response) {
             let sessions = data.response;
 
             sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -409,7 +409,10 @@ function fetchSessions() {
                 $sessionListContainer.append($sessionItem);
             });
         } else {
-            console.error('Failed to fetch sessions:', data.error);
+            console.error('Failed to fetch sessions - invalid response.');
+        }
+        if (data.error) {
+            console.error('Failed to fetch sessions:', data.error)
         }
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);

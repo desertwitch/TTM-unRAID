@@ -39,6 +39,7 @@ if ($returnCode !== 0) {
             "success" => false,
             "message" => "Failed to retrieve tmux sessions.",
             "error" => $outputString
+            "response" => []
         ]);
         exit;
     }
