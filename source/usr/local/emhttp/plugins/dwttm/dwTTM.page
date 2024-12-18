@@ -25,6 +25,11 @@ Markdown="false"
  *
  */
 require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
+
+if($dwttm_running && !$dwttm_tmux_functional) {
+    @shell_exec("/etc/rc.d/rc.ttmd stop &>/dev/null");
+    $dwttm_running = false;
+}
 ?>
 
 <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
