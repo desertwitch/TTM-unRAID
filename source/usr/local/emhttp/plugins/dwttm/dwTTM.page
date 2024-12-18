@@ -195,7 +195,7 @@ body {
 
 <?if (!$dwttm_tmux_functional):?>
 <div class="red-text" style="border: 1px solid red;padding: 5px;">
-    The Tmux installation on your system is either not available or not functional.<br>
+    <strong>The Tmux installation on your system is either not available or not functional.</strong><br>
     Please remove any custom Tmux installations and either reboot the system or reinstall the plugin.<br>
     The plugin will then automatically install a functional Tmux installation that is tailored to your OS version.
 </div><br>
