@@ -21,5 +21,6 @@ DOCROOT="/usr/local/emhttp/plugins/dwttm"
 chmod 755 /usr/bin/ttmd
 chmod 755 /etc/rc.d/rc.ttmd
 chmod 755 $DOCROOT/scripts/*
+chmod 644 /etc/logrotate.d/ttmd
 
 cp -n $DOCROOT/default.cfg $BOOT/dwttm.cfg >/dev/null 2>&1

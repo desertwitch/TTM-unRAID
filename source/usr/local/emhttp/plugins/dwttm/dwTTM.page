@@ -549,7 +549,7 @@ $(function() {
         term.write("\t\t    #### ###  ###  ###    \r\n");
         term.write("\t\t    ###. ###  ###  ###    \r\n");
         term.write("\r\n\t/ TTerminal Manager (TTM) for UNRAID /\r\n\r\n");
-        term.write("\x1b[3;38;2;200;200;200m\t\t Please pick a terminal session... \x1b[0m");
+        term.write("\x1b[3;38;2;200;200;200m\t\t Please pick a terminal session...\r\n\r\n\x1b[0m");
         term.focus();
 
         fetchSessions();
