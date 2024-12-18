@@ -197,6 +197,14 @@ body {
 </div><br>
 <?endif;?>
 
+<?if ($dwttm_tmux_custom):?>
+<div style="border: 1px solid;padding: 5px;color:gray;">
+    A custom Tmux installation was detected on your server, so the plugin did not install its own.<br>
+    If you are running into unexpected behavior, consider removing the custom Tmux installation from your system.<br>
+    After a plugin reinstall or reboot, a functional Tmux installation (that is tailored to your OS version) will then be re-installed.
+</div><br>
+<?endif;?>
+
 <div>
     <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-cogs"></i>GENERAL SETTINGS</strong></span>
 </div><br>
