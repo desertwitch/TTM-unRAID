@@ -224,7 +224,7 @@ body {
 </form>
 
 <script>
-const term = new Terminal({ scrollback: 0 });
+const term = new Terminal({ scrollback: 0, cursorBlink: true });
 const fitAddon = new FitAddon.FitAddon();
 
 let ws;
@@ -517,6 +517,7 @@ $(function() {
         term.write("\t\t    ###. ###  ###  ###    \r\n");
         term.write("\r\n\t/ TTerminal Manager (TTM) for UNRAID /\r\n\r\n");
         term.write("\x1b[3;38;2;200;200;200m\t\t Please pick a terminal session...\r\n\r\n\x1b[0m");
+        term.focus();
 
         fetchSessions();
     <?endif;?>
