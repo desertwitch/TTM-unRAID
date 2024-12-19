@@ -46,8 +46,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
     <tr>
         <th>
             <strong>TTerminal</strong>
-            <span style="float:right;">
-                <i id="mouse-icon" class="fa fa-mouse-pointer mouse-off"></i>
+            <span style="float:left;">
+                <i id="mouse-icon" class="fa fa-mouse mouse-off"></i>
             </span>
         </th>
     </tr>
@@ -195,7 +195,6 @@ function fetchMouseStatus(sessionId) {
 }
 
 function toggleMouseStatus(sessionId) {
-    const $terminalContainer = $('#terminal-container');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, action: 'toggle' }, function (data) {
         if (data.mouse) {
             const mouseIcon = $('#mouse-icon');
