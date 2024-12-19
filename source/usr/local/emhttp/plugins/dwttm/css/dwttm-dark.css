@@ -58,7 +58,7 @@ body {
 }
 
 .session-item.connected {
-    background-color: #333; /* Dark gray for connected state */
+    background-color: #555; /* Dark gray for connected state */
     color: #ffffff; /* White text */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Darker shadow */
 }
