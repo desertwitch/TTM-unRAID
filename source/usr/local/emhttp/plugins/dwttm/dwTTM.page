@@ -196,7 +196,7 @@ body {
 <?endif;?>
 
 <?if (!$dwttm_tmux_functional):?>
-<div class="red-text" style="border: 1px solid red;padding: 5px;">
+<div class="red-text" style="border: 1px solid red;padding: 5px;font-family:monospace;">
     <strong>Failure: The Tmux installation on your system is either not available or not functional.</strong><br>
     Please remove any custom Tmux installations and either reboot the system or reinstall the plugin.<br>
     The plugin will then automatically install a functional Tmux installation that is tailored to your OS version.
@@ -204,7 +204,7 @@ body {
 <?endif;?>
 
 <?if ($dwttm_tmux_custom):?>
-<div style="border: 1px solid;padding: 5px;color:gray;">
+<div style="border: 1px solid;padding: 5px;color:gray;font-size:x-small;font-family:monospace;">
     A custom Tmux installation was detected on your server, so the plugin did not install its own over it.<br>
     If you are running into unexpected behavior, consider removing the custom Tmux installation from your system.<br>
     After a plugin reinstall or reboot, a functional Tmux installation (that is tailored to your OS version) will be reinstalled. 
@@ -288,7 +288,7 @@ body {
 </form>
 
 <script>
-const term = new Terminal({ scrollback: 0, cursorBlink: true });
+const term = new Terminal({ scrollback: 0 });
 const fitAddon = new FitAddon.FitAddon();
 
 let ws;
@@ -544,8 +544,6 @@ function connectToSession(sessionId) {
         top: 0,
         behavior: 'smooth'
     });
-
-    term.focus();
 }
 
 function checkTTMsettings() {
@@ -595,7 +593,7 @@ $(function() {
         term.write("\t\t    #### ###  ###  ###    \r\n");
         term.write("\t\t    ###. ###  ###  ###    \r\n");
         term.write("\r\n\t/ TTerminal Manager (TTM) for UNRAID /\r\n\r\n");
-        term.write("\x1b[3;38;2;200;200;200m\t\t Please pick a terminal session...\r\n\r\n\x1b[0m");
+        term.write("\x1b[3;38;2;200;200;200m\t\t Please select a terminal session from the GUI...\r\n\r\n\x1b[0m");
         term.focus();
 
         fetchSessions();
