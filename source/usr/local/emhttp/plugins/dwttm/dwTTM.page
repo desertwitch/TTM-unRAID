@@ -175,6 +175,7 @@ const fitAddon = new FitAddon.FitAddon();
 
 let ws;
 let disposable;
+let disposable2;
 let connectedSessionId;
 
 function freeSession() {
@@ -187,6 +188,11 @@ function freeSession() {
     if (disposable) {
         disposable.dispose();
         disposable = null;
+    }
+
+    if (disposable2) {
+        disposable2.dispose();
+        disposable2 = null;
     }
 
     if(connectedSessionId) {
@@ -428,6 +434,22 @@ function popupSession(sessionId) {
     );
 }
 
+function handleSelectionChange() {
+// CHECKED - OK
+    if ("" !== term.getSelection()) {
+        try {
+            document.execCommand("copy");
+        } catch (error) {
+            console.error("Error copying text:", error);
+            return;
+        }
+    }
+
+    disposable2.dispose();
+    term.clearSelection();
+    disposable2 = term.onSelectionChange(handleSelectionChange);
+}
+
 function connectToSession(sessionId) {
 // CHECKED - OK
     freeSession();
@@ -464,6 +486,7 @@ function connectToSession(sessionId) {
             ws.send(data);
         }
     });
+    disposable2 = term.onSelectionChange(handleSelectionChange);
 
     connectedSessionId = sessionId;
 
@@ -521,7 +544,6 @@ $(function() {
         term.write("\t\t    ###. ###  ###  ###    \r\n");
         term.write("\r\n\t/ TTerminal Manager (TTM) for UNRAID /\r\n\r\n");
         term.write("\x1b[3;38;2;200;200;200m\t\t Please select a terminal session from the GUI...\r\n\r\n\x1b[0m");
-        term.focus();
 
         fetchSessions();
     <?endif;?>
