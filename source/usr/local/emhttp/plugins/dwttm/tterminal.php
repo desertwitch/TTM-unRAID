@@ -148,7 +148,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    if (data.response) {
                         const sessions = data.response;
 
                         const currentSession = <?= json_encode($currentSession); ?>;
@@ -171,7 +171,10 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                             }
                         });
                     } else {
-                        console.error('Failed to fetch sessions:', data.error);
+                        console.error('Failed to fetch sessions - invalid response.');
+                    }
+                    if (!data.success && data.error) {
+                        console.warn('Error processing sessions:', data.error)
                     }
                 })
                 .catch(error => {
