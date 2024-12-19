@@ -251,7 +251,7 @@ body {
         </blockquote>
 
         <dl>
-            <dt><strong>TTM Service Port:</strong></dt>
+            <dt>TTM Service Port:</dt>
             <dd>
                 <input name="SERVICEPORT" type="text" class="narrow dwttm-run dwttm-numeric" value="<?=$dwttm_service_port?>">
             </dd>
@@ -262,7 +262,7 @@ body {
         </blockquote>
 
         <dl>
-            <dt><strong>TTM Service Security:</strong></dt>
+            <dt>TTM Service Port Security:</dt>
             <dd>
                 <select id="SERVICESEC" name="SERVICESEC" class="dwttm-run" size="1">
                     <?=mk_option($dwttm_service_security, "csrf", "CSRF");?>
@@ -272,7 +272,7 @@ body {
         </dl>
 
         <blockquote class="inline_help">
-            <p>Sets the security mechanism to prevent unauthorized connections to the TTM service.</p>
+            <p>Sets the security mechanism to prevent unauthorized connections to the TTM service port.</p>
         </blockquote>
     </div>
 
