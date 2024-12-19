@@ -18,7 +18,10 @@
  *
  */
 $dwttm_cfg = parse_ini_file("/boot/config/plugins/dwttm/dwttm.cfg");
+
 $dwttm_service = trim(isset($dwttm_cfg['SERVICE']) ? htmlspecialchars($dwttm_cfg['SERVICE']) : 'disable');
+$dwttm_service_port = trim(isset($dwttm_cfg['SERVICEPORT']) ? htmlspecialchars($dwttm_cfg['SERVICEPORT']) : '49161');
+$dwttm_service_security = trim(isset($dwttm_cfg['SERVICESEC']) ? htmlspecialchars($dwttm_cfg['SERVICESEC']) : 'csrf');
 
 $dwttm_running      = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
 

@@ -17,6 +17,8 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
+
 if(!isset($var)) {
     $var = (array)parse_ini_file('state/var.ini');
 }
@@ -212,7 +214,8 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             const currentSession = <?= json_encode($currentSession); ?>;
             const csrfToken = <?= json_encode($var['csrf_token']); ?>;
-            const wsUrl = `ws://${window.location.hostname}:49161/ws?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
+            const servicePort = <?= json_encode($dwttm_service_port); ?>;
+            const wsUrl = `ws://${window.location.hostname}:${servicePort}/ws?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
