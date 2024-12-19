@@ -17,6 +17,9 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+if(!isset($var)) {
+    $var = (array)parse_ini_file('state/var.ini');
+}
 if (!function_exists('autov')) {
     function autov($file, $ret = false) {
         $docroot ??= ($_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp');
@@ -208,8 +211,8 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             fitAddon.fit();
 
             const currentSession = <?= json_encode($currentSession); ?>;
-            
-            const wsUrl = `ws://${window.location.hostname}:49161/ws?session=${encodeURIComponent(currentSession)}`;
+            const csrfToken = <?= json_encode($var['csrf_token']); ?>;
+            const wsUrl = `ws://${window.location.hostname}:49161/ws?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
