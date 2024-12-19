@@ -157,7 +157,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
                         const dropdown = document.getElementById('session-dropdown');
 
-                        dropdown.innerHTML = '<option value="">Select a session</option>';
+                        dropdown.innerHTML = '<option value="">New Session</option>';
 
                         sessions.forEach(session => {
                             const option = document.createElement('option');
