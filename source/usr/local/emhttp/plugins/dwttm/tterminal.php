@@ -215,7 +215,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             const currentSession = <?= json_encode($currentSession); ?>;
             const csrfToken = <?= json_encode($var['csrf_token']); ?>;
             const servicePort = <?= json_encode($dwttm_service_port); ?>;
-            const wsUrl = `ws://${window.location.hostname}:${servicePort}/ws?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
+            const wsUrl = `ws://${window.location.hostname}:${servicePort}/ws?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
