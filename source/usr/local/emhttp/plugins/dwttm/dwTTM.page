@@ -497,7 +497,7 @@ function popupSession(sessionId) {
     window.open(
         url,
         windowName,
-        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no`
+        `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
     );
 }
 

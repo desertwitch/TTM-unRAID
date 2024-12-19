@@ -36,7 +36,7 @@ function dwTTMbutton() {
     window.open(
         '/plugins/dwttm/tterminal.php',
         'TTerminal',
-        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=no`
+        `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
     );
 }
 </script>
