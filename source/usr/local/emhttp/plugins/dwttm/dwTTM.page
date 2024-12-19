@@ -252,7 +252,7 @@ body {
         <dl>
             <dt><strong>TTM Service Port:</strong></dt>
             <dd>
-                <input name="SERVICEPORT" type="number" class="narrow dwttm-run" value="<?=$ddwtm_service_port?>">
+                <input name="SERVICEPORT" type="number" class="narrow dwttm-run" value="<?=$dwttm_service_port?>">
             </dd>
         </dl>
 
