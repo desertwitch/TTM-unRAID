@@ -32,6 +32,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 }
 ?>
 
+<script src="<?=autov('/plugins/dwttm/js/jquery.mask.min.js');?>"></script>
 <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
 <script src="<?=autov('/plugins/dwttm/js/addon-fit.js');?>"></script>
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
@@ -252,7 +253,7 @@ body {
         <dl>
             <dt><strong>TTM Service Port:</strong></dt>
             <dd>
-                <input name="SERVICEPORT" type="number" class="narrow dwttm-run" value="<?=$dwttm_service_port?>">
+                <input name="SERVICEPORT" type="text" class="narrow dwttm-run dwttm-numeric" value="<?=$dwttm_service_port?>">
             </dd>
         </dl>
 
@@ -567,6 +568,14 @@ $(function() {
 
     checkTTMsettings();
     $('#SERVICE').change(checkTTMsettings);
+
+    $('.dwttm-numeric').mask('XXXXXXX', {
+        translation: {
+        'X': {
+            pattern: /[0-9]/, optional: true
+        }
+        }
+    });
 
     <?if($dwttm_running):?>
         const terminalContainer = document.getElementById('terminal-container');
