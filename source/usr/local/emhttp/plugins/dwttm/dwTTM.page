@@ -265,7 +265,7 @@ body {
             <dt>TTM Service Port Security:</dt>
             <dd>
                 <select id="SERVICESEC" name="SERVICESEC" class="dwttm-run" size="1">
-                    <?=mk_option($dwttm_service_security, "csrf", "CSRF");?>
+                    <?=mk_option($dwttm_service_security, "csrf", "Token-based (CSRF)");?>
                     <?=mk_option($dwttm_service_security, "disable", "None");?>
                 </select>
             </dd>
