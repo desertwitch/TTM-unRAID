@@ -479,7 +479,8 @@ function connectToSession(sessionId) {
 // CHECKED - OK
     freeSession();
 
-    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${encodeURIComponent(sessionId)}`;
+    const csrfToken = <?= json_encode($var['csrf_token']); ?>;
+    const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
     ws = new WebSocket(wsUrl);
 
     $('.session-item').removeClass('connected');

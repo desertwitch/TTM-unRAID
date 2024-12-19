@@ -209,7 +209,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             const currentSession = <?= json_encode($currentSession); ?>;
             
-            const wsUrl = `ws://${window.location.hostname}:3000/ws?session=${encodeURIComponent(currentSession)}`;
+            const wsUrl = `ws://${window.location.hostname}:49161/ws?session=${encodeURIComponent(currentSession)}`;
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
