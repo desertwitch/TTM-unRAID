@@ -17,7 +17,7 @@
 <PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" support="" min="6.11.0" icon="tty">
 
 <CHANGES>
-## TTerminal (TTM) for UNRAID
+## TTerminal Manager (TTM) for UNRAID
 ###2024.12.13
 - release note: welcome to the first experimental version
 </CHANGES>
@@ -114,7 +114,7 @@ fi
 
 echo ""
 echo "-------------------------------------------------------------"
-echo " TTerminal (TTM) has been installed."
+echo " TTerminal Manager (TTM) has been installed."
 echo " Version: &version; / Plugin Maintainer: &author;"
 echo "-------------------------------------------------------------"
 echo ""
@@ -139,7 +139,7 @@ rm -f /var/log/ttmd.log
 
 echo ""
 echo "-----------------------------------------------------------"
-echo " TTerminal (TTM) for UNRAID has been removed."
+echo " TTerminal Manager (TTM) for UNRAID has been removed."
 echo " Version: &version; / Plugin Maintainer: &author;"
 echo "-----------------------------------------------------------"
 echo ""
