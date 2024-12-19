@@ -7,7 +7,7 @@ body {
 .termtable {
     width: 100%;
     table-layout: fixed;
-    background-color: #1e1e1e; /* Darker table background */
+    background-color: #1e1e1e;
 }
 
 .termtable td {
@@ -35,32 +35,32 @@ body {
 .session-item {
     position: relative;
     width: 300px;
-    border: 1px solid #444; /* Subtle dark border */
+    border: 1px solid #444;
     padding: 10px;
-    background-color: #2a2a2a; /* Darker background */
+    background-color: #2a2a2a;
     border-radius: 5px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Darker shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     cursor: pointer;
 }
 
 .session-item canvas {
     display: block;
     margin: 0 auto 10px;
-    border: 1px solid #555; /* Subtle darker border */
+    border: 1px solid #555;
 }
 
 .session-item .fallback-text {
     font-size: 14px;
-    color: #aaaaaa; /* Light gray text */
+    color: #aaaaaa;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
 
 .session-item.connected {
-    background-color: #555; /* Dark gray for connected state */
-    color: #ffffff; /* White text */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Darker shadow */
+    background-color: #555;
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 .session-item.add-new {
@@ -72,7 +72,7 @@ body {
 }
 
 .session-item.add-new:hover {
-    background-color: #3a4a5a; /* Subtle darker blue */
+    background-color: #3a4a5a;
 }
 
 .session-item .info-header, .session-item .info-footer {
@@ -82,12 +82,12 @@ body {
 
 .plus-icon {
     font-size: 50px;
-    color: #5ac8fa; /* Softer blue */
+    color: #5ac8fa;
 }
 
 .add-new-text {
     font-size: 14px;
-    color: #5ac8fa; /* Softer blue */
+    color: #5ac8fa;
     margin-top: 10px;
 }
 
@@ -96,12 +96,12 @@ body {
     top: 7px;
     left: 12px;
     font-size: 13px;
-    color: #ff5252; /* Bright red */
+    color: #ff5252;
     transition: color 0.2s ease;
 }
 
 .trash-icon:hover {
-    color: #ff0000; /* Stronger red on hover */
+    color: #ff0000;
 }
 
 .popup-icon {
@@ -109,12 +109,12 @@ body {
     top: 7px;
     right: 12px;
     font-size: 13px;
-    color: #64ffda; /* Bright green */
+    color: #64ffda;
     transition: color 0.2s ease;
 }
 
 .popup-icon:hover {
-    color: #1de9b6; /* Softer green on hover */
+    color: #1de9b6;
 }
 
 .tmux-message {
@@ -129,9 +129,9 @@ body {
 }
 
 .tmux-red-text {
-    color: #ff6f61; /* Softer red */
+    color: #ff6f61;
 }
 
 .tmux-gray-text {
-    color: #b0bec5; /* Soft gray */
+    color: #b0bec5;
 }
