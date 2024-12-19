@@ -109,12 +109,12 @@ body {
     top: 7px;
     right: 12px;
     font-size: 13px;
-    color: #2E8B57;
+    color: #007bff;
     transition: color 0.2s ease;
 }
 
 .popup-icon:hover {
-    color: #3CB371;
+    color: #339dff;
 }
 
 .tmux-message {
