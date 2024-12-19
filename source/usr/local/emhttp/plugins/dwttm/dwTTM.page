@@ -25,6 +25,7 @@ Markdown="false"
  *
  */
 require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
+$theme = ($display["theme"] == 'white' || $display["theme"] == 'azure') ? 'light' : 'dark';
 
 if($dwttm_running && !$dwttm_tmux_functional) {
     @shell_exec("/etc/rc.d/rc.ttmd stop &>/dev/null");
@@ -35,147 +36,9 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <script src="<?=autov('/plugins/dwttm/js/jquery.mask.min.js');?>"></script>
 <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
 <script src="<?=autov('/plugins/dwttm/js/addon-fit.js');?>"></script>
+
 <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
-
-<style>
-body {
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-}
-
-.termtable {
-    width: 100%;
-    table-layout: fixed;
-    background-color: #000000;
-}
-
-.termtable td {
-    overflow: hidden;
-}
-
-#terminal-container {
-    width: 100%;
-    height: 435px;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-.xterm .xterm-viewport {
-    overflow: hidden;
-}
-
-#session-list-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: flex-start;
-}
-
-.session-item {
-    position: relative;
-    width: 300px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-}
-
-.session-item canvas {
-    display: block;
-    margin: 0 auto 10px;
-    border: 1px solid #ccc;
-}
-
-.session-item .fallback-text {
-    font-size: 14px;
-    color: #666;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
-.session-item.connected {
-    background-color: #333;
-    color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.session-item.add-new {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-}
-
-.session-item.add-new:hover {
-    background-color: #e6f7ff;
-}
-
-.session-item .info-header, .session-item .info-footer {
-    font-family: monospace;
-    font-weight: bold;
-}
-
-.plus-icon {
-    font-size: 50px;
-    color: #007bff;
-}
-
-.add-new-text {
-    font-size: 14px;
-    color: #007bff;
-    margin-top: 10px;
-}
-
-.trash-icon {
-    position: absolute;
-    top: 7px;
-    left: 12px;
-    font-size: 13px;
-    color: #dc3545;
-    transition: color 0.2s ease;
-}
-
-.trash-icon:hover {
-    color: #a71d2a;
-}
-
-.popup-icon {
-    position: absolute;
-    top: 7px;
-    right: 12px;
-    font-size: 13px;
-    color: #2E8B57;
-    transition: color 0.2s ease;
-}
-
-.popup-icon:hover {
-    color: #3CB371;
-}
-
-.tmux-message {
-        border: 1px solid;
-        padding: 10px;
-        font-size: x-small;
-        font-family: monospace;
-        display: inline-block;
-        max-width: 50%;
-        word-wrap: break-word;
-        margin-bottom: 10px;
-    }
-
-.tmux-red-text {
-    color: red;
-}
-
-.tmux-gray-text {
-    color: gray;
-}
-</style>
+<link type="text/css" rel="stylesheet" href="<?=autov("/plugins/dwttm/css/dwttm-{$theme}.css");?>">
 
 <?if($dwttm_running):?>
 <table class="tablesorter shift termtable">
@@ -372,13 +235,13 @@ function fetchSessions() {
                         e.stopPropagation();
                         connectToSession(sessionId);
                     });
-            
+
                 $sessionItem.attr('data-session-id', sessionId);
 
                 if(sessionId === connectedSessionId) {
                     $sessionItem.addClass('connected');
                 }
-                
+
                 const $infoHead = $('<div>')
                     .addClass('info-header')
                     .text(sessionName);
@@ -617,7 +480,7 @@ $(function() {
 
         fetchSessions();
     <?endif;?>
-    
+
     if ( typeof caPluginUpdateCheck === "function" ) {
         caPluginUpdateCheck("dwttm.plg",{name:"TTerminal Manager (TTM)"});
     }

@@ -1,0 +1,137 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.termtable {
+    width: 100%;
+    table-layout: fixed;
+    background-color: #1e1e1e; /* Darker table background */
+}
+
+.termtable td {
+    overflow: hidden;
+}
+
+#terminal-container {
+    width: 100%;
+    height: 435px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.xterm .xterm-viewport {
+    overflow: hidden;
+}
+
+#session-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.session-item {
+    position: relative;
+    width: 300px;
+    border: 1px solid #444; /* Subtle dark border */
+    padding: 10px;
+    background-color: #2a2a2a; /* Darker background */
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Darker shadow */
+    cursor: pointer;
+}
+
+.session-item canvas {
+    display: block;
+    margin: 0 auto 10px;
+    border: 1px solid #555; /* Subtle darker border */
+}
+
+.session-item .fallback-text {
+    font-size: 14px;
+    color: #aaaaaa; /* Light gray text */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.session-item.connected {
+    background-color: #333; /* Dark gray for connected state */
+    color: #ffffff; /* White text */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Darker shadow */
+}
+
+.session-item.add-new {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.session-item.add-new:hover {
+    background-color: #3a4a5a; /* Subtle darker blue */
+}
+
+.session-item .info-header, .session-item .info-footer {
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.plus-icon {
+    font-size: 50px;
+    color: #5ac8fa; /* Softer blue */
+}
+
+.add-new-text {
+    font-size: 14px;
+    color: #5ac8fa; /* Softer blue */
+    margin-top: 10px;
+}
+
+.trash-icon {
+    position: absolute;
+    top: 7px;
+    left: 12px;
+    font-size: 13px;
+    color: #ff5252; /* Bright red */
+    transition: color 0.2s ease;
+}
+
+.trash-icon:hover {
+    color: #ff0000; /* Stronger red on hover */
+}
+
+.popup-icon {
+    position: absolute;
+    top: 7px;
+    right: 12px;
+    font-size: 13px;
+    color: #64ffda; /* Bright green */
+    transition: color 0.2s ease;
+}
+
+.popup-icon:hover {
+    color: #1de9b6; /* Softer green on hover */
+}
+
+.tmux-message {
+    border: 1px solid;
+    padding: 10px;
+    font-size: x-small;
+    font-family: monospace;
+    display: inline-block;
+    max-width: 50%;
+    word-wrap: break-word;
+    margin-bottom: 10px;
+}
+
+.tmux-red-text {
+    color: #ff6f61; /* Softer red */
+}
+
+.tmux-gray-text {
+    color: #b0bec5; /* Soft gray */
+}
