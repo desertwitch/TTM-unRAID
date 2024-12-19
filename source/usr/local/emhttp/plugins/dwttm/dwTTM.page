@@ -182,6 +182,10 @@ let ws;
 let disposable;
 let connectedSessionId;
 
+function preventDefaultHandler(event) {
+    event.preventDefault();
+}
+
 function fetchMouseStatus(sessionId) {
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, action: 'fetch' }, function (data) {
         if (data.mouse) {
