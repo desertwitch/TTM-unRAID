@@ -256,7 +256,7 @@ function fetchSessions() {
                         if (typeof swal === "function") {
                             swal({
                                 title: "Session: " + sessionName,
-                                text: "Terminate above session and its running programs?",
+                                text: "Terminate the session and its running programs?",
                                 type: "warning",
                                 html: true,
                                 showCancelButton: true
