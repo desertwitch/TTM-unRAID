@@ -27,7 +27,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 }
 
 if(!isset($var)) {
-    $var = (array)parse_ini_file('state/var.ini');
+    $var = parse_ini_file('state/var.ini');
 }
 if (!function_exists('autov')) {
     function autov($file, $ret = false) {

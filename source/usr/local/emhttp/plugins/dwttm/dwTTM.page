@@ -253,7 +253,11 @@ function fetchSessions() {
                     .html('<i class="fa fa-trash"></i>')
                     .on('click', function (e) {
                         e.stopPropagation();
-                        closeSession(sessionId);
+                        if (typeof swal === "function") {
+                            swal({title: sessionName,text:"Terminate above session and all its running programs?",type:"warning",html:true,showCancelButton:true}, closeSession(sessionId));
+                        } else {
+                            closeSession(sessionId);
+                        }
                     });
 
                 $sessionItem.append($trashIcon);
@@ -341,11 +345,25 @@ function createNewSession() {
             fetchSessions();
             connectToSession(response.session_id);
         } else {
-            alert('Failed to create a new session.');
+            if (typeof swal === "function") {
+                swal("Error", "Failed to create a new session.", "error");
+            } else {
+                alert('Failed to create a new session.');
+            }
         }
     }).fail(function (xhr, status, error) {
-        console.error('Error creating session:', error);
-        alert(`Error creating session: ${error}`);
+        console.error('Failed to create a new session:', error);
+        if (typeof swal === "function") {
+            swal({
+                title: "Error",
+                text: "Failed to create a new session:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
+                type: "error",
+                confirmButtonText: 'Close',
+                html: true
+            });
+        } else {
+            alert(`Failed to create a new session: ${error}`);
+        }
     });
 }
 
@@ -355,11 +373,30 @@ function closeSession(sessionId) {
         if (response.success) {
             fetchSessions();
         } else {
-            alert(`Failed to close session ${sessionId}: ${response.error}`);
+            if (typeof swal === "function") {
+                swal({
+                    title: "Error",
+                    text: "Failed closing session <b>" + sessionId + "</b>:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                    type: "error",
+                    confirmButtonText: 'Close',
+                    html: true
+                });
+            } else {
+                alert(`Failed closing session ${sessionId}: ${response.error}`);
+            }
         }
     }).fail(function (xhr, status, error) {
-        console.error('Error closing session:', error);
-        alert(`Error closing session ${sessionId}: ${error}`);
+        if (typeof swal === "function") {
+            swal({
+                title: "Error",
+                text: "Failed closing session <b>" + sessionId + "</b>:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
+                type: "error",
+                confirmButtonText: 'Close',
+                html: true
+            });
+        } else {
+            alert(`Failed closing session ${sessionId}: ${error}`);
+        }
     });
 }
 
