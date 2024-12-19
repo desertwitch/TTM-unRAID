@@ -255,7 +255,7 @@ function fetchSessions() {
                         e.stopPropagation();
                         if (typeof swal === "function") {
                             swal({
-                                title: "Close '" + sessionName + "'?,
+                                title: "Close '" + sessionName + "'?",
                                 text: "Terminate above session and its running programs?",
                                 type: "warning",
                                 html: true,
