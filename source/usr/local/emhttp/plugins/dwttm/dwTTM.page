@@ -187,9 +187,17 @@ function preventDefaultHandler(event) {
 }
 
 function fetchMouseStatus(sessionId) {
+    const $terminalContainer = $('#terminal-container');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, action: 'fetch' }, function (data) {
         if (data.mouse) {
-            updateMouseIcon(data.mouse);
+            const mouseIcon = $('#mouse-icon');
+            if (data.mouse === 'on') {
+                mouseIcon.removeClass('mouse-off').addClass('mouse-on');
+                $terminalContainer.on('contextmenu', preventDefaultHandler);
+            } else {
+                mouseIcon.removeClass('mouse-on').addClass('mouse-off');
+                $terminalContainer.off('contextmenu', preventDefaultHandler);
+            }
         } else {
             console.error(data.error || 'Unknown error occurred');
         }
