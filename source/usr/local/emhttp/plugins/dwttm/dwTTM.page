@@ -156,6 +156,25 @@ body {
 .popup-icon:hover {
     color: #3CB371;
 }
+
+.tmux-message {
+        border: 1px solid;
+        padding: 10px;
+        font-size: x-small;
+        font-family: monospace;
+        display: inline-block;
+        max-width: 50%;
+        word-wrap: break-word;
+        margin-bottom: 10px;
+    }
+
+.tmux-red-text {
+    color: red;
+}
+
+.tmux-gray-text {
+    color: gray;
+}
 </style>
 
 <?if($dwttm_running):?>
@@ -196,7 +215,7 @@ body {
 <?endif;?>
 
 <?if (!$dwttm_tmux_functional):?>
-<div class="red-text" style="border: 1px solid red;padding: 5px;font-family:monospace;">
+<div class="tmux-message tmux-red-text">
     <strong>Failure: The Tmux installation on your system is either not available or not functional.</strong><br>
     Please remove any custom Tmux installations and either reboot the system or reinstall the plugin.<br>
     The plugin will then automatically install a functional Tmux installation that is tailored to your OS version.
@@ -204,10 +223,10 @@ body {
 <?endif;?>
 
 <?if ($dwttm_tmux_custom):?>
-<div style="border: 1px solid;padding: 5px;color:gray;font-size:x-small;font-family:monospace;">
+<div class="tmux-message tmux-gray-text">
     A custom Tmux installation was detected on your server, so the plugin did not install its own over it.<br>
     If you are running into unexpected behavior, consider removing the custom Tmux installation from your system.<br>
-    After a plugin reinstall or reboot, a functional Tmux installation (that is tailored to your OS version) will be reinstalled. 
+    After a plugin reinstall or reboot, a functional Tmux installation (that is tailored to your OS version) will be reinstalled.
 </div><br>
 <?endif;?>
 
