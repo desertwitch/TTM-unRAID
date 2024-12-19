@@ -36,7 +36,7 @@ if (!function_exists('autov')) {
         clearstatcache(true, $path);
         $time = file_exists($path) ? filemtime($path) : 'autov_fileDoesntExist';
         $newFile = "$file?v=" . $time;
-        
+
         if ($ret) {
             return $newFile;
         } else {
@@ -52,7 +52,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TTerminal</title>
     <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
     <script src="<?=autov('/plugins/dwttm/js/addon-fit.js');?>"></script>
@@ -83,7 +82,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
         #terminal-container {
             width: 100%;
-            height: 100%; 
+            height: 100%;
             padding: 10px;
             overflow: hidden;
         }
@@ -144,7 +143,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const dropdown = document.getElementById('session-dropdown');
 
         function fetchSessions() {
-        // CHECKED - OK 
+        // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
                 .then(response => response.json())
                 .then(data => {
@@ -166,7 +165,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                             dropdown.appendChild(option);
 
                             if (session.session_id === currentSession) {
-                                option.selected = true; 
+                                option.selected = true;
                                 document.title = `${session.session_name}: TTerminal`;
                             }
                         });
@@ -254,7 +253,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             <?php endif; ?>
             fetchSessions();
         });
-        
+
         document.addEventListener('change', (event) => {
         // CHECKED - OK
             if (event.target && event.target.id === 'session-dropdown') {
