@@ -44,7 +44,12 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <table class="tablesorter shift termtable">
 <thead>
     <tr>
-        <th><strong>TTerminal</strong></th>
+        <th>
+            <strong>TTerminal</strong>
+            <span style="float:left;">
+                <i id="mouse-icon" class="fa fa-mouse mouse-off"></i>
+            </span>
+        </th>
     </tr>
 </thead>
 <tbody>
@@ -177,8 +182,41 @@ let ws;
 let disposable;
 let connectedSessionId;
 
+function fetchMouseStatus(sessionId) {
+    $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, action: 'fetch' }, function (data) {
+        if (data.mouse) {
+            updateMouseIcon(data.mouse);
+        } else {
+            console.error(data.error || 'Unknown error occurred');
+        }
+    }).fail(function () {
+        console.error('Error fetching mouse status');
+    });
+}
+
+function toggleMouseStatus(sessionId) {
+    $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, action: 'toggle' }, function (data) {
+        if (data.mouse) {
+            const mouseIcon = $('#mouse-icon');
+            if (data.mouse === 'on') {
+                mouseIcon.removeClass('mouse-off').addClass('mouse-on');
+                $terminalContainer.on('contextmenu', preventDefaultHandler);
+            } else {
+                mouseIcon.removeClass('mouse-on').addClass('mouse-off');
+                $terminalContainer.off('contextmenu', preventDefaultHandler);
+            }
+        } else {
+            console.error(data.error || 'Unknown error occurred');
+        }
+    }).fail(function () {
+        console.error('Error toggling mouse status');
+    });
+}
+
 function freeSession() {
 // CHECKED - OK
+    $('#mouse-icon').off('click');
+
     if (ws) {
         ws.close();
         ws = null;
@@ -379,6 +417,7 @@ function closeSession(sessionId) {
 // CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_close_session.php', { session: sessionId }, function (response) {
         if (response.success) {
+            $('#mouse-icon').off('click');
             fetchSessions();
         } else {
             if (typeof swal === "function") {
@@ -471,6 +510,11 @@ function connectToSession(sessionId) {
         top: 0,
         behavior: 'smooth'
     });
+
+    $('#mouse-icon').on('click', function () {
+        toggleMouseStatus(sessionId)
+    });
+    fetchMouseStatus(sessionId);
 }
 
 function checkTTMsettings() {
