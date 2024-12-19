@@ -254,7 +254,15 @@ function fetchSessions() {
                     .on('click', function (e) {
                         e.stopPropagation();
                         if (typeof swal === "function") {
-                            swal({title: sessionName,text:"Terminate above session and all its running programs?",type:"warning",html:true,showCancelButton:true}, closeSession(sessionId));
+                            swal({
+                                title: sessionName,
+                                text: "Terminate above session and its running programs?",
+                                type: "warning",
+                                html: true,
+                                showCancelButton: true
+                            }, function() {
+                                closeSession(sessionId);
+                            });
                         } else {
                             closeSession(sessionId);
                         }
