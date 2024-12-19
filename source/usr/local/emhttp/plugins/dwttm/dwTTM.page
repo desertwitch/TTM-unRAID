@@ -1,6 +1,6 @@
 Menu="Utilities"
 Type="xmenu"
-Title="TTM"
+Title="TTerminal Manager (TTM)"
 Icon="tty"
 Tag="tty"
 Markdown="false"
