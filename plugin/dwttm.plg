@@ -46,7 +46,12 @@ if ! type tmux >/dev/null 2>&amp;1; then
     upgradepkg --install-new &plgPATH;/tmux-3.5a-x86_64-1.txz
     rm -f &plgPATH;/custom
 else
-    echo "Tmux is already present on the system, not reinstalling..."
+    echo ""
+    echo "-------------------------------------------------------------"
+    echo " Tmux is already installed, not reinstalling."
+    echo " It could be a part of another plugin, so we'll use that."
+    echo "-------------------------------------------------------------"
+    echo ""
     touch &plgPATH;/custom
 fi
 exit 0
@@ -64,7 +69,12 @@ if ! type tmux >/dev/null 2>&amp;1; then
     upgradepkg --install-new &plgPATH;/tmux-3.2a-x86_64-1.txz
     rm -f &plgPATH;/custom
 else
-    echo "Tmux is already present on the system, not reinstalling..."
+    echo ""
+    echo "-------------------------------------------------------------"
+    echo " Tmux is already installed, not reinstalling."
+    echo " It could be a part of another plugin, so we'll use that."
+    echo "-------------------------------------------------------------"
+    echo ""
     touch &plgPATH;/custom
 fi
 exit 0
