@@ -247,7 +247,7 @@ body {
 
         <blockquote class="inline_help">
             <p>Set to <strong><em>Yes</em></strong> to enable TTM and start the service, set to <strong><em>No</em></strong> to disable TTM and stop the service.</p>
-            <p>The setting <strong><em>Yes</em></strong> will also enable TTM services to start automatically on UNRAID boot.</p>
+            <p>The setting <strong><em>Yes</em></strong> will also enable TTM service to start automatically on UNRAID boot.</p>
         </blockquote>
 
         <dl>
