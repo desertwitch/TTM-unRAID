@@ -1,6 +1,6 @@
 Menu="Utilities"
 Type="xmenu"
-Title="TTM"
+Title="TTerminal (TTM)"
 Icon="tty"
 Tag="tty"
 Markdown="false"
@@ -592,7 +592,7 @@ $(function() {
         term.write("\t\t                          \r\n");
         term.write("\t\t    #### ###  ###  ###    \r\n");
         term.write("\t\t    ###. ###  ###  ###    \r\n");
-        term.write("\r\n\t/ TTerminal Manager (TTM) for UNRAID /\r\n\r\n");
+        term.write("\r\n\t/ TTerminal (TTM) for UNRAID /\r\n\r\n");
         term.write("\x1b[3;38;2;200;200;200m\t\t Please select a terminal session from the GUI...\r\n\r\n\x1b[0m");
         term.focus();
 
@@ -600,7 +600,7 @@ $(function() {
     <?endif;?>
     
     if ( typeof caPluginUpdateCheck === "function" ) {
-        caPluginUpdateCheck("dwttm.plg",{name:"TTerminal Manager (TTM)"});
+        caPluginUpdateCheck("dwttm.plg",{name:"TTerminal (TTM)"});
     }
 });
 </script>
