@@ -57,7 +57,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
     <script src="<?=autov('/plugins/dwttm/js/addon-fit.js');?>"></script>
     <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
     <style>
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -66,6 +66,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             background-color: #000;
             box-sizing: border-box;
             overflow: hidden;
+        }
+
+        #content {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Ensures the content fills the entire viewport */
         }
 
         #session-dropdown {
@@ -81,8 +87,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         #terminal-container {
-            width: 100%;
-            height: 100%;
+            flex-grow: 1; /* Allows the terminal to expand and fill remaining space */
             padding: 10px;
             overflow: hidden;
         }
@@ -123,15 +128,17 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 </style>
 </head>
 <body>
-    <select id="session-dropdown"></select>
+
 
     <div id="content">
         <?php if (!$currentSession): ?>
+	        <select id="session-dropdown"></select>
             <div class="new-session-container" id="new-session-container" onclick="createNewSession()">
                 <div class="plus-icon">+</div>
                 <div class="new-session-text">New Session</div>
             </div>
         <?php else: ?>
+	        <select id="session-dropdown"></select>
             <div id="terminal-container"></div>
         <?php endif; ?>
     </div>
