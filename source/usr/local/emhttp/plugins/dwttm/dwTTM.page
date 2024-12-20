@@ -161,6 +161,23 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <blockquote class="inline_help">
             <p>Sets the security mechanism to prevent unauthorized connections to the TTM service port.</p>
         </blockquote>
+
+        <dl>
+            <dt>TTM Service Port Routing:</dt>
+            <dd>
+                <select id="SERVICEROUTE" name="SERVICEROUTE" class="dwttm-run" size="1">
+                    <?=mk_option($dwttm_service_route, "direct", "Direct (to Port)");?>
+                    <?=mk_option($dwttm_service_route, "route", "Routed (via Unraid OS)");?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Sets the access mode that the TTM frontend should use to access the TTM service.</p>
+            <p><strong>Direct</strong> uses a direct connection to the port that the TTM service is listening on.</p>
+            <p><strong>Routed</strong> relies on the Unraid web service to internally route the requests to the TTM service.</p>
+            <p>If you are running into problems accessing TTM behind a firewall, we recommend using the <strong>Routed</strong> mode.</p>
+        </blockquote>
     </div>
 
     <dl>
@@ -540,7 +557,13 @@ function connectToSession(sessionId) {
 
     const csrfToken = <?= json_encode($var['csrf_token']); ?>;
     const servicePort = <?= json_encode($dwttm_service_port); ?>;
-    const wsUrl = `ws://${window.location.hostname}:${servicePort}/ws?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
+
+    <?php if ($dwttm_service_route === "route"): ?>
+        const wsUrl = `ws://${window.location.hostname}/wsproxy/${servicePort}/ws?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
+    <?php else: ?>
+        const wsUrl = `ws://${window.location.hostname}:${servicePort}/ws?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
+    <?php endif; ?>
+
     ws = new WebSocket(wsUrl);
 
     $('.session-item').removeClass('connected');
