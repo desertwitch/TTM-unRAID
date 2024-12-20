@@ -93,7 +93,7 @@ if ($mouseState === null) {
     $newMouseState = strpos(implode("\n", $newMouseStateOutput), "on") !== false ? "on" : "off";
 
     if($leaveMode === true) {
-        echo json_encode(["oldmouse" => $currentMouseState, "requestmouse" => $mouseState, "newmouse" => $newMouseState, "leaveMode" => $leaveMode, "leaveModeSucess" => $leaveModeSuccess]);
+        echo json_encode(["oldmouse" => $currentMouseState, "requestmouse" => $mouseState, "newmouse" => $newMouseState, "leaveMode" => $leaveMode, "leaveModeSuccess" => $leaveModeSuccess]);
         exit;
     } else {
         echo json_encode(["oldmouse" => $currentMouseState, "requestmouse" => $mouseState, "newmouse" => $newMouseState]);

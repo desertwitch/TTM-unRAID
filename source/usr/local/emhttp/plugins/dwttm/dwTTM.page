@@ -421,9 +421,11 @@ function closeSession(sessionId) {
 
 function fetchSessionMouse(sessionId) {
     const $mouseButton = $('#mouse-button');
+    const $terminalContainer = $('#terminal-container');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId }, function (response) {
         if (response.mouse) {
             $mouseButton.off("click");
+            $terminalContainer.off("contextmenu");
             $mouseButton.show();
             if(response.mouse === "on") {
                 $mouseButton.on( "click", function() {
@@ -431,6 +433,10 @@ function fetchSessionMouse(sessionId) {
                 });
                 $mouseButton.removeClass("mouse-off");
                 $mouseButton.addClass("mouse-on");
+                $terminalContainer.on("contextmenu", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
             } else {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "on");
@@ -439,28 +445,36 @@ function fetchSessionMouse(sessionId) {
                 $mouseButton.addClass("mouse-off");
             }
         } else {
-            $mouseButton.hide();
             $mouseButton.off("click");
+            $terminalContainer.off("contextmenu");
+            $mouseButton.hide();
             console.error('Error while fetching mouse for session:', response.error);
         }
     }).fail(function (xhr, status, error) {
-        $mouseButton.hide();
         $mouseButton.off("click");
+        $terminalContainer.off("contextmenu");
+        $mouseButton.hide();
         console.error('Error fetching mouse for session:', error);
     });
 }
 
 function setSessionMouse(sessionId, requestedMouse) {
     const $mouseButton = $('#mouse-button');
+    const $terminalContainer = $('#terminal-container');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, mouse: requestedMouse }, function (response) {
         if(response.newmouse) {
             $mouseButton.off("click");
+            $terminalContainer.off("contextmenu");
             if(response.newmouse === "on") {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "off");
                 });
                 $mouseButton.removeClass("mouse-off");
                 $mouseButton.addClass("mouse-on");
+                $terminalContainer.on("contextmenu", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
             } else {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "on");
@@ -474,6 +488,8 @@ function setSessionMouse(sessionId, requestedMouse) {
             if(response.leaveMode && !response.leaveModeSuccess) {
                 alert("Error leaving active mouse mode, press Q in terminal.");
             }
+        } else {
+            alert('Error setting mouse for session: ' + response.error);
         }
     }).fail(function (xhr, status, error) {
         alert('Error setting mouse for session: ' + error);
