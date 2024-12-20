@@ -176,7 +176,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p>Sets the access mode that the TTM frontend should use to access the TTM service.</p>
             <p><strong>Direct</strong> uses a direct connection to the port that the TTM service is listening on.</p>
             <p><strong>Routed</strong> relies on the Unraid web service to internally route the requests to the TTM service.</p>
-            <p>If you are running into problems accessing TTM behind a firewall, we recommend using the <strong>Routed</strong> mode.</p>
+            <p>Please note that <strong>Direct</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
         </blockquote>
     </div>
 
