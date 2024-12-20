@@ -229,6 +229,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws.onopen = () => {
                 term.clear();
+                sendTerminalSize();
             };
 
             ws.onmessage = (event) => {
@@ -247,6 +248,22 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.send(data);
                 }
+            });
+
+            function sendTerminalSize() {
+                const { cols, rows } = term;
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'resize',
+                        cols,
+                        rows,
+                    }));
+                }
+            }
+
+            window.addEventListener('resize', () => {
+                fitAddon.fit();
+                sendTerminalSize();
             });
 
             term.focus();
