@@ -435,7 +435,6 @@ function fetchSessionMouse(sessionId) {
                 $mouseButton.addClass("mouse-on");
                 $terminalContainer.on("contextmenu", function (e) {
                     e.preventDefault();
-                    e.stopPropagation();
                 });
             } else {
                 $mouseButton.on( "click", function() {
@@ -473,7 +472,6 @@ function setSessionMouse(sessionId, requestedMouse) {
                 $mouseButton.addClass("mouse-on");
                 $terminalContainer.on("contextmenu", function (e) {
                     e.preventDefault();
-                    e.stopPropagation();
                 });
             } else {
                 $mouseButton.on( "click", function() {
