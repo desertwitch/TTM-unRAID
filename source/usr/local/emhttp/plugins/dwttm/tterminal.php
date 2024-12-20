@@ -426,7 +426,8 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             const servicePort = <?= json_encode($dwttm_service_port); ?>;
 
             <?php if ($dwttm_service_route === "route"): ?>
-                const wsUrl = `ws://${window.location.hostname}/wsproxy/${servicePort}/session/${encodeURIComponent(currentSession)}/csrf/${encodeURIComponent(csrfToken)}`;
+                const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${wsProtocol}//${window.location.hostname}/wsproxy/${servicePort}/session/${encodeURIComponent(currentSession)}/csrf/${encodeURIComponent(csrfToken)}`;
             <?php else: ?>
                 const wsUrl = `ws://${window.location.hostname}:${servicePort}/?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
             <?php endif; ?>
@@ -444,6 +445,10 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws.onerror = (error) => {
                 console.error('WebSocket error:', error);
+                if (ws.readyState !== WebSocket.OPEN) {
+                    term.write('\r\n*** Connection Error: Unable to connect to the requested session. ***\r\n');
+                    term.write('\r\nPlease check your network, restart TTM or change the TTM routing setting.\r\n');
+                }
             };
 
             ws.onclose = () => {
