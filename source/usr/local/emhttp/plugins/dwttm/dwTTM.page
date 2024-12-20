@@ -65,7 +65,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <table class="tablesorter">
 <thead>
     <tr>
-        <th><strong>TTerminal Session Management</strong></th>
+        <th><strong>TTerminal Sessions</strong></th>
     </tr>
 </thead>
 <tbody>
