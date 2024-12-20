@@ -173,7 +173,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </dl>
 
         <blockquote class="inline_help">
-            <p>Sets the routing mode that the TTM frontend should use to access the TTM backend service.</p>
+            <p>Sets the routing mode that the TTM frontend should use to access the TTM service.</p>
             <p><strong>Default</strong> relies on the Unraid web service to safely route any connections to the TTM service.</p>
             <p><strong>Direct</strong> uses direct, non-SSL connections to the configured port that the TTM service is listening on.</p>
             <p>Please note that the <strong>Direct</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
@@ -649,7 +649,7 @@ $(function() {
         term.open(terminalContainer);
         fitAddon.fit();
 
-        term.write("\r\n\r\n");
+        term.write("\r\n\r\n\r\n\r\n");
         term.write("\t\t        ##########        \r\n");
         term.write("\t\t   ####################   \r\n");
         term.write("\t\t  ######          ######  \r\n");

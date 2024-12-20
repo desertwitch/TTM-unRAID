@@ -129,6 +129,10 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             transition: background-color 0.3s ease;
         }
 
+        #mouse-button:hover {
+            background-color: #555;
+        }
+
         .mouse-on {
             color: white;
         }
@@ -193,8 +197,8 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         <?php else: ?>
             <div id="dropdown-container">
                 <select id="session-dropdown"></select>
-                <button id="close-button" onclick="closeSession()">&#x1F5D1;</button>
-                <button id="mouse-button" >&#x1F5B1;</button>
+                <button id="close-button" title="Terminate Session" onclick="closeSession()">&#x1F5D1;</button>
+                <button id="mouse-button" title="Toggle Scrolling">&#x1F5B1;</button>
             </div>
             <div id="terminal-container"></div>
         <?php endif; ?>
