@@ -288,9 +288,9 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 method: 'GET',
             })
             .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    connectToSession(data.session_id);
+            .then(response => {
+                if (response.success) {
+                    connectToSession(response.session_id);
                 } else {
                     alert('Failed to create a new session.');
                 }
