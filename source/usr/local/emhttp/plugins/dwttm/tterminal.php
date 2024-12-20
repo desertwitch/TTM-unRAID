@@ -64,7 +64,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             width: 100vw;
             font-family: Arial, sans-serif;
             background-color: #000;
-            box-sizing: border-box;
             overflow: hidden;
         }
 
