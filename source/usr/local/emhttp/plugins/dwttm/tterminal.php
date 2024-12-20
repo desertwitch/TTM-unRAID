@@ -426,9 +426,9 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             const servicePort = <?= json_encode($dwttm_service_port); ?>;
 
             <?php if ($dwttm_service_route === "route"): ?>
-                const wsUrl = `ws://${window.location.hostname}/wsproxy/${servicePort}/ws?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
+                const wsUrl = `ws://${window.location.hostname}/wsproxy/${servicePort}/session/${encodeURIComponent(currentSession)}/csrf/${encodeURIComponent(csrfToken)}`;
             <?php else: ?>
-                const wsUrl = `ws://${window.location.hostname}:${servicePort}/ws?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
+                const wsUrl = `ws://${window.location.hostname}:${servicePort}/?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
             <?php endif; ?>
 
             ws = new WebSocket(wsUrl);
