@@ -47,7 +47,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <th>
             <strong>TTerminal</strong>
             <span style="float:right">
-                <i id="mouse-button" class="fa fa-mouse-pointer" style="display:none"></i>
+                <i id="mouse-button" style="display:none">&#x1F5B1;</i>
             </span>
         </th>
     </tr>
