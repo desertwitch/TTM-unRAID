@@ -471,9 +471,6 @@ function setSessionMouse(sessionId, requestedMouse) {
             if(response.requestmouse !== response.newmouse) {
                 alert("Error setting new mouse mode, try again!");
             }
-            if(response.leaveMode && !response.leaveModeSuccess) {
-                alert("Error leaving active mouse mode, press Q in terminal.");
-            }
         } else {
             alert('Error setting mouse for session: ' + response.error);
         }

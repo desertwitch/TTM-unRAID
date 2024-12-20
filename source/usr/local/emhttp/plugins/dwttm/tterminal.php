@@ -73,8 +73,15 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             height: 100%; /* Ensures the content fills the entire viewport */
         }
 
-        #session-dropdown {
+        #dropdown-container {
+            display: flex;
+            align-items: center;
             width: 100%;
+            background-color: #333; /* Matches dropdown background */
+        }
+
+        #session-dropdown {
+            flex: 1; /* Ensures dropdown takes up the remaining space */
             height: 40px;
             font-size: 16px;
             border: none;
@@ -85,8 +92,53 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             color: #fff;
         }
 
+        #close-button {
+            height: 40px;
+            width: 40px;
+            background-color: #444;
+            color: #888;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        #close-button:hover {
+            background-color: darkred;
+            color: white;
+        }
+
+        #mouse-button {
+            height: 40px;
+            width: 40px;
+            background-color: #444;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .mouse-on {
+            color: white;
+        }
+
+        .mouse-off {
+            color: #888;
+        }
+
         #terminal-container {
-            flex-grow: 1; /* Allows the terminal to expand and fill remaining space */
+            flex-grow: 1;
             padding: 10px;
             overflow: hidden;
         }
@@ -131,13 +183,19 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
     <div id="content">
         <?php if (!$currentSession): ?>
-	        <select id="session-dropdown"></select>
+            <div id="dropdown-container">
+                <select id="session-dropdown"></select>
+            </div>
             <div class="new-session-container" id="new-session-container" onclick="createNewSession()">
                 <div class="plus-icon">+</div>
                 <div class="new-session-text">New Session</div>
             </div>
         <?php else: ?>
-	        <select id="session-dropdown"></select>
+            <div id="dropdown-container">
+                <select id="session-dropdown"></select>
+                <button id="close-button" onclick="closeSession()">&#x1F5D1;</button>
+                <button id="mouse-button" >&#x1F5B1;</button>
+            </div>
             <div id="terminal-container"></div>
         <?php endif; ?>
     </div>
@@ -203,6 +261,27 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             window.location.search = urlParams.toString();
         }
 
+        function closeSession() {
+        // CHECKED - OK
+            const confirmation = confirm("Terminate the session and its running programs?");
+            if (!confirmation) {
+                return;
+            }
+            const currentSession = <?= json_encode($currentSession); ?>;
+            fetch(`/plugins/dwttm/include/dwttm_close_session.php?session=${encodeURIComponent(currentSession)}`)
+                .then(response => response.json())
+                .then(response => {
+                    if (response.success) {
+                        connectToSession();
+                    } else {
+                        alert(`Failed closing session ${currentSession}: ${response.error}`);
+                    }
+                })
+                .catch(error => {
+                    alert(`Failed closing session ${currentSession}: ${error}`);
+                });
+        }
+
         function createNewSession() {
         // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_new_session.php', {
@@ -246,6 +325,67 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             disposable.dispose();
             term.clearSelection();
             disposable = term.onSelectionChange(handleSelectionChange);
+        }
+
+        function fetchSessionMouse(sessionId) {
+        // CHECKED - OK
+            const mouseButton = document.getElementById('mouse-button');
+            fetch(`/plugins/dwttm/include/dwttm_mouse_session.php?session=${encodeURIComponent(sessionId)}`)
+                .then(response => response.json())
+                .then(response => {
+                    if (response.mouse) {
+                        mouseButton.style.display = "flex";
+                        mouseButton.onclick = null;
+
+                        if (response.mouse === "on") {
+                            mouseButton.onclick = () => setSessionMouse(sessionId, "off");
+                            mouseButton.classList.remove("mouse-off");
+                            mouseButton.classList.add("mouse-on");
+                        } else {
+                            mouseButton.onclick = () => setSessionMouse(sessionId, "on");
+                            mouseButton.classList.remove("mouse-on");
+                            mouseButton.classList.add("mouse-off");
+                        }
+                    } else {
+                        mouseButton.style.display = "none";
+                        console.error('Error while fetching mouse for session:', response.error);
+                    }
+                })
+                .catch(error => {
+                    mouseButton.style.display = "none";
+                    console.error('Error fetching mouse for session:', error);
+                });
+        }
+
+        function setSessionMouse(sessionId, requestedMouse) {
+        // CHECKED - OK
+            const mouseButton = document.getElementById('mouse-button');
+            fetch(`/plugins/dwttm/include/dwttm_mouse_session.php?session=${encodeURIComponent(sessionId)}&mouse=${encodeURIComponent(requestedMouse)}`)
+                .then(response => response.json())
+                .then(response => {
+                    if (response.newmouse) {
+                        mouseButton.onclick = null;
+
+                        if (response.newmouse === "on") {
+                            mouseButton.onclick = () => setSessionMouse(sessionId, "off");
+                            mouseButton.classList.remove("mouse-off");
+                            mouseButton.classList.add("mouse-on");
+                        } else {
+                            mouseButton.onclick = () => setSessionMouse(sessionId, "on");
+                            mouseButton.classList.remove("mouse-on");
+                            mouseButton.classList.add("mouse-off");
+                        }
+
+                        if (response.requestmouse !== response.newmouse) {
+                            alert("Error setting new mouse mode, try again!");
+                        }
+                    } else {
+                        alert('Error setting mouse for session: ' + response.error);
+                    }
+                })
+                .catch(error => {
+                    alert('Error setting mouse for session: ' + error);
+                });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -293,6 +433,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             });
 
             term.focus();
+            fetchSessionMouse(currentSession);
             <?php endif; ?>
             fetchSessions();
         });
