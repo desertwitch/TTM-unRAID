@@ -221,19 +221,19 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
                         const dropdown = document.getElementById('session-dropdown');
 
-                        dropdown.innerHTML = '<option value="">Select Session / New Session</option>';
-
+                        const fragment = document.createDocumentFragment();
                         sessions.forEach(session => {
                             const option = document.createElement('option');
                             option.value = session.session_id;
                             option.textContent = session.session_name;
-                            dropdown.appendChild(option);
-
                             if (session.session_id === currentSession) {
                                 option.selected = true;
                                 document.title = `${session.session_name}: TTerminal`;
                             }
+                            fragment.appendChild(option);
                         });
+                        dropdown.innerHTML = '<option value="">Select Session / New Session</option>';
+                        dropdown.appendChild(fragment);
                     } else {
                         console.error('Failed to fetch sessions - invalid response.');
                     }
