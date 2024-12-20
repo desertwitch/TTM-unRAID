@@ -163,20 +163,20 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
-            <dt>TTM Service Port Routing:</dt>
+            <dt>TTM Service Routing Mode:</dt>
             <dd>
                 <select id="SERVICEROUTE" name="SERVICEROUTE" class="dwttm-run" size="1">
-                    <?=mk_option($dwttm_service_route, "direct", "Direct (to Port)");?>
-                    <?=mk_option($dwttm_service_route, "route", "Routed (via Unraid OS)");?>
+                    <?=mk_option($dwttm_service_route, "route", "Default (via Unraid OS)");?>
+                    <?=mk_option($dwttm_service_route, "direct", "Direct (no SSL/VPN)");?>
                 </select>
             </dd>
         </dl>
 
         <blockquote class="inline_help">
-            <p>Sets the access mode that the TTM frontend should use to access the TTM service.</p>
-            <p><strong>Direct</strong> uses a direct connection to the port that the TTM service is listening on.</p>
-            <p><strong>Routed</strong> relies on the Unraid web service to internally route the requests to the TTM service.</p>
-            <p>Please note that <strong>Direct</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
+            <p>Sets the routing mode that the TTM frontend should use to access the TTM backend service.</p>
+            <p><strong>Default</strong> relies on the Unraid web service to safely route any connections to the TTM service.</p>
+            <p><strong>Direct</strong> uses direct, non-SSL connections to the configured port that the TTM service is listening on.</p>
+            <p>Please note that the <strong>Direct</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
         </blockquote>
     </div>
 
@@ -558,11 +558,11 @@ function connectToSession(sessionId) {
     const csrfToken = <?= json_encode($var['csrf_token']); ?>;
     const servicePort = <?= json_encode($dwttm_service_port); ?>;
 
-    <?php if ($dwttm_service_route === "route"): ?>
+    <?php if ($dwttm_service_route === "direct"): ?>
+        const wsUrl = `ws://${window.location.hostname}:${servicePort}/?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
+    <?php else: ?>
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsUrl = `${wsProtocol}//${window.location.hostname}/wsproxy/${servicePort}/session/${encodeURIComponent(sessionId)}/csrf/${encodeURIComponent(csrfToken)}`;
-    <?php else: ?>
-        const wsUrl = `ws://${window.location.hostname}:${servicePort}/?session=${encodeURIComponent(sessionId)}&csrf=${encodeURIComponent(csrfToken)}`;
     <?php endif; ?>
 
     ws = new WebSocket(wsUrl);
@@ -586,7 +586,8 @@ function connectToSession(sessionId) {
         console.error('WebSocket error:', error);
         if (ws.readyState !== WebSocket.OPEN) {
             term.write('\r\n*** Connection Error: Unable to connect to the requested session. ***\r\n');
-            term.write('\r\nPlease check your network, restart TTM or change the TTM routing setting.\r\n');
+            term.write('\r\nThis is can be caused by using TTM direct routing mode in an SSL/VPN environment.\r\n');
+            term.write('\r\nPlease check your browser console, change the TTM routing mode and/or restart TTM.\r\n');
         }
     };
 

@@ -425,11 +425,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             const csrfToken = <?= json_encode($var['csrf_token']); ?>;
             const servicePort = <?= json_encode($dwttm_service_port); ?>;
 
-            <?php if ($dwttm_service_route === "route"): ?>
+            <?php if ($dwttm_service_route === "direct"): ?>
+                const wsUrl = `ws://${window.location.hostname}:${servicePort}/?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
+            <?php else: ?>
                 const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
                 const wsUrl = `${wsProtocol}//${window.location.hostname}/wsproxy/${servicePort}/session/${encodeURIComponent(currentSession)}/csrf/${encodeURIComponent(csrfToken)}`;
-            <?php else: ?>
-                const wsUrl = `ws://${window.location.hostname}:${servicePort}/?session=${encodeURIComponent(currentSession)}&csrf=${encodeURIComponent(csrfToken)}`;
             <?php endif; ?>
 
             ws = new WebSocket(wsUrl);
@@ -444,11 +444,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             };
 
             ws.onerror = (error) => {
-                console.error('WebSocket error:', error);
                 if (ws.readyState !== WebSocket.OPEN) {
                     term.write('\r\n*** Connection Error: Unable to connect to the requested session. ***\r\n');
-                    term.write('\r\nPlease check your network, restart TTM or change the TTM routing setting.\r\n');
+                    term.write('\r\nThis is can be caused by using TTM direct routing mode in an SSL/VPN environment.\r\n');
+                    term.write('\r\nPlease check your browser console, change the TTM routing mode and/or restart TTM.\r\n');
                 }
+                console.error('WebSocket error:', error);
             };
 
             ws.onclose = () => {
