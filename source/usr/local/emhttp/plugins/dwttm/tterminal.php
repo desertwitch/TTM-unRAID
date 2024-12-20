@@ -218,6 +218,18 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             .catch(error => console.error('Error creating session:', error));
         }
 
+        function sendTerminalSize() {
+        // CHECKED - OK
+            const { cols, rows } = term;
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'resize',
+                    cols,
+                    rows,
+                }));
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
         // CHECKED - OK
             <?php if ($currentSession): ?>
@@ -255,17 +267,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     ws.send(data);
                 }
             });
-
-            function sendTerminalSize() {
-                const { cols, rows } = term;
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({
-                        type: 'resize',
-                        cols,
-                        rows,
-                    }));
-                }
-            }
 
             window.addEventListener('resize', () => {
                 fitAddon.fit();
