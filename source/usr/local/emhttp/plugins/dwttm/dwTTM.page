@@ -420,6 +420,7 @@ function closeSession(sessionId) {
 }
 
 function fetchSessionMouse(sessionId) {
+// CHECKED - OK
     const $mouseButton = $('#mouse-button');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId }, function (response) {
         if (response.mouse) {
@@ -451,6 +452,7 @@ function fetchSessionMouse(sessionId) {
 }
 
 function setSessionMouse(sessionId, requestedMouse) {
+// CHECKED - OK
     const $mouseButton = $('#mouse-button');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, mouse: requestedMouse }, function (response) {
         if(response.newmouse) {
@@ -484,8 +486,8 @@ function popupSession(sessionId) {
     const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
     const windowName = `${sessionId}: TTerminal`;
 
-    const width = 780;
-    const height = 480;
+    const width = Math.min(screen.availWidth,1200);
+    const height = Math.min(screen.availHeight,800);
 
     let top = (screen.height - height) / 2;
     if (!top || top < 0) { top = 0; }

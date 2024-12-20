@@ -25,8 +25,8 @@ Cond="@shell_exec('pgrep -x ttmd 2>/dev/null')"
 ?>
 <script>
 function dwTTMbutton() {
-    const width = 780;
-    const height = 480;
+    const width = Math.min(screen.availWidth,1200);
+    const height = Math.min(screen.availHeight,800);
 
     let top = (screen.height-height)/2;
     if (!top || top < 0) {top = 0;}
