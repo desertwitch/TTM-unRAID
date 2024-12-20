@@ -535,6 +535,7 @@ function connectToSession(sessionId) {
 
     ws.onopen = () => {
         term.clear();
+        sendTerminalSize();
     };
 
     ws.onmessage = (event) => {
@@ -555,6 +556,17 @@ function connectToSession(sessionId) {
         }
     });
     disposable2 = term.onSelectionChange(handleSelectionChange);
+
+    function sendTerminalSize() {
+        const { cols, rows } = term;
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                type: 'resize',
+                cols,
+                rows,
+            }));
+        }
+    }
 
     connectedSessionId = sessionId;
 
