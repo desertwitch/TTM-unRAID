@@ -135,3 +135,14 @@ body {
 .tmux-gray-text {
     color: #b0bec5;
 }
+
+#mouse-button {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.mouse-on {
+    color: white;
+}
+.mouse-off {
+    color: lightgray;
+}

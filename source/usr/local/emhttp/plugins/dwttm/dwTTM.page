@@ -44,7 +44,12 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <table class="tablesorter shift termtable">
 <thead>
     <tr>
-        <th><strong>TTerminal</strong></th>
+        <th>
+            <strong>TTerminal</strong>
+            <span style="float:right">
+                <i id="mouse-button" class="fa fa-mouse-pointer" style="display:none"></i>
+            </span>
+        </th>
     </tr>
 </thead>
 <tbody>
@@ -414,6 +419,67 @@ function closeSession(sessionId) {
     });
 }
 
+function fetchSessionMouse(sessionId) {
+    const $mouseButton = $('#mouse-button');
+    $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId }, function (response) {
+        if (response.mouse) {
+            $mouseButton.off("click");
+            $mouseButton.show();
+            if(response.mouse === "on") {
+                $mouseButton.on( "click", function() {
+                    setSessionMouse(sessionId, "off");
+                });
+                $mouseButton.removeClass("mouse-off");
+                $mouseButton.addClass("mouse-on");
+            } else {
+                $mouseButton.on( "click", function() {
+                    setSessionMouse(sessionId, "on");
+                });
+                $mouseButton.removeClass("mouse-on");
+                $mouseButton.addClass("mouse-off");
+            }
+        } else {
+            $mouseButton.hide();
+            $mouseButton.off("click");
+            console.error('Error while fetching mouse for session:', response.error);
+        }
+    }).fail(function (xhr, status, error) {
+        $mouseButton.hide();
+        $mouseButton.off("click");
+        console.error('Error fetching mouse for session:', error);
+    });
+}
+
+function setSessionMouse(sessionId, requestedMouse) {
+    const $mouseButton = $('#mouse-button');
+    $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, mouse: requestedMouse }, function (response) {
+        if(response.newmouse) {
+            $mouseButton.off("click");
+            if(response.newmouse === "on") {
+                $mouseButton.on( "click", function() {
+                    setSessionMouse(sessionId, "off");
+                });
+                $mouseButton.removeClass("mouse-off");
+                $mouseButton.addClass("mouse-on");
+            } else {
+                $mouseButton.on( "click", function() {
+                    setSessionMouse(sessionId, "on");
+                });
+                $mouseButton.removeClass("mouse-on");
+                $mouseButton.addClass("mouse-off");
+            }
+            if(response.reqmouse !== response.newmouse) {
+                alert("Error setting new mouse mode, try again!");
+            }
+            if(response.leaveMode && !response.leaveModeSuccess) {
+                alert("Error leaving active mouse mode, press Q in terminal.");
+            }
+        }
+    }).fail(function (xhr, status, error) {
+        alert('Error setting mouse for session: ' + error);
+    });
+}
+
 function popupSession(sessionId) {
 // CHECKED - OK
     const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
@@ -494,6 +560,8 @@ function connectToSession(sessionId) {
         top: 0,
         behavior: 'smooth'
     });
+
+    fetchSessionMouse(sessionId);
 }
 
 function checkTTMsettings() {
