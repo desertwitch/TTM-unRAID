@@ -186,6 +186,10 @@ let connectedSessionId;
 function freeSession() {
 // CHECKED - OK
     if (ws) {
+        ws.onopen = null;
+        ws.onmessage = null;
+        ws.onerror = null;
+        ws.onclose = null;
         ws.close();
         ws = null;
     }
@@ -200,7 +204,7 @@ function freeSession() {
         disposable2 = null;
     }
 
-    if(connectedSessionId) {
+    if (connectedSessionId) {
         connectedSessionId = null;
     }
 }
@@ -560,6 +564,7 @@ function connectToSession(sessionId) {
 
     ws.onclose = () => {
         term.write('\r\n*** Disconnected from session ***\r\n');
+        freeSession();
     };
 
     disposable = term.onData(data => {
