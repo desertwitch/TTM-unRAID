@@ -27,7 +27,7 @@ if (!$session) {
     exit;
 }
 
-$currentMouseStateCommand = "tmux show-option -t $session:0 mouse 2>/dev/null";
+$currentMouseStateCommand = "tmux display -p -t $session:0 \"#{pane_in_mode}\" 2>/dev/null";
 $currentMouseStateOutput = [];
 $currentMouseStateReturnVar = null;
 
@@ -37,7 +37,7 @@ if ($currentMouseStateReturnVar !== 0) {
     echo json_encode(["error" => "Failed to retrieve tmux mouse state"]);
     exit;
 }
-$currentMouseState = strpos(implode("\n", $currentMouseStateOutput), "on") !== false ? "on" : "off";
+$currentMouseState = strpos(implode("\n", $currentMouseStateOutput), "1") !== false ? "on" : "off";
 
 if ($mouseState === null) {
     echo json_encode(["mouse" => $currentMouseState]);
@@ -48,39 +48,33 @@ if ($mouseState === null) {
         exit;
     }
 
-    $toggleMouseCommand = "tmux set-option -t $session:0 mouse $mouseState 2>/dev/null";
-    $toggleOutput = [];
-    $toggleReturnVar = null;
-    exec($toggleMouseCommand, $toggleOutput, $toggleReturnVar);
-
-    if ($toggleReturnVar !== 0) {
-        echo json_encode(["error" => "Failed to toggle tmux mouse state"]);
-        exit;
-    }
-
-    $leaveMode = false;
-    $leaveModeSuccess = false;
-
     if ($mouseState === "off") {
-        $checkCopyModeCommand = "tmux display -p -t $session:0 \"#{pane_in_mode}\" 2>/dev/null";
-        $checkCopyModeOutput = [];
-        $checkCopyModeReturnVar = null;
-        exec($checkCopyModeCommand, $checkCopyModeOutput, $checkCopyModeReturnVar);
-
-        if ($checkCopyModeReturnVar === 0 && !empty($checkCopyModeOutput) && strpos(implode("\n", $checkCopyModeOutput), "1") !== false) {
-            $leaveMode = true;
+        if($currentMouseState === "on") {
             $exitCopyModeCommand = "tmux send-keys -t $session:0 q 2>/dev/null";
             $exitCopyModeOutput = [];
             $exitCopyModeReturnVar = null;
             exec($exitCopyModeCommand, $exitCopyModeOutput, $exitCopyModeReturnVar);
 
-            if($exitCopyModeReturnVar === 0) {
-                $leaveModeSuccess = true;
+            if($exitCopyModeReturnVar !== 0) {
+                echo json_encode(["error" => "Failed to leave mouse mode."]);
+                exit;
+            }
+        }
+    } else {
+        if($currentMouseState === "off") {
+            $toggleMouseCommand = "tmux copy-mode -t $session:0 2>/dev/null";
+            $toggleOutput = [];
+            $toggleReturnVar = null;
+            exec($toggleMouseCommand, $toggleOutput, $toggleReturnVar);
+
+            if ($toggleReturnVar !== 0) {
+                echo json_encode(["error" => "Failed to enter mouse mode."]);
+                exit;
             }
         }
     }
 
-    $newMouseStateCommand = "tmux show-option -t $session:0 mouse 2>/dev/null";
+    $newMouseStateCommand = "tmux display -p -t $session:0 \"#{pane_in_mode}\" 2>/dev/null";
     $newMouseStateOutput = [];
     $newMouseStateReturnVar = null;
     exec($newMouseStateCommand, $newMouseStateOutput, $newMouseStateReturnVar);
@@ -90,14 +84,9 @@ if ($mouseState === null) {
         exit;
     }
 
-    $newMouseState = strpos(implode("\n", $newMouseStateOutput), "on") !== false ? "on" : "off";
+    $newMouseState = strpos(implode("\n", $newMouseStateOutput), "1") !== false ? "on" : "off";
 
-    if($leaveMode === true) {
-        echo json_encode(["oldmouse" => $currentMouseState, "requestmouse" => $mouseState, "newmouse" => $newMouseState, "leaveMode" => $leaveMode, "leaveModeSuccess" => $leaveModeSuccess]);
-        exit;
-    } else {
-        echo json_encode(["oldmouse" => $currentMouseState, "requestmouse" => $mouseState, "newmouse" => $newMouseState]);
-        exit;
-    }
+    echo json_encode(["oldmouse" => $currentMouseState, "requestmouse" => $mouseState, "newmouse" => $newMouseState]);
+    exit;
 }
 ?>
