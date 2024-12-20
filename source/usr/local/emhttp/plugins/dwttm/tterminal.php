@@ -188,7 +188,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             </div>
             <div class="new-session-container" id="new-session-container" onclick="createNewSession()">
                 <div class="plus-icon">+</div>
-                <div class="new-session-text">New Session</div>
+                <div class="new-session-text">New Persistent Session</div>
             </div>
         <?php else: ?>
             <div id="dropdown-container">
