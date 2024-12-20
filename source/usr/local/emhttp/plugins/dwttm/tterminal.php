@@ -207,6 +207,25 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const dropdown = document.getElementById('session-dropdown');
         let disposable;
 
+        function freeSession() {
+        // CHECKED - OK
+            window.removeEventListener('resize', handleResize);
+
+            if (ws) {
+                ws.onopen = null;
+                ws.onmessage = null;
+                ws.onerror = null;
+                ws.onclose = null;
+                ws.close();
+                ws = null;
+            }
+
+            if (disposable) {
+                disposable.dispose();
+                disposable = null;
+            }
+        }
+
         function fetchSessions() {
         // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
@@ -327,6 +346,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             disposable = term.onSelectionChange(handleSelectionChange);
         }
 
+        function handleResize() {
+        // CHECKED - OK
+            sendTerminalSize();
+        }
+
         function fetchSessionMouse(sessionId) {
         // CHECKED - OK
             const mouseButton = document.getElementById('mouse-button');
@@ -418,6 +442,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws.onclose = () => {
                 term.write('\r\n*** Disconnected from session ***\r\n');
+                freeSession();
             };
 
             term.onData((data) => {
@@ -428,9 +453,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             disposable = term.onSelectionChange(handleSelectionChange);
 
-            window.addEventListener('resize', () => {
-                sendTerminalSize();
-            });
+            window.addEventListener('resize', handleResize);
 
             term.focus();
             fetchSessionMouse(currentSession);
