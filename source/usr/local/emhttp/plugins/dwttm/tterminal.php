@@ -147,6 +147,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const term = new Terminal({ scrollback: 0 });
         const fitAddon = new FitAddon.FitAddon();
         const dropdown = document.getElementById('session-dropdown');
+        let disposable;
 
         function fetchSessions() {
         // CHECKED - OK
@@ -231,6 +232,22 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             }
         }
 
+        function handleSelectionChange() {
+        // CHECKED - OK
+            if ("" !== term.getSelection()) {
+                try {
+                    document.execCommand("copy");
+                } catch (error) {
+                    console.error("Error copying text:", error);
+                    return;
+                }
+            }
+
+            disposable.dispose();
+            term.clearSelection();
+            disposable = term.onSelectionChange(handleSelectionChange);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
         // CHECKED - OK
             <?php if ($currentSession): ?>
@@ -268,6 +285,8 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     ws.send(data);
                 }
             });
+
+            disposable = term.onSelectionChange(handleSelectionChange);
 
             window.addEventListener('resize', () => {
                 sendTerminalSize();
