@@ -468,7 +468,7 @@ function setSessionMouse(sessionId, requestedMouse) {
                 $mouseButton.removeClass("mouse-on");
                 $mouseButton.addClass("mouse-off");
             }
-            if(response.reqmouse !== response.newmouse) {
+            if(response.requestmouse !== response.newmouse) {
                 alert("Error setting new mouse mode, try again!");
             }
             if(response.leaveMode && !response.leaveModeSuccess) {
