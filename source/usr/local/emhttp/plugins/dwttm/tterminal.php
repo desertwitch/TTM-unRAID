@@ -220,6 +220,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
         function sendTerminalSize() {
         // CHECKED - OK
+            fitAddon.fit();
             const { cols, rows } = term;
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({
@@ -269,7 +270,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             });
 
             window.addEventListener('resize', () => {
-                fitAddon.fit();
                 sendTerminalSize();
             });
 
