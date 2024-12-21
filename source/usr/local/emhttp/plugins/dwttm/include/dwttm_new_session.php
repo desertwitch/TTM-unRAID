@@ -19,7 +19,7 @@
  */
 header('Content-Type: application/json');
 
-$command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm /bin/bash'";
+$command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
 $output = [];
 $returnCode = null;
 exec($command, $output, $returnCode);
