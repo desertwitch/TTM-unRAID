@@ -151,29 +151,42 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             overflow: hidden;
         }
 
+        .split-container {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .session-half {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .top-half {
+            height: 70%;
+            border-bottom: 2px solid #222;
+        }
+
+        .bottom-half {
+            height: 30%;
+        }
+
+        .session-half:hover {
+            background-color: #222;
+        }
+
         .plus-icon {
             font-size: 50px;
             color: white;
             margin-bottom: 10px;
         }
 
-        .new-session-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100vw;
-            height: 100vh;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .new-session-container:hover {
-            background-color: #222;
-        }
-
-        .new-session-text {
+        .session-text {
             font-size: 16px;
             color: white;
             font-weight: bold;
@@ -190,9 +203,15 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             <div id="dropdown-container">
                 <select id="session-dropdown"></select>
             </div>
-            <div class="new-session-container" id="new-session-container" onclick="createNewSession()">
-                <div class="plus-icon">+</div>
-                <div class="new-session-text">New Persistent Session</div>
+            <div class="split-container">
+                <div class="session-half top-half" id="new-session-container" onclick="createNewSession()">
+                    <div class="plus-icon">+</div>
+                    <div class="session-text">New Persistent Session</div>
+                </div>
+                <div class="session-half bottom-half" id="new-named-session-container" onclick="createNewNamedSession()">
+                    <div class="plus-icon">+</div>
+                    <div class="session-text">New Named Persistent Session</div>
+                </div>
             </div>
         <?php else: ?>
             <div id="dropdown-container">
@@ -308,6 +327,29 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         function createNewSession() {
         // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_new_session.php', {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(response => {
+                if (response.success) {
+                    connectToSession(response.session_id);
+                } else {
+                    alert('Failed to create a new session.');
+                }
+            })
+            .catch(error => console.error('Error creating session:', error));
+        }
+
+        function createNewNamedSession() {
+        // CHECKED - OK
+            const sessionName = prompt("Enter a name for the new session (alphanumeric only):");
+
+            if (!sessionName || !/^[A-Za-z0-9]+$/.test(sessionName)) {
+                alert("Invalid session name. Please use alphanumeric characters only.");
+                return;
+            }
+
+            fetch(`/plugins/dwttm/include/dwttm_new_session.php?session=${encodeURIComponent(sessionName)}`, {
                 method: 'GET',
             })
             .then(response => response.json())
