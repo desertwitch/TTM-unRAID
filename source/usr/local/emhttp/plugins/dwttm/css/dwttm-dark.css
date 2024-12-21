@@ -81,6 +81,10 @@ body {
     cursor: text;
 }
 
+.session-item .info-header:hover {
+    text-decoration: underline;
+}
+
 .session-item .info-footer {
     font-family: monospace;
     font-weight: bold;

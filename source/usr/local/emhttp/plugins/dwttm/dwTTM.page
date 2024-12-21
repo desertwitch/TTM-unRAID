@@ -241,35 +241,54 @@ function fetchSessions() {
                 .addClass('session-item add-new')
                 .on('click', function (e) {
                     e.stopPropagation();
-                    swal({
-                        title: "New Session",
-                        text: "Please choose a name for your new session (or leave empty):",
-                        type: "input",
-                        showCancelButton: true,
-                        confirmButtonText: "Create Session",
-                        html: true,
-                        inputPlaceholder: "Alphanumeric - no spaces or special characters!",
-                        closeOnConfirm: false
-                        },
-                        function(value){
-                            if(value === false) {
-                                swal.close();
-                                return
-                            }
-                            if(value !== "") {
-                                var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                if(format.test(value)) {
-                                    swal("Error", "The chosen session name contained disallowed characters.", "error");
-                                }
-                                else {
+                    if (typeof swal === "function") {
+                        swal({
+                            title: "New Session",
+                            text: "Please choose a name for your new session (or leave empty):",
+                            type: "input",
+                            showCancelButton: true,
+                            confirmButtonText: "Create Session",
+                            html: true,
+                            inputPlaceholder: "Alphanumeric - no spaces or special characters!",
+                            closeOnConfirm: false
+                            },
+                            function(value){
+                                if(value === false) {
                                     swal.close();
-                                    createNewNamedSession(value);
+                                    return;
                                 }
+                                if(value !== "") {
+                                    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                    if(format.test(value)) {
+                                        swal("Error", "The chosen session name contained disallowed characters.", "error");
+                                    }
+                                    else {
+                                        swal.close();
+                                        createNewNamedSession(value);
+                                    }
+                                } else {
+                                    swal.close();
+                                    createNewSession();
+                                }
+                            });
+                    } else {
+                        var value = prompt("Please choose a name for your new session (or leave empty):\nAlphanumeric - no spaces or special characters!");
+
+                        if (value === null) {
+                            return;
+                        }
+
+                        if (value !== "") {
+                            var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                            if (format.test(value)) {
+                                alert("Error: The chosen session name contained disallowed characters.");
                             } else {
-                                swal.close();
-                                createNewSession();
+                                createNewNamedSession(value);
                             }
-                        });
+                        } else {
+                            createNewSession();
+                        }
+                    }
                 });
 
             const $plusIcon = $('<div>')
@@ -307,30 +326,49 @@ function fetchSessions() {
                     .text(sessionName)
                     .on('click', function (e) {
                         e.stopPropagation();
-                        swal({
-                            title: "Session: " + sessionName,
-                            text: "Please choose a new name for the session.",
-                            type: "input",
-                            showCancelButton: true,
-                            confirmButtonText: "Rename Session",
-                            html: true,
-                            inputPlaceholder: "Alphanumeric - no spaces or special characters!",
-                            closeOnConfirm: false
-                            },
-                            function(value){
-                                if(value !== false && value !== "") {
-                                    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                    if(format.test(value)) {
-                                        swal("Error", "The chosen session name contained disallowed characters.", "error");
-                                    }
-                                    else {
+                        if (typeof swal === "function") {
+                            swal({
+                                title: "Session: " + sessionName,
+                                text: "Please choose a new name for the session.",
+                                type: "input",
+                                showCancelButton: true,
+                                confirmButtonText: "Rename Session",
+                                html: true,
+                                inputPlaceholder: "Alphanumeric - no spaces or special characters!",
+                                closeOnConfirm: false
+                                },
+                                function(value){
+                                    if(value !== false && value !== "") {
+                                        var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                        if(format.test(value)) {
+                                            swal("Error", "The chosen session name contained disallowed characters.", "error");
+                                        }
+                                        else {
+                                            swal.close();
+                                            renameSession(sessionId, value);
+                                        }
+                                    } else {
                                         swal.close();
-                                        renameSession(sessionId, value);
                                     }
-                                } else {
-                                    swal.close();
-                                }
                             });
+                        } else {
+                            var value = prompt("Session: " + sessionName + "\nPlease choose a new name for the session.\nAlphanumeric - no spaces or special characters!");
+
+                            if (value === null) {
+                                return;
+                            }
+
+                            if (value !== "") {
+                                var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                if (format.test(value)) {
+                                    alert("Error: The chosen session name contained disallowed characters.");
+                                } else {
+                                    renameSession(sessionId, value);
+                                }
+                            } else {
+                                return;
+                            }
+                        }
                     });
 
                 $sessionItem.append($infoHead);
