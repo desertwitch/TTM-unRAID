@@ -74,7 +74,13 @@ body {
     background-color: #e6f7ff;
 }
 
-.session-item .info-header, .session-item .info-footer {
+.session-item .info-header {
+    font-family: monospace;
+    font-weight: bold;
+    cursor: text;
+}
+
+.session-item .info-footer {
     font-family: monospace;
     font-weight: bold;
 }

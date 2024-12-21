@@ -276,7 +276,34 @@ function fetchSessions() {
 
                 const $infoHead = $('<div>')
                     .addClass('info-header')
-                    .text(sessionName);
+                    .text(sessionName)
+                    .on('click', function (e) {
+                        e.stopPropagation();
+                        swal({
+                            title: "New Session",
+                            text: "Please choose a name for your new session (or leave empty):",
+                            type: "input",
+                            showCancelButton: true,
+                            confirmButtonText: "Create Session",
+                            html: true,
+                            inputPlaceholder: "Alphanumeric - no spaces or special characters!",
+                            closeOnConfirm: false
+                            },
+                            function(value){
+                                if(value !== false && value !== "") {
+                                    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                    if(format.test(value)) {
+                                        swal("Operation Failure", "The chosen session name contained disallowed characters.", "error");
+                                    }
+                                    else {
+                                        swal.close():
+                                        createNewNamedSession(value);
+                                    }
+                                } else {
+                                    createNewSession();
+                                }
+                            });
+                    });
 
                 $sessionItem.append($infoHead);
 
@@ -381,6 +408,35 @@ function fetchSessions() {
 function createNewSession() {
 // CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
+        if (response.success && response.session_id) {
+            fetchSessions();
+            connectToSession(response.session_id);
+        } else {
+            if (typeof swal === "function") {
+                swal("Error", "Failed to create a new session.", "error");
+            } else {
+                alert('Failed to create a new session.');
+            }
+        }
+    }).fail(function (xhr, status, error) {
+        console.error('Failed to create a new session:', error);
+        if (typeof swal === "function") {
+            swal({
+                title: "Error",
+                text: "Failed to create a new session:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
+                type: "error",
+                confirmButtonText: 'Close',
+                html: true
+            });
+        } else {
+            alert(`Failed to create a new session: ${error}`);
+        }
+    });
+}
+
+function createNewNamedSession(sessionName) {
+// CHECKED - OK
+    $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', { session: sessionName }, function (response) {
         if (response.success && response.session_id) {
             fetchSessions();
             connectToSession(response.session_id);
