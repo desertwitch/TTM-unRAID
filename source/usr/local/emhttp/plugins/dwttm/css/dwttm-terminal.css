@@ -116,6 +116,7 @@ html, body {
 .split-container {
     flex-grow: 1;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .session-half {
