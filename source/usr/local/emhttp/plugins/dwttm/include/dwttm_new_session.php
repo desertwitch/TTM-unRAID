@@ -19,6 +19,14 @@
  */
 header('Content-Type: application/json');
 
+if (isset($_GET['session']) && !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Invalid session ID.'
+    ]);
+    exit;
+}
+
 $session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
 
 if($session) {

@@ -19,13 +19,22 @@
  */
 header('Content-Type: application/json');
 
-$session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
-$mouseState = isset($_GET['mouse']) ? strtolower($_GET['mouse']) : null;
-
-if (!$session) {
-    echo json_encode(["error" => "Session parameter is required"]);
+if (!isset($_GET['session']) || !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
+    echo json_encode([
+        'error' => 'Invalid or missing session ID.'
+    ]);
     exit;
 }
+
+if (isset($_GET['mouse']) && !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['mouse'])) {
+    echo json_encode([
+        'error' => 'Invalid mouse state providd.'
+    ]);
+    exit;
+}
+
+$session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
+$mouseState = isset($_GET['mouse']) ? strtolower($_GET['mouse']) : null;
 
 $currentMouseStateCommand = "tmux display -p -t $session:0 \"#{pane_in_mode}\" 2>/dev/null";
 $currentMouseStateOutput = [];
