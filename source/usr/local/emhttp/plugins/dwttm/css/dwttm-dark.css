@@ -75,6 +75,7 @@ body {
 }
 
 .session-item .info-header {
+    display: inline-block;
     font-family: monospace;
     font-weight: bold;
     cursor: text;
