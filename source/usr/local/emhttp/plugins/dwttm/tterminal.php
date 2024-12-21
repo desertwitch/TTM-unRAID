@@ -355,7 +355,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 if (response.success) {
                     connectToSession(response.session_id);
                 } else {
-                    alert('Failed to create a new session, maybe it already exists?');
+                    alert('Failed to create a new session, please try again.');
                 }
             })
             .catch(error => console.error('Error creating session:', error));

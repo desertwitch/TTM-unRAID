@@ -486,9 +486,9 @@ function createNewSession() {
             connectToSession(response.session_id);
         } else {
             if (typeof swal === "function") {
-                swal("Error", "Failed to create a new session, maybe it already exists?", "error");
+                swal("Error", "Failed to create a new session, please try again.", "error");
             } else {
-                alert('Failed to create a new session, maybe it already exists?');
+                alert('Failed to create a new session, please try again.');
             }
         }
     }).fail(function (xhr, status, error) {
