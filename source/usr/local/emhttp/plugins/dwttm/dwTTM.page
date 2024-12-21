@@ -241,7 +241,30 @@ function fetchSessions() {
                 .addClass('session-item add-new')
                 .on('click', function (e) {
                     e.stopPropagation();
-                    createNewSession();
+                    swal({
+                        title: "New Session",
+                        text: "Please choose a name for your new session (or leave empty):",
+                        type: "input",
+                        showCancelButton: true,
+                        confirmButtonText: "Create Session",
+                        html: true,
+                        inputPlaceholder: "Alphanumeric - no spaces or special characters!",
+                        closeOnConfirm: false
+                        },
+                        function(value){
+                            if(value !== false && value !== "") {
+                                var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                if(format.test(value)) {
+                                    swal("Operation Failure", "The chosen session name contained disallowed characters.", "error");
+                                }
+                                else {
+                                    swal.close();
+                                    createNewNamedSession(value);
+                                }
+                            } else {
+                                createNewSession();
+                            }
+                        });
                 });
 
             const $plusIcon = $('<div>')
@@ -279,30 +302,6 @@ function fetchSessions() {
                     .text(sessionName)
                     .on('click', function (e) {
                         e.stopPropagation();
-                        swal({
-                            title: "New Session",
-                            text: "Please choose a name for your new session (or leave empty):",
-                            type: "input",
-                            showCancelButton: true,
-                            confirmButtonText: "Create Session",
-                            html: true,
-                            inputPlaceholder: "Alphanumeric - no spaces or special characters!",
-                            closeOnConfirm: false
-                            },
-                            function(value){
-                                if(value !== false && value !== "") {
-                                    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                    if(format.test(value)) {
-                                        swal("Operation Failure", "The chosen session name contained disallowed characters.", "error");
-                                    }
-                                    else {
-                                        swal.close();
-                                        createNewNamedSession(value);
-                                    }
-                                } else {
-                                    createNewSession();
-                                }
-                            });
                     });
 
                 $sessionItem.append($infoHead);
