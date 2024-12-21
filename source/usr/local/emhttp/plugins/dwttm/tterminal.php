@@ -56,165 +56,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
     <script src="<?=autov('/plugins/dwttm/js/xterm.js');?>"></script>
     <script src="<?=autov('/plugins/dwttm/js/addon-fit.js');?>"></script>
     <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/xterm.css');?>">
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            font-family: Arial, sans-serif;
-            background-color: #000;
-            overflow: hidden;
-        }
-
-        #content {
-            display: flex;
-            flex-direction: column;
-            height: 100%; /* Ensures the content fills the entire viewport */
-        }
-
-        #dropdown-container {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            background-color: #333; /* Matches dropdown background */
-        }
-
-        #session-dropdown {
-            flex: 1; /* Ensures dropdown takes up the remaining space */
-            height: 40px;
-            font-size: 16px;
-            border: none;
-            outline: none;
-            padding-left: 10px;
-            padding-right: 10px;
-            background-color: #333;
-            color: #fff;
-        }
-
-        #close-button {
-            height: 40px;
-            width: 40px;
-            background-color: #444;
-            color: #888;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            transition: background-color 0.3s ease;
-        }
-
-        #close-button:hover {
-            background-color: darkred;
-            color: white;
-        }
-
-        #new-button {
-            height: 40px;
-            width: 40px;
-            background-color: #444;
-            color: #888;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            font-size: 18px;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
-            transition: background-color 0.3s ease;
-        }
-
-        #new-button:hover {
-            background-color: #555;
-            color: white;
-        }
-
-        #mouse-button {
-            height: 40px;
-            width: 40px;
-            background-color: #444;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            font-size: 18px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
-            transition: background-color 0.3s ease;
-        }
-
-        #mouse-button:hover {
-            background-color: #555;
-        }
-
-        .mouse-on {
-            color: white;
-        }
-
-        .mouse-off {
-            color: #888;
-        }
-
-        #terminal-container {
-            flex-grow: 1;
-            padding: 10px;
-            overflow: hidden;
-        }
-
-        .xterm .xterm-viewport {
-            overflow: hidden;
-        }
-
-        .split-container {
-            flex-grow: 1;
-            overflow: hidden;
-        }
-
-        .session-half {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .top-half {
-            height: 70%;
-            border-bottom: 2px solid #222;
-        }
-
-        .bottom-half {
-            height: 30%;
-        }
-
-        .session-half:hover {
-            background-color: #222;
-        }
-
-        .plus-icon {
-            font-size: 50px;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .session-text {
-            font-size: 16px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-        }
-</style>
+    <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/dwttm-terminal.css');?>">
 </head>
 <body>
 
@@ -238,6 +80,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             <div id="dropdown-container">
                 <select id="session-dropdown"></select>
                 <button id="new-button" title="New Session" onclick="createNewSession()">+</button>
+                <button id="rename-button" title="Rename Session" onclick="renameSession()">&#x270E;</button>
                 <button id="close-button" title="Terminate Session" onclick="closeSession()">&#x1F5D1;</button>
                 <button id="mouse-button" title="Toggle Scrolling">&#x1F5B1;</button>
             </div>
@@ -365,7 +208,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         // CHECKED - OK
             const sessionName = prompt("Enter a name for the new session (alphanumeric only):");
 
-            if (!sessionName || !/^[A-Za-z0-9]+$/.test(sessionName)) {
+            if(!sessionName) {
+                return;
+            }
+
+            if (!/^[A-Za-z0-9]+$/.test(sessionName)) {
                 alert("Invalid session name. Please use alphanumeric characters only.");
                 return;
             }
@@ -382,6 +229,33 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 }
             })
             .catch(error => console.error('Error creating session:', error));
+        }
+
+        function renameSession() {
+        // CHECKED - OK
+            const sessionName = prompt("Enter a new session name (alphanumeric only):");
+
+            if(!sessionName) {
+                return;
+            }
+
+            if (!/^[A-Za-z0-9]+$/.test(sessionName)) {
+                alert("Invalid session name. Please use alphanumeric characters only.");
+                return;
+            }
+
+            fetch(`/plugins/dwttm/include/dwttm_rename_session.php?session=${encodeURIComponent(currentSession)}&sessionName=${encodeURIComponent(sessionName)}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(response => {
+                if (response.success) {
+                    fetchSessions();
+                } else {
+                    alert(`Failed to rename session: ${response.error}\nFurther details may be found in the system log, where applicable.`);
+                }
+            })
+            .catch(error => console.error('Error renaming session:', error));
         }
 
         function sendTerminalSize() {
