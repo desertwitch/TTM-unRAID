@@ -130,12 +130,12 @@ html, body {
 }
 
 .top-half {
-    height: 70%;
+    height: 50%;
     border-bottom: 2px solid #222;
 }
 
 .bottom-half {
-    height: 30%;
+    height: 50%;
 }
 
 .session-half:hover {

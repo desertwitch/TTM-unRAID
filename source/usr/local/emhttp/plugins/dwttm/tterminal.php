@@ -69,11 +69,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             <div class="split-container">
                 <div class="session-half top-half" id="new-session-container" onclick="createNewSession()">
                     <div class="plus-icon">+</div>
-                    <div class="session-text">New Persistent Session</div>
+                    <div class="session-text">New Quick Session</div>
                 </div>
                 <div class="session-half bottom-half" id="new-named-session-container" onclick="createNewNamedSession()">
                     <div class="plus-icon">+</div>
-                    <div class="session-text">New Named Persistent Session</div>
+                    <div class="session-text">New Named Session</div>
                 </div>
             </div>
         <?php else: ?>
