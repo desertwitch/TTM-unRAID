@@ -545,7 +545,7 @@ function closeSession(sessionId) {
             if (typeof swal === "function") {
                 swal({
                     title: "Error",
-                    text: "Failed closing session <b>" + sessionId + "</b>:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                    text: "Failed closing session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
                     type: "error",
                     confirmButtonText: 'Close',
                     html: true
@@ -558,7 +558,7 @@ function closeSession(sessionId) {
         if (typeof swal === "function") {
             swal({
                 title: "Error",
-                text: "Failed closing session <b>" + sessionId + "</b>:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
+                text: "Failed closing session:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
                 type: "error",
                 confirmButtonText: 'Close',
                 html: true
@@ -578,7 +578,7 @@ function renameSession(sessionId, sessionName) {
             if (typeof swal === "function") {
                 swal({
                     title: "Error",
-                    text: "Failed renaming session <b>" + sessionId + "</b>:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                    text: "Failed renaming session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
                     type: "error",
                     confirmButtonText: 'Close',
                     html: true
@@ -591,7 +591,7 @@ function renameSession(sessionId, sessionName) {
         if (typeof swal === "function") {
             swal({
                 title: "Error",
-                text: "Failed renaming session <b>" + sessionId + "</b>:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
+                text: "Failed renaming session:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
                 type: "error",
                 confirmButtonText: 'Close',
                 html: true

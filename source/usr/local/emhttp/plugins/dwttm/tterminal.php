@@ -337,11 +337,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     if (response.success) {
                         connectToSession();
                     } else {
-                        alert(`Failed closing session ${currentSession}: ${response.error}`);
+                        alert(`Failed closing session: ${response.error}`);
                     }
                 })
                 .catch(error => {
-                    alert(`Failed closing session ${currentSession}: ${error}`);
+                    alert(`Failed closing session: ${error}`);
                 });
         }
 
