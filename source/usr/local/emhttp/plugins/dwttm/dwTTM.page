@@ -252,16 +252,21 @@ function fetchSessions() {
                         closeOnConfirm: false
                         },
                         function(value){
-                            if(value !== false && value !== "") {
+                            if(value === false) {
+                                swal.close();
+                                return
+                            }
+                            if(value !== "") {
                                 var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
                                 if(format.test(value)) {
-                                    swal("Operation Failure", "The chosen session name contained disallowed characters.", "error");
+                                    swal("Error", "The chosen session name contained disallowed characters.", "error");
                                 }
                                 else {
                                     swal.close();
                                     createNewNamedSession(value);
                                 }
                             } else {
+                                swal.close();
                                 createNewSession();
                             }
                         });
