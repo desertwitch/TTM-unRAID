@@ -296,7 +296,7 @@ function fetchSessions() {
                                         swal("Operation Failure", "The chosen session name contained disallowed characters.", "error");
                                     }
                                     else {
-                                        swal.close():
+                                        swal.close();
                                         createNewNamedSession(value);
                                     }
                                 } else {
