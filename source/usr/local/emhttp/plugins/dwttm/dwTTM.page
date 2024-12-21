@@ -182,7 +182,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
     <dl>
         <dt>
-            <input type="submit" name="#default" value="Default">
+            <input type="submit" class="dwttm-run" name="#default" value="Default">
         </dt>
         <dd>
             <input type="submit" name="#apply" value="Apply">
