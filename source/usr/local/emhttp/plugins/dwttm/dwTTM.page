@@ -264,11 +264,15 @@ function fetchSessions() {
                                     }
                                     else {
                                         swal.close();
-                                        createNewNamedSession(value);
+                                        setTimeout(function() {
+                                            createNewNamedSession(value);
+                                        }, 1000);
                                     }
                                 } else {
                                     swal.close();
-                                    createNewSession();
+                                    setTimeout(function() {
+                                        createNewSession();
+                                    }, 1000);
                                 }
                             });
                     } else {
@@ -345,7 +349,9 @@ function fetchSessions() {
                                         }
                                         else {
                                             swal.close();
-                                            renameSession(sessionId, value);
+                                            setTimeout(function() {
+                                                renameSession(sessionId, value);
+                                            }, 1000);
                                         }
                                     } else {
                                         swal.close();
