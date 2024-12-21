@@ -113,6 +113,27 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             color: white;
         }
 
+        #new-button {
+            height: 40px;
+            width: 40px;
+            background-color: #444;
+            color: #888;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 18px;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        #new-button:hover {
+            background-color: #555;
+            color: white;
+        }
+
         #mouse-button {
             height: 40px;
             width: 40px;
@@ -216,6 +237,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         <?php else: ?>
             <div id="dropdown-container">
                 <select id="session-dropdown"></select>
+                <button id="new-button" title="New Session" onclick="createNewSession()">+</button>
                 <button id="close-button" title="Terminate Session" onclick="closeSession()">&#x1F5D1;</button>
                 <button id="mouse-button" title="Toggle Scrolling">&#x1F5B1;</button>
             </div>
@@ -228,6 +250,8 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const term = new Terminal({ scrollback: 0 });
         const fitAddon = new FitAddon.FitAddon();
         const dropdown = document.getElementById('session-dropdown');
+        const currentSession = <?= json_encode($currentSession ?? ""); ?>;
+
         let disposable;
 
         function freeSession() {
@@ -257,8 +281,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     if (data.response) {
                         const sessions = data.response;
 
-                        const currentSession = <?= json_encode($currentSession); ?>;
-
                         sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
                         const dropdown = document.getElementById('session-dropdown');
@@ -267,7 +289,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                         sessions.forEach(session => {
                             const option = document.createElement('option');
                             option.value = session.session_id;
-                            option.textContent = session.session_name;
+                            option.textContent = `${session.session_name} - ${session.created_at}`;
                             if (session.session_id === currentSession) {
                                 option.selected = true;
                                 document.title = `${session.session_name}: TTerminal`;
@@ -309,7 +331,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             if (!confirmation) {
                 return;
             }
-            const currentSession = <?= json_encode($currentSession); ?>;
             fetch(`/plugins/dwttm/include/dwttm_close_session.php?session=${encodeURIComponent(currentSession)}`)
                 .then(response => response.json())
                 .then(response => {
@@ -467,7 +488,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             term.open(terminalContainer);
             fitAddon.fit();
 
-            const currentSession = <?= json_encode($currentSession); ?>;
             const csrfToken = <?= json_encode($var['csrf_token']); ?>;
             const servicePort = <?= json_encode($dwttm_service_port); ?>;
 
@@ -523,7 +543,9 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         // CHECKED - OK
             if (event.target && event.target.id === 'session-dropdown') {
                 const selectedSession = event.target.value;
-                connectToSession(selectedSession);
+                if(selectedSession !== currentSession) {
+                    connectToSession(selectedSession);
+                }
             }
         });
     </script>
