@@ -307,6 +307,30 @@ function fetchSessions() {
                     .text(sessionName)
                     .on('click', function (e) {
                         e.stopPropagation();
+                        swal({
+                            title: "Session: " + sessionName,
+                            text: "Please choose a new name for the session.",
+                            type: "input",
+                            showCancelButton: true,
+                            confirmButtonText: "Rename Session",
+                            html: true,
+                            inputPlaceholder: "Alphanumeric - no spaces or special characters!",
+                            closeOnConfirm: false
+                            },
+                            function(value){
+                                if(value !== false && value !== "") {
+                                    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+                                    if(format.test(value)) {
+                                        swal("Error", "The chosen session name contained disallowed characters.", "error");
+                                    }
+                                    else {
+                                        swal.close();
+                                        renameSession(sessionId, value);
+                                    }
+                                } else {
+                                    swal.close();
+                                }
+                            });
                     });
 
                 $sessionItem.append($infoHead);
@@ -322,6 +346,7 @@ function fetchSessions() {
                                 text: "Terminate the session and its running programs?",
                                 type: "warning",
                                 html: true,
+                                confirmButtonText: "Terminate Session",
                                 showCancelButton: true
                             }, function() {
                                 closeSession(sessionId);
@@ -496,6 +521,39 @@ function closeSession(sessionId) {
             });
         } else {
             alert(`Failed closing session ${sessionId}: ${error}`);
+        }
+    });
+}
+
+function renameSession(sessionId, sessionName) {
+// CHECKED - OK
+    $.getJSON('/plugins/dwttm/include/dwttm_rename_session.php', { session: sessionId, sessionName: sessionName }, function (response) {
+        if (response.success) {
+            fetchSessions();
+        } else {
+            if (typeof swal === "function") {
+                swal({
+                    title: "Error",
+                    text: "Failed renaming session <b>" + sessionId + "</b>:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                    type: "error",
+                    confirmButtonText: 'Close',
+                    html: true
+                });
+            } else {
+                alert(`Failed closing session ${sessionId}: ${response.error}`);
+            }
+        }
+    }).fail(function (xhr, status, error) {
+        if (typeof swal === "function") {
+            swal({
+                title: "Error",
+                text: "Failed renaming session <b>" + sessionId + "</b>:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
+                type: "error",
+                confirmButtonText: 'Close',
+                html: true
+            });
+        } else {
+            alert(`Failed renaming session ${sessionId}: ${error}`);
         }
     });
 }
