@@ -403,6 +403,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws.onclose = () => {
                 term.write('\r\n*** Disconnected from session ***\r\n');
+                term.write('\r\nYou can open a new session by clicking on the + button in the GUI.\r\n');
                 freeSession();
             };
 
