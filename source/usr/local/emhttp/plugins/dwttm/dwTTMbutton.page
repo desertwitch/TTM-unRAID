@@ -1,7 +1,7 @@
 Menu="Buttons:3_"
 Title="TTerminal"
 Icon="tty"
-Cond="@shell_exec('pgrep -x ttmd 2>/dev/null')"
+Cond="@shell_exec('pgrep -x ttmd 2>/dev/null') && (($ttmc = @parse_ini_file('/boot/config/plugins/dwttm/ddwttm.cfg')) === false || !isset($ttmc['OSBUTTON']) || $ttmc['OSBUTTON'] !== 'disable')"
 ---
 <?
 /* Copyright Derek Macias (parts of code from NUT package)

@@ -184,6 +184,20 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p><strong>Fallback</strong> uses direct, non-SSL connections to the configured port that the TTM service is listening on.</p>
             <p>Please note that the <strong>Fallback</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
         </blockquote>
+
+        <dl>
+            <dt>TTM Button in OS Menu:</dt>
+            <dd>
+                <select id="OSBUTTON" name="OSBUTTON" size="1">
+                    <?=mk_option($dwttm_os_button, "disable", "No");?>
+                    <?=mk_option($dwttm_os_button, "enable", "Yes");?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Shows the TTM button in the OS menu for quicker access to the TTM terminals.</p>
+        </blockquote>
     </div>
 
     <dl>
