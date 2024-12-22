@@ -211,14 +211,14 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             if (sessionName === null) {
                 return;
             } else if (sessionName.trim() !== "") {
-                if (!/^[A-Za-z0-9]+$/.test(sessionName)) {
+                if (!/^[A-Za-z0-9]+$/.test(sessionName.trim())) {
                     alert("Invalid session name. Please use alphanumeric characters only.");
                     return;
                 }
             }
 
             const fetchUrl = sessionName.trim() !== ""
-            ? `/plugins/dwttm/include/dwttm_new_session.php?session=${encodeURIComponent(sessionName)}`
+            ? `/plugins/dwttm/include/dwttm_new_session.php?session=${encodeURIComponent(sessionName.trim())}`
             : `/plugins/dwttm/include/dwttm_new_session.php`;
 
             fetch(fetchUrl, {
@@ -248,12 +248,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 return;
             }
 
-            if (!/^[A-Za-z0-9]+$/.test(sessionName)) {
+            if (!/^[A-Za-z0-9]+$/.test(sessionName.trim())) {
                 alert("Invalid session name. Please use alphanumeric characters only.");
                 return;
             }
 
-            fetch(`/plugins/dwttm/include/dwttm_rename_session.php?session=${encodeURIComponent(currentSession)}&sessionName=${encodeURIComponent(sessionName)}`, {
+            fetch(`/plugins/dwttm/include/dwttm_rename_session.php?session=${encodeURIComponent(currentSession)}&sessionName=${encodeURIComponent(sessionName.trim())}`, {
                 method: 'GET',
             })
             .then(response => response.json())

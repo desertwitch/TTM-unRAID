@@ -257,15 +257,15 @@ function fetchSessions() {
                                     swal.close();
                                     return;
                                 }
-                                if(value !== "") {
+                                if(value.trim() !== "") {
                                     var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                    if(format.test(value)) {
+                                    if(format.test(value.trim())) {
                                         swal("Error", "The chosen session name contained disallowed characters.", "error");
                                     }
                                     else {
                                         swal.close();
                                         setTimeout(function() {
-                                            createNewNamedSession(value);
+                                            createNewNamedSession(value.trim());
                                         }, 1000);
                                     }
                                 } else {
@@ -282,12 +282,12 @@ function fetchSessions() {
                             return;
                         }
 
-                        if (value !== "") {
+                        if (value.trim() !== "") {
                             var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                            if (format.test(value)) {
+                            if (format.test(value.trim())) {
                                 alert("Error: The chosen session name contained disallowed characters.");
                             } else {
-                                createNewNamedSession(value);
+                                createNewNamedSession(value.trim());
                             }
                         } else {
                             createNewSession();
@@ -342,15 +342,15 @@ function fetchSessions() {
                                 closeOnConfirm: false
                                 },
                                 function(value){
-                                    if(value !== false && value !== "") {
+                                    if(value !== false && value.trim() !== "") {
                                         var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                        if(format.test(value)) {
+                                        if(format.test(value.trim())) {
                                             swal("Error", "The chosen session name contained disallowed characters.", "error");
                                         }
                                         else {
                                             swal.close();
                                             setTimeout(function() {
-                                                renameSession(sessionId, value);
+                                                renameSession(sessionId, value.trim());
                                             }, 1000);
                                         }
                                     } else {
@@ -364,12 +364,12 @@ function fetchSessions() {
                                 return;
                             }
 
-                            if (value !== "") {
+                            if (value.trim() !== "") {
                                 var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                if (format.test(value)) {
+                                if (format.test(value.trim())) {
                                     alert("Error: The chosen session name contained disallowed characters.");
                                 } else {
-                                    renameSession(sessionId, value);
+                                    renameSession(sessionId, value.trim());
                                 }
                             } else {
                                 return;
