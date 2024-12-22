@@ -27,7 +27,17 @@ stop already running instances before doing anything
 -->
 <FILE Run="/bin/bash">
 <INLINE>
-killall ttmd
+if [ -x /etc/rc.d/rc.ttmd ]; then
+    echo "Making sure all existing TTM services are stopped (before install/upgrade)..."
+    if ! /etc/rc.d/rc.ttmd stop >/dev/null 2>&amp;1; then
+        echo "WARNING:"
+        echo "WARNING: The TTM installation script was not able to stop all TTM services."
+        echo "WARNING: IN CASE OF PROBLEMS, please REBOOT YOUR SYSTEM to complete any upgrades."
+        echo "WARNING:"
+    fi
+else
+    killall ttmd >/dev/null 2>&amp;1
+fi
 exit 0
 </INLINE>
 </FILE>
@@ -121,6 +131,11 @@ if [ "$SERVICE" == "enable" ]; then
     if type tmux >/dev/null 2>&amp;1 &amp;&amp; tmux -V >/dev/null 2>&amp;1; then
         echo "Starting TTM service..."
         /etc/rc.d/rc.ttmd start 2>&amp;1 | logger -t "rc.ttmd"
+        if [ "${PIPESTATUS[0]}" -eq 0 ]; then
+            echo "TTM service has been started with success."
+        else
+            echo "WARNING: TTM service failed to start, check SYSLOG for more information."
+        fi
     else
         echo "Starting TTM service..."
         echo "Error: Unable to start 'ttmd' - Tmux not found or not functional."
@@ -142,7 +157,17 @@ definition for uninstallation of the plugin
 -->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>
-killall ttmd
+if [ -x /etc/rc.d/rc.ttmd ]; then
+    echo "Making sure all existing TTM services are stopped (before uninstall)..."
+    if ! /etc/rc.d/rc.ttmd stop >/dev/null 2>&amp;1; then
+        echo "WARNING:"
+        echo "WARNING: The TTM uninstallation script was not able to stop all TTM services."
+        echo "WARNING: IN CASE OF PROBLEMS, please REBOOT YOUR SYSTEM to remove any remaining packages."
+        echo "WARNING:"
+    fi
+else
+    killall ttmd >/dev/null 2>&amp;1
+fi
 
 if [ -f /boot/config/plugins/unassigned.devices.preclear.plg ]; then
     echo ""
