@@ -200,7 +200,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
-            <dt>TTM Page - New Session Button Behavior:</dt>
+            <dt>Page - New Session Button Behavior:</dt>
             <dd>
                 <select id="PLUSBUTTONSETT" name="PLUSBUTTONSETT" size="1">
                     <?=mk_option($dwttm_plus_button, "quick", "Quick Session");?>
@@ -214,7 +214,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
-            <dt>TTM Window - New Session Button Behavior:</dt>
+            <dt>Window - New Session Button Behavior:</dt>
             <dd>
                 <select id="PLUSBUTTONPOP" name="PLUSBUTTONPOP" size="1">
                     <?=mk_option($dwttm_plus_button_pop, "quick", "Quick Session");?>
