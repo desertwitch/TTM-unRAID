@@ -185,6 +185,10 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p>Please note that the <strong>Fallback</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
         </blockquote>
 
+        <div>
+            <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-cogs"></i>DISPLAY AND FUNCTION SETTINGS</strong></span>
+        </div><br>
+
         <dl>
             <dt>Show TTM Button in OS Menu:</dt>
             <dd>
