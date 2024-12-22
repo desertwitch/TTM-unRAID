@@ -45,7 +45,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <thead>
     <tr>
         <th>
-            <strong>TTerminal</strong>
+            <strong><em>TTerminal</em></strong>
             <span style="float:right;text-transform:none;">
                 <span id="mouse-button-info" style="display:none;margin-right:5px;"><em>Scrolling Mode:</em></span>
                 <i id="mouse-button" class="fa fa-mouse-pointer" style="display:none;"></i>
@@ -67,7 +67,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <thead>
     <tr>
         <th>
-            <strong>TTerminal Sessions</strong>
+            <strong><em>TTerminal Sessions</em></strong>
             <span style="float:right;text-transform:none;">
                 <em>Hover over and tap on any session name to rename it.</em>
             </span>
