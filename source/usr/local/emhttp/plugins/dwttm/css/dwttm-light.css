@@ -7,7 +7,6 @@ body {
 .termtable {
     width: 100%;
     table-layout: fixed;
-    background-color: #000000;
 }
 
 .termtable td {
