@@ -42,17 +42,25 @@ install or upgrade dependency files
 
 <FILE Run="/bin/bash" Min="6.13.0">
 <INLINE>
-if ! type tmux >/dev/null 2>&amp;1; then
-    upgradepkg --install-new &plgPATH;/tmux-3.5a-x86_64-1.txz
-    rm -f &plgPATH;/custom
-else
+if [ -f /boot/config/plugins/unassigned.devices.preclear.plg ]; then
     echo ""
-    echo "-------------------------------------------------------------"
-    echo " Tmux is already installed, not reinstalling."
-    echo " It could be a part of another plugin, so we'll use that."
-    echo "-------------------------------------------------------------"
+    echo "----------------------------------------------------------------"
+    echo " Tmux is already installed from elsewhere, not reinstalling."
+    echo " It is part of Unassigned Devices Preclear, so we'll use that."
+    echo "----------------------------------------------------------------"
     echo ""
     touch &plgPATH;/custom
+elif compgen -G "/boot/extra/tmux*" >/dev/null 2>&amp;1; then
+    echo ""
+    echo "----------------------------------------------------------------"
+    echo " Tmux is already installed elsewhere, not reinstalling."
+    echo " It was found in the /boot/extra/ folder, so we'll use that."
+    echo "----------------------------------------------------------------"
+    echo ""
+    touch &plgPATH;/custom
+else
+    upgradepkg --install-new &plgPATH;/tmux-3.5a-x86_64-1.txz
+    rm -f &plgPATH;/custom
 fi
 exit 0
 </INLINE>
@@ -65,17 +73,25 @@ exit 0
 
 <FILE Run="/bin/bash" Min="6.11.0" Max="6.12.99">
 <INLINE>
-if ! type tmux >/dev/null 2>&amp;1; then
-    upgradepkg --install-new &plgPATH;/tmux-3.2a-x86_64-1.txz
-    rm -f &plgPATH;/custom
-else
+if [ -f /boot/config/plugins/unassigned.devices.preclear.plg ]; then
     echo ""
-    echo "-------------------------------------------------------------"
-    echo " Tmux is already installed, not reinstalling."
-    echo " It could be a part of another plugin, so we'll use that."
-    echo "-------------------------------------------------------------"
+    echo "----------------------------------------------------------------"
+    echo " Tmux is already installed from elsewhere, not reinstalling."
+    echo " It is part of Unassigned Devices Preclear, so we'll use that."
+    echo "----------------------------------------------------------------"
     echo ""
     touch &plgPATH;/custom
+elif compgen -G "/boot/extra/tmux*" >/dev/null 2>&amp;1; then
+    echo ""
+    echo "----------------------------------------------------------------"
+    echo " Tmux is already installed from elsewhere, not reinstalling."
+    echo " It was found in the /boot/extra/ folder, so we'll use that."
+    echo "----------------------------------------------------------------"
+    echo ""
+    touch &plgPATH;/custom
+else
+    upgradepkg --install-new &plgPATH;/tmux-3.2a-x86_64-1.txz
+    rm -f &plgPATH;/custom
 fi
 exit 0
 </INLINE>
@@ -113,10 +129,10 @@ if [ "$SERVICE" == "enable" ]; then
 fi
 
 echo ""
-echo "-------------------------------------------------------------"
+echo "----------------------------------------------------------------"
 echo " TTerminal Manager (TTM) has been installed."
 echo " Version: &version; / Plugin Maintainer: &author;"
-echo "-------------------------------------------------------------"
+echo "----------------------------------------------------------------"
 echo ""
 </INLINE>
 </FILE>
@@ -128,7 +144,21 @@ definition for uninstallation of the plugin
 <INLINE>
 killall ttmd
 
-if [ -f &plgPATH;/custom ]; then
+if [ -f /boot/config/plugins/unassigned.devices.preclear.plg ]; then
+    echo ""
+    echo "----------------------------------------------------------------"
+    echo " Tmux was installed from elsewhere, not removing it here."
+    echo " It is part of Unassigned Devices Preclear, so we'll keep that."
+    echo "----------------------------------------------------------------"
+    echo ""
+    rm -f &plgPATH;/tmux*.txz
+elif compgen -G "/boot/extra/tmux*" >/dev/null 2>&amp;1; then
+    echo ""
+    echo "----------------------------------------------------------------"
+    echo " Tmux was installed from elsewhere, not removing it here."
+    echo " It was found in the /boot/extra/ folder, so we'll keep that."
+    echo "----------------------------------------------------------------"
+    echo ""
     rm -f &plgPATH;/tmux*.txz
 fi
 removepkg &plgPATH;/*.txz
@@ -138,10 +168,10 @@ rm -rf &emhttp;
 rm -f /var/log/ttmd.log
 
 echo ""
-echo "-----------------------------------------------------------"
+echo "----------------------------------------------------------------"
 echo " TTerminal Manager (TTM) for UNRAID has been removed."
 echo " Version: &version; / Plugin Maintainer: &author;"
-echo "-----------------------------------------------------------"
+echo "----------------------------------------------------------------"
 echo ""
 </INLINE>
 </FILE>
