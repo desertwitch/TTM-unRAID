@@ -102,13 +102,13 @@ try {
 } catch(\Throwable $t) {
     error_log($t);
     echo json_encode([
-        'error' => $t->getMessage();
+        'error' => $t->getMessage()
     ]);
     exit;
 } catch(\Exception $e) {
     error_log($e);
     echo json_encode([
-        'error' => $e->getMessage();
+        'error' => $e->getMessage()
     ]);
     exit;
 }

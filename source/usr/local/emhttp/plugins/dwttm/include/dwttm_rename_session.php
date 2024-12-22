@@ -59,14 +59,14 @@ try {
     error_log($t);
     echo json_encode([
         'success' => false,
-        'error' => $t->getMessage();
+        'error' => $t->getMessage()
     ]);
     exit;
 } catch(\Exception $e) {
     error_log($e);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage();
+        'error' => $e->getMessage()
     ]);
     exit;
 }
