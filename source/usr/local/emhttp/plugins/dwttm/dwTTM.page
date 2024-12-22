@@ -748,7 +748,7 @@ function connectToSession(sessionId) {
         console.error('WebSocket error:', error);
         if (ws.readyState !== WebSocket.OPEN) {
             term.write('\r\n*** Connection Error: Unable to connect to the requested session. ***\r\n');
-            term.write('\r\nThis is can be caused by using TTM direct routing mode in an SSL/VPN environment.\r\n');
+            term.write('\r\nThis is can be caused by using TTM fallback routing mode in an SSL/VPN setting.\r\n');
             term.write('\r\nPlease check your browser console, change the TTM routing mode and/or restart TTM.\r\n');
         }
     };
@@ -822,7 +822,7 @@ $(function() {
         term.write("\t\t    #### ###  ###  ###    \r\n");
         term.write("\t\t    ###. ###  ###  ###    \r\n");
         term.write("\r\n\t/ TTerminal Manager (TTM) for UNRAID /\r\n\r\n");
-        term.write("\x1b[3;38;2;200;200;200m\t\t Please select a terminal session from the GUI...\r\n\r\n\x1b[0m");
+        term.write("\x1b[3;38;2;200;200;200m\t\t Please scroll down and select a terminal session...\r\n\r\n\x1b[0m");
 
         fetchSessions();
     <?endif;?>
