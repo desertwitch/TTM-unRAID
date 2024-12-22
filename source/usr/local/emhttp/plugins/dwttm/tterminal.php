@@ -139,7 +139,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                             }
                             fragment.appendChild(option);
                         });
-                        dropdown.innerHTML = '<option value="">Select Session / New Session</option>';
+                        dropdown.innerHTML = '<option value="">New Session / Select Session</option>';
                         dropdown.appendChild(fragment);
                     } else {
                         console.error('Failed to fetch sessions - invalid response.');

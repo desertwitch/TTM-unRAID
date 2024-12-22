@@ -46,8 +46,9 @@ if($dwttm_running && !$dwttm_tmux_functional) {
     <tr>
         <th>
             <strong>TTerminal</strong>
-            <span style="float:right">
-                <i id="mouse-button" class="fa fa-mouse-pointer" style="display:none"></i>
+            <span style="float:right;text-transform:none;">
+                <span id="mouse-button-info" style="display:none;margin-right:5px;"><em>Scrolling Mode:</em></span>
+                <i id="mouse-button" class="fa fa-mouse-pointer" style="display:none;"></i>
             </span>
         </th>
     </tr>
@@ -65,7 +66,12 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <table class="tablesorter">
 <thead>
     <tr>
-        <th><strong>TTerminal Sessions</strong></th>
+        <th>
+            <strong>TTerminal Sessions</strong>
+            <span style="float:right;text-transform:none;">
+                <em>Hover over and tap on any session name to rename it.</em>
+            </span>
+        </th>
     </tr>
 </thead>
 <tbody>
@@ -605,10 +611,12 @@ function renameSession(sessionId, sessionName) {
 function fetchSessionMouse(sessionId) {
 // CHECKED - OK
     const $mouseButton = $('#mouse-button');
+    const $mouseButtonInfo = $('#mouse-button-info');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId }, function (response) {
         if (response.mouse) {
             $mouseButton.off("click");
             $mouseButton.show();
+            $mouseButtonInfo.show();
             if(response.mouse === "on") {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "off");
@@ -625,11 +633,13 @@ function fetchSessionMouse(sessionId) {
         } else {
             $mouseButton.off("click");
             $mouseButton.hide();
+            $mouseButtonInfo.hide();
             console.error('Error while fetching mouse for session:', response.error);
         }
     }).fail(function (xhr, status, error) {
         $mouseButton.off("click");
         $mouseButton.hide();
+        $mouseButtonInfo.hide();
         console.error('Error fetching mouse for session:', error);
     });
 }
