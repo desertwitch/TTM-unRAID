@@ -311,8 +311,7 @@ function fetchSessions() {
                                     return;
                                 }
                                 if(value.trim() !== "") {
-                                    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                    if(format.test(value.trim())) {
+                                    if(!/^[A-Za-z0-9]+$/.test(value.trim())) {
                                         swal("Error", "The chosen session name contained disallowed characters.", "error");
                                     }
                                     else {
@@ -336,8 +335,7 @@ function fetchSessions() {
                         }
 
                         if (value.trim() !== "") {
-                            var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                            if (format.test(value.trim())) {
+                            if (!/^[A-Za-z0-9]+$/.test(value.trim())) {
                                 alert("Error: The chosen session name contained disallowed characters.");
                             } else {
                                 createNewNamedSession(value.trim());
@@ -399,8 +397,7 @@ function fetchSessions() {
                                 },
                                 function(value){
                                     if(value !== false && value.trim() !== "") {
-                                        var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                        if(format.test(value.trim())) {
+                                        if(!/^[A-Za-z0-9]+$/.test(value.trim())) {
                                             swal("Error", "The chosen session name contained disallowed characters.", "error");
                                         }
                                         else {
@@ -421,8 +418,7 @@ function fetchSessions() {
                             }
 
                             if (value.trim() !== "") {
-                                var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                                if (format.test(value.trim())) {
+                                if (!/^[A-Za-z0-9]+$/.test(value.trim())) {
                                     alert("Error: The chosen session name contained disallowed characters.");
                                 } else {
                                     renameSession(sessionId, value.trim());
@@ -522,10 +518,11 @@ function fetchSessions() {
                 $sessionListContainer.append($sessionItem);
             });
         } else {
-            console.error('Failed to fetch sessions - invalid response.');
-        }
-        if (!data.success && data.error) {
-            console.warn('Error processing sessions:', data.error)
+            if (data.error) {
+                console.error('Error processing sessions:', data.error)
+            } else {
+                console.error('Error processing sessions, no error message.');
+            }
         }
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
@@ -546,9 +543,13 @@ function createNewSession() {
             } else {
                 alert('Failed to create a new session, please try again.');
             }
+            if(response.error) {
+                console.error('Error while creating session:', response.error);
+            } else {
+                console.error('Error while creating session, no error message.');
+            }
         }
     }).fail(function (xhr, status, error) {
-        console.error('Failed to create a new session:', error);
         if (typeof swal === "function") {
             swal({
                 title: "Error",
@@ -560,6 +561,7 @@ function createNewSession() {
         } else {
             alert(`Failed to create a new session: ${error}`);
         }
+        console.error('Failed to create a new session:', error);
     });
 }
 
@@ -575,9 +577,13 @@ function createNewNamedSession(sessionName) {
             } else {
                 alert('Failed to create a new session, maybe it already exists?');
             }
+            if(response.error) {
+                console.error('Error while creating session:', response.error);
+            } else {
+                console.error('Error while creating session, no error message.');
+            }
         }
     }).fail(function (xhr, status, error) {
-        console.error('Failed to create a new session:', error);
         if (typeof swal === "function") {
             swal({
                 title: "Error",
@@ -589,6 +595,7 @@ function createNewNamedSession(sessionName) {
         } else {
             alert(`Failed to create a new session: ${error}`);
         }
+        console.error('Failed to create a new session:', error);
     });
 }
 
@@ -598,16 +605,32 @@ function closeSession(sessionId) {
         if (response.success) {
             fetchSessions();
         } else {
-            if (typeof swal === "function") {
-                swal({
-                    title: "Error",
-                    text: "Failed closing session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
-                    type: "error",
-                    confirmButtonText: 'Close',
-                    html: true
-                });
+            if(response.error) {
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed closing session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed closing session: ${response.error}`);
+                }
+                console.error('Error while closing session:', response.error);
             } else {
-                alert(`Failed closing session ${sessionId}: ${response.error}`);
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed closing session, no error message.<br>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed closing session, no error message.`);
+                }
+                console.error('Error while closing session, no error message.');
             }
         }
     }).fail(function (xhr, status, error) {
@@ -620,8 +643,9 @@ function closeSession(sessionId) {
                 html: true
             });
         } else {
-            alert(`Failed closing session ${sessionId}: ${error}`);
+            alert(`Failed closing session: ${error}`);
         }
+        console.error('Failed closing session:', error);
     });
 }
 
@@ -631,16 +655,32 @@ function renameSession(sessionId, sessionName) {
         if (response.success) {
             fetchSessions();
         } else {
-            if (typeof swal === "function") {
-                swal({
-                    title: "Error",
-                    text: "Failed renaming session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
-                    type: "error",
-                    confirmButtonText: 'Close',
-                    html: true
-                });
+            if(response.error) {
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed renaming session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed renaming session: ${response.error}`);
+                }
+                console.error('Error while renaming session:', response.error);
             } else {
-                alert(`Failed closing session ${sessionId}: ${response.error}`);
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed renaming session, no error message.<br>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed renaming session, no error message.}`);
+                }
+                console.error('Error while renaming session, no error message.');
             }
         }
     }).fail(function (xhr, status, error) {
@@ -653,8 +693,9 @@ function renameSession(sessionId, sessionName) {
                 html: true
             });
         } else {
-            alert(`Failed renaming session ${sessionId}: ${error}`);
+            alert(`Failed renaming session: ${error}`);
         }
+        console.error('Error renaming session:', error);
     });
 }
 
@@ -684,13 +725,17 @@ function fetchSessionMouse(sessionId) {
             $mouseButton.off("click");
             $mouseButton.hide();
             $mouseButtonInfo.hide();
-            console.error('Error while fetching mouse for session:', response.error);
+            if(response.error) {
+                console.error('Error while fetching mouse mode for session:', response.error);
+            } else {
+                console.error('Error while fetching mouse mode for session, no error message.');
+            }
         }
     }).fail(function (xhr, status, error) {
         $mouseButton.off("click");
         $mouseButton.hide();
         $mouseButtonInfo.hide();
-        console.error('Error fetching mouse for session:', error);
+        console.error('Error fetching mouse mode for session:', error);
     });
 }
 
@@ -713,14 +758,61 @@ function setSessionMouse(sessionId, requestedMouse) {
                 $mouseButton.removeClass("mouse-on");
                 $mouseButton.addClass("mouse-off");
             }
-            if(response.requestmouse !== response.newmouse) {
-                alert("Error setting new mouse mode, try again!");
+            if(!response.requestmouse || !response.newmouse || response.requestmouse !== response.newmouse) {
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed setting new mouse mode, please try again.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert("Failed setting new mouse mode, please try again.");
+                }
             }
         } else {
-            alert('Error setting mouse for session: ' + response.error);
+            if(response.error) {
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed setting mouse mode:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed setting mouse mode: ${response.error}`);
+                }
+                console.error('Error while setting mouse mode:', response.error);
+            } else {
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed setting mouse mode, no error message.<br>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed setting mouse mode, no error message.}`);
+                }
+                console.error('Error setting mouse mode, no error message.');
+            }
         }
     }).fail(function (xhr, status, error) {
-        alert('Error setting mouse for session: ' + error);
+        if (typeof swal === "function") {
+            swal({
+                title: "Error",
+                text: "Failed setting mouse mode:<br><pre>" + error + "</pre>Further details may be found in the system log, where applicable.",
+                type: "error",
+                confirmButtonText: 'Close',
+                html: true
+            });
+        } else {
+            alert(`Failed setting mouse mode: ${error}`);
+        }
+        console.error('Error setting mouse mode for session:', error);
     });
 }
 
@@ -858,9 +950,9 @@ $(function() {
 
     $('.dwttm-numeric').mask('XXXXXXX', {
         translation: {
-        'X': {
-            pattern: /[0-9]/, optional: true
-        }
+            'X': {
+                pattern: /[0-9]/, optional: true
+            }
         }
     });
 

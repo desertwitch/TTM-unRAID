@@ -17,37 +17,54 @@
  * included in all copies or substantial portions of the Software.
  *
  */
-header('Content-Type: application/json');
+try {
+    header('Content-Type: application/json');
 
-if (isset($_GET['session']) && !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
+    if (isset($_GET['session']) && !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
+        echo json_encode([
+            'success' => false,
+            'error' => 'Invalid session ID.'
+        ]);
+        exit;
+    }
+
+    $session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
+
+    if($session) {
+        $command = "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash' 2>/dev/null";
+    } else {
+        $command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash' 2>/dev/null";
+    }
+
+    $output = [];
+    $returnCode = null;
+    exec($command, $output, $returnCode);
+
+    if ($returnCode === 0 && !empty($output)) {
+        echo json_encode([
+            'success' => true,
+            'session_id' => trim($output[0])
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'error' => 'Non-zero return code.'
+        ]);
+    }
+    exit;
+} catch(\Throwable $t) {
+    error_log($t);
     echo json_encode([
         'success' => false,
-        'error' => 'Invalid session ID.'
+        'error' => $t->getMessage();
+    ]);
+    exit;
+} catch(\Exception $e) {
+    error_log($e);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage();
     ]);
     exit;
 }
-
-$session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
-
-if($session) {
-    $command = "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
-} else {
-    $command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
-}
-
-$output = [];
-$returnCode = null;
-exec($command, $output, $returnCode);
-
-if ($returnCode === 0 && !empty($output)) {
-    echo json_encode([
-        'success' => true,
-        'session_id' => trim($output[0])
-    ]);
-} else {
-    echo json_encode([
-        'success' => false
-    ]);
-}
-exit;
 ?>

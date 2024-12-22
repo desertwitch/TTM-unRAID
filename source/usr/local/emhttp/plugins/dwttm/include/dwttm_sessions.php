@@ -17,48 +17,62 @@
  * included in all copies or substantial portions of the Software.
  *
  */
-header('Content-Type: application/json');
+try {
+    header('Content-Type: application/json');
 
-$command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}"';
-$output = [];
-$returnCode = null;
-exec($command . " 2>&1", $output, $returnCode);
+    $command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}" 2>/dev/null';
+    $output = [];
+    $returnCode = null;
+    exec($command, $output, $returnCode);
 
-if ($returnCode !== 0) {
-    $outputString = implode("\n", $output);
+    if ($returnCode !== 0) {
+        echo json_encode([
+            "success" => false,
+            "response" => []
+        ]);
+        exit;
+    }
+
+    $response = [];
+
+    foreach ($output as $line) {
+        list($sessionId, $sessionName, $sessionCreated) = explode('/', $line, 3);
+
+        $captureCommand = "tmux capture-pane -t '{$sessionId}:0' -p 2>/dev/null";
+        $captureOutput = [];
+        $captureReturnCode = 0;
+        exec($captureCommand, $captureOutput, $captureReturnCode);
+
+        $previewSuccess = ($captureReturnCode === 0);
+        $preview = $previewSuccess ? implode("\n", $captureOutput) : "Failed to retrieve preview for session {$sessionName}.";
+
+        $response[] = [
+            "session_id" => $sessionId,
+            "session_name" => $sessionName,
+            "created_at" => date('Y-m-d H:i:s', intval($sessionCreated)),
+            "preview" => $preview,
+            "preview_success" => $previewSuccess
+        ];
+    }
+
     echo json_encode([
-        "success" => false,
-        "error" => $outputString,
-        "response" => []
+        "success" => true,
+        "response" => $response
+    ]);
+    exit;
+} catch(\Throwable $t) {
+    error_log($t);
+    echo json_encode([
+        'success' => false,
+        'error' => $t->getMessage();
+    ]);
+    exit;
+} catch(\Exception $e) {
+    error_log($e);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage();
     ]);
     exit;
 }
-
-$response = [];
-
-foreach ($output as $line) {
-    list($sessionId, $sessionName, $sessionCreated) = explode('/', $line, 3);
-
-    $captureCommand = "tmux capture-pane -t '{$sessionId}:0' -p";
-    $captureOutput = [];
-    $captureReturnCode = 0;
-    exec($captureCommand, $captureOutput, $captureReturnCode);
-
-    $previewSuccess = ($captureReturnCode === 0);
-    $preview = $previewSuccess ? implode("\n", $captureOutput) : "Failed to retrieve preview for session {$sessionName}.";
-
-    $response[] = [
-        "session_id" => $sessionId,
-        "session_name" => $sessionName,
-        "created_at" => date('Y-m-d H:i:s', intval($sessionCreated)), 
-        "preview" => $preview,
-        "preview_success" => $previewSuccess
-    ];
-}
-
-echo json_encode([
-    "success" => true,
-    "response" => $response
-]);
-exit;
 ?>

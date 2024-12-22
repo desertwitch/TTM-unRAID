@@ -142,10 +142,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                         dropdown.innerHTML = '<option value="">New Session / Select Session</option>';
                         dropdown.appendChild(fragment);
                     } else {
-                        console.error('Failed to fetch sessions - invalid response.');
-                    }
-                    if (!data.success && data.error) {
-                        console.warn('Error processing sessions:', data.error)
+                        if (data.error) {
+                            console.error('Error processing sessions:', data.error)
+                        } else {
+                            console.error('Error processing sessions, no error message.');
+                        }
                     }
                 })
                 .catch(error => {
@@ -180,11 +181,18 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     if (response.success) {
                         connectToSession();
                     } else {
-                        alert(`Failed closing session: ${response.error}`);
+                        if(response.error) {
+                            alert(`Failed closing session: ${response.error}`);
+                            console.error("Error while closing session:", response.error);
+                        } else {
+                            alert(`Failed closing session, no error message.`);
+                            console.error("Error while closing session, no error message.");
+                        }
                     }
                 })
                 .catch(error => {
                     alert(`Failed closing session: ${error}`);
+                    console.error("Failed closing session:", error);
                 });
         }
 
@@ -199,9 +207,17 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     connectToSession(response.session_id);
                 } else {
                     alert('Failed to create a new session, please try again.');
+                    if(response.error) {
+                        console.error('Error while creating session:', response.error);
+                    } else {
+                        console.error('Error while creating session, no error message.');
+                    }
                 }
             })
-            .catch(error => console.error('Error creating session:', error));
+            .catch(error => {
+                alert('Failed to create session: ' + error);
+                console.error('Failed to create session:', error);
+            });
         }
 
         function createNewNamedSession() {
@@ -235,9 +251,17 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                             ? ', maybe it already exists?'
                             : '.')
                     );
+                    if(response.error) {
+                        console.error('Error while creating session:', response.error);
+                    } else {
+                        console.error('Error while creating session, no error message.');
+                    }
                 }
             })
-            .catch(error => console.error('Error creating session:', error));
+            .catch(error => {
+                alert('Failed to create session: ' + error);
+                console.error('Failed to create session:', error);
+            });
         }
 
         function renameSession() {
@@ -261,10 +285,19 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 if (response.success) {
                     fetchSessions();
                 } else {
-                    alert(`Failed to rename session: ${response.error}\nFurther details may be found in the system log, where applicable.`);
+                    if(response.error) {
+                        alert(`Failed to rename session: ${response.error}\nFurther details may be found in the system log, where applicable.`);
+                        console.error("Error while renaming session:", response.error);
+                    } else {
+                        alert(`Failed to rename session, no error message.\nFurther details may be found in the system log, where applicable.`);
+                        console.error("Error while renaming session, no error message");
+                    }
                 }
             })
-            .catch(error => console.error('Error renaming session:', error));
+            .catch(error => {
+                alert('Failed to rename session: ' + error);
+                console.error('Failed to rename session:', error);
+            });
         }
 
         function sendTerminalSize() {
@@ -322,7 +355,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                         }
                     } else {
                         mouseButton.style.display = "none";
-                        console.error('Error while fetching mouse for session:', response.error);
+                        if(response.error) {
+                            console.error('Error while fetching mouse mode for session:', response.error);
+                        } else {
+                            console.error('Error while fetching mouse mode for session, no error message.');
+                        }
                     }
                 })
                 .catch(error => {
@@ -350,15 +387,22 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                             mouseButton.classList.add("mouse-off");
                         }
 
-                        if (response.requestmouse !== response.newmouse) {
-                            alert("Error setting new mouse mode, try again!");
+                        if(!response.requestmouse || !response.newmouse || response.requestmouse !== response.newmouse) {
+                            alert("Error setting new mouse mode, please try again.");
                         }
                     } else {
-                        alert('Error setting mouse for session: ' + response.error);
+                        if(response.error) {
+                            alert('Error setting mouse mode for session: ' + response.error);
+                            console.error('Error setting mouse mode for session:', response.error);
+                        } else {
+                            alert('Error setting mouse mode for session, no error message.');
+                            console.error('Error setting mouse mode for session, no error message.');
+                        }
                     }
                 })
                 .catch(error => {
-                    alert('Error setting mouse for session: ' + error);
+                    alert('Error setting mouse mode for session: ' + error);
+                    console.error('Error setting mouse mode for session:', error);
                 });
         }
 

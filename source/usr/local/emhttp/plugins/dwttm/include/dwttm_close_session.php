@@ -17,32 +17,48 @@
  * included in all copies or substantial portions of the Software.
  *
  */
-header('Content-Type: application/json');
+try {
+    header('Content-Type: application/json');
 
-if (!isset($_GET['session']) || !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
+    if (!isset($_GET['session']) || !preg_match('/^[a-zA-Z0-9_\-\$]+$/', $_GET['session'])) {
+        echo json_encode([
+            'success' => false,
+            'error' => 'Invalid or missing session ID.'
+        ]);
+        exit;
+    }
+
+    $sessionID = escapeshellarg($_GET['session']);
+
+    $command = "tmux kill-session -t {$sessionID} 2>&1";
+    $output = [];
+    $returnCode = null;
+    exec($command, $output, $returnCode);
+
+    if ($returnCode === 0) {
+        echo json_encode([
+            'success' => true
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'error' => implode("\n", $output)
+        ]);
+    }
+    exit;
+} catch(\Throwable $t) {
+    error_log($t);
     echo json_encode([
         'success' => false,
-        'error' => 'Invalid or missing session ID.'
+        'error' => $t->getMessage();
+    ]);
+    exit;
+} catch(\Exception $e) {
+    error_log($e);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage();
     ]);
     exit;
 }
-
-$sessionID = escapeshellarg($_GET['session']);
-
-$command = "tmux kill-session -t {$sessionID} 2>&1";
-$output = [];
-$returnCode = null;
-exec($command, $output, $returnCode);
-
-if ($returnCode === 0) {
-    echo json_encode([
-        'success' => true
-    ]);
-} else {
-    echo json_encode([
-        'success' => false,
-        'error' => implode("\n", $output)
-    ]);
-}
-exit;
 ?>
