@@ -72,7 +72,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     <div class="session-text">New Quick Session</div>
                 </div>
                 <div class="session-half bottom-half" id="new-named-session-container" onclick="createNewNamedSession()">
-                    <div class="plus-icon">+</div>
+                    <div class="plus-icon">&#x270E;</div>
                     <div class="session-text">New Named Session</div>
                 </div>
             </div>
