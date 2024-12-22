@@ -23,7 +23,10 @@ $dwttm_service = trim(isset($dwttm_cfg['SERVICE']) ? htmlspecialchars($dwttm_cfg
 $dwttm_service_port = trim(isset($dwttm_cfg['SERVICEPORT']) ? htmlspecialchars($dwttm_cfg['SERVICEPORT']) : '49161');
 $dwttm_service_security = trim(isset($dwttm_cfg['SERVICESEC']) ? htmlspecialchars($dwttm_cfg['SERVICESEC']) : 'csrf');
 $dwttm_service_route = trim(isset($dwttm_cfg['SERVICEROUTE']) ? htmlspecialchars($dwttm_cfg['SERVICEROUTE']) : 'route');
+
 $dwttm_os_button = trim(isset($dwttm_cfg['OSBUTTON']) ? htmlspecialchars($dwttm_cfg['OSBUTTON']) : 'enable');
+$dwttm_plus_button = trim(isset($dwttm_cfg['PLUSBUTTONSETT']) ? htmlspecialchars($dwttm_cfg['PLUSBUTTONSETT']) : 'quick');
+$dwttm_plus_button_pop = trim(isset($dwttm_cfg['PLUSBUTTONPOP']) ? htmlspecialchars($dwttm_cfg['PLUSBUTTONPOP']) : 'quick');
 
 $dwttm_running      = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
 

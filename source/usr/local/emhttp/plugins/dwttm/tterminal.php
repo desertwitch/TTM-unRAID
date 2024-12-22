@@ -79,7 +79,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         <?php else: ?>
             <div id="dropdown-container">
                 <select id="session-dropdown"></select>
-                <button id="new-button" title="New Session" onclick="createNewSession()">+</button>
+                <button id="new-button" title="New Session" onclick="<?=($dwttm_plus_button === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>">+</button>
                 <button id="rename-button" title="Rename Session" onclick="renameSession()">&#x270E;</button>
                 <button id="close-button" title="Terminate Session" onclick="closeSession()">&#x1F5D1;</button>
                 <button id="mouse-button" title="Toggle Scrolling">&#x1F5B1;</button>

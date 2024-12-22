@@ -186,7 +186,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
-            <dt>TTM Button in OS Menu:</dt>
+            <dt>Show TTM Button in OS Menu:</dt>
             <dd>
                 <select id="OSBUTTON" name="OSBUTTON" size="1">
                     <?=mk_option($dwttm_os_button, "disable", "No");?>
@@ -197,6 +197,34 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
         <blockquote class="inline_help">
             <p>Shows the TTM button in the OS menu for quicker access to the TTM terminals.</p>
+        </blockquote>
+
+        <dl>
+            <dt>TTM Page - New Session Button Behavior:</dt>
+            <dd>
+                <select id="PLUSBUTTONSETT" name="PLUSBUTTONSETT" size="1">
+                    <?=mk_option($dwttm_plus_button, "quick", "Quick Session");?>
+                    <?=mk_option($dwttm_plus_button, "named", "Named Session");?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Sets if you want to be asked for a session name when pressing the respective button.</p>
+        </blockquote>
+
+        <dl>
+            <dt>TTM Window - New Session Button Behavior:</dt>
+            <dd>
+                <select id="PLUSBUTTONPOP" name="PLUSBUTTONPOP" size="1">
+                    <?=mk_option($dwttm_plus_button_pop, "quick", "Quick Session");?>
+                    <?=mk_option($dwttm_plus_button_pop, "named", "Named Session");?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Sets if you want to be asked for a session name when pressing the respective button.</p>
         </blockquote>
     </div>
 
@@ -261,6 +289,7 @@ function fetchSessions() {
                 .addClass('session-item add-new')
                 .on('click', function (e) {
                     e.stopPropagation();
+                    <?php if ($dwttm_plus_button === "named"): ?>
                     if (typeof swal === "function") {
                         swal({
                             title: "New Session",
@@ -313,6 +342,9 @@ function fetchSessions() {
                             createNewSession();
                         }
                     }
+                    <?php else: ?>
+                    createNewSession();
+                    <?php endif; ?>
                 });
 
             const $plusIcon = $('<div>')
