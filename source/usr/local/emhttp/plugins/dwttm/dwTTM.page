@@ -253,7 +253,6 @@ let disposable2;
 let connectedSessionId;
 
 function freeSession() {
-// CHECKED - OK
     if (ws) {
         ws.onopen = null;
         ws.onmessage = null;
@@ -279,7 +278,6 @@ function freeSession() {
 }
 
 function fetchSessions() {
-// CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.response) {
             let sessions = data.response;
@@ -532,7 +530,6 @@ function fetchSessions() {
 }
 
 function createNewSession() {
-// CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
         if (response.success && response.session_id) {
             fetchSessions();
@@ -566,7 +563,6 @@ function createNewSession() {
 }
 
 function createNewNamedSession(sessionName) {
-// CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', { session: sessionName }, function (response) {
         if (response.success && response.session_id) {
             fetchSessions();
@@ -600,7 +596,6 @@ function createNewNamedSession(sessionName) {
 }
 
 function closeSession(sessionId) {
-// CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_close_session.php', { session: sessionId }, function (response) {
         if (response.success) {
             fetchSessions();
@@ -650,7 +645,6 @@ function closeSession(sessionId) {
 }
 
 function renameSession(sessionId, sessionName) {
-// CHECKED - OK
     $.getJSON('/plugins/dwttm/include/dwttm_rename_session.php', { session: sessionId, sessionName: sessionName }, function (response) {
         if (response.success) {
             fetchSessions();
@@ -700,7 +694,6 @@ function renameSession(sessionId, sessionName) {
 }
 
 function fetchSessionMouse(sessionId) {
-// CHECKED - OK
     const $mouseButton = $('#mouse-button');
     const $mouseButtonInfo = $('#mouse-button-info');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId }, function (response) {
@@ -740,7 +733,6 @@ function fetchSessionMouse(sessionId) {
 }
 
 function setSessionMouse(sessionId, requestedMouse) {
-// CHECKED - OK
     const $mouseButton = $('#mouse-button');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, mouse: requestedMouse }, function (response) {
         if(response.newmouse) {
@@ -817,7 +809,6 @@ function setSessionMouse(sessionId, requestedMouse) {
 }
 
 function popupSession(sessionId) {
-// CHECKED - OK
     const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
     const windowName = `${sessionId}: TTerminal`;
 
@@ -837,7 +828,6 @@ function popupSession(sessionId) {
 }
 
 function handleSelectionChange() {
-// CHECKED - OK
     if ("" !== term.getSelection()) {
         try {
             document.execCommand("copy");
@@ -853,7 +843,6 @@ function handleSelectionChange() {
 }
 
 function sendTerminalSize() {
-// CHECKED - OK
     fitAddon.fit();
     const { cols, rows } = term;
     if (ws.readyState === WebSocket.OPEN) {
@@ -866,7 +855,6 @@ function sendTerminalSize() {
 }
 
 function connectToSession(sessionId) {
-// CHECKED - OK
     freeSession();
 
     const csrfToken = <?= json_encode($var['csrf_token']); ?>;
@@ -928,7 +916,6 @@ function connectToSession(sessionId) {
 }
 
 function checkTTMsettings() {
-// CHECKED - OK
     if ($('#SERVICE').val() === 'enable')
         $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/start');
     else
@@ -942,7 +929,6 @@ function checkTTMsettings() {
 }
 
 $(function() {
-// CHECKED - OK
     showStatus('ttmd');
 
     checkTTMsettings();

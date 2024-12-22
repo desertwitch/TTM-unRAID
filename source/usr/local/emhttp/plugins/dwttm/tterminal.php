@@ -99,7 +99,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         let disposable;
 
         function freeSession() {
-        // CHECKED - OK
             window.removeEventListener('resize', handleResize);
 
             if (ws) {
@@ -118,7 +117,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function fetchSessions() {
-        // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
                 .then(response => response.json())
                 .then(data => {
@@ -158,7 +156,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function connectToSession(session) {
-        // CHECKED - OK
             if (!session) {
                 const urlWithoutParams = window.location.origin + window.location.pathname;
                 window.location.href = urlWithoutParams;
@@ -171,7 +168,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function closeSession() {
-        // CHECKED - OK
             const confirmation = confirm("Terminate the session and its running programs?");
             if (!confirmation) {
                 return;
@@ -198,7 +194,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function createNewSession() {
-        // CHECKED - OK
             fetch('/plugins/dwttm/include/dwttm_new_session.php', {
                 method: 'GET',
             })
@@ -222,7 +217,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function createNewNamedSession() {
-        // CHECKED - OK
             const sessionName = prompt("Please choose a name for your new session (or leave empty):");
 
             if (sessionName === null) {
@@ -266,7 +260,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function renameSession() {
-        // CHECKED - OK
             const sessionName = prompt("Enter a new session name (alphanumeric only):");
 
             if(!sessionName) {
@@ -302,7 +295,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function sendTerminalSize() {
-        // CHECKED - OK
             fitAddon.fit();
             const { cols, rows } = term;
             if (ws.readyState === WebSocket.OPEN) {
@@ -315,7 +307,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function handleSelectionChange() {
-        // CHECKED - OK
             if ("" !== term.getSelection()) {
                 try {
                     document.execCommand("copy");
@@ -331,12 +322,10 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function handleResize() {
-        // CHECKED - OK
-            sendTerminalSize();
+                    sendTerminalSize();
         }
 
         function fetchSessionMouse(sessionId) {
-        // CHECKED - OK
             const mouseButton = document.getElementById('mouse-button');
             fetch(`/plugins/dwttm/include/dwttm_mouse_session.php?session=${encodeURIComponent(sessionId)}`)
                 .then(response => response.json())
@@ -370,7 +359,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function setSessionMouse(sessionId, requestedMouse) {
-        // CHECKED - OK
             const mouseButton = document.getElementById('mouse-button');
             fetch(`/plugins/dwttm/include/dwttm_mouse_session.php?session=${encodeURIComponent(sessionId)}&mouse=${encodeURIComponent(requestedMouse)}`)
                 .then(response => response.json())
@@ -408,7 +396,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-        // CHECKED - OK
             <?php if ($currentSession): ?>
             const terminalContainer = document.getElementById('terminal-container');
 
@@ -468,7 +455,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         });
 
         document.addEventListener('change', (event) => {
-        // CHECKED - OK
             if (event.target && event.target.id === 'session-dropdown') {
                 const selectedSession = event.target.value;
                 if(selectedSession !== currentSession) {
