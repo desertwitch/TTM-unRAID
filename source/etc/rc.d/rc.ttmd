@@ -85,16 +85,24 @@ ttmd_restart() {
   return $?
 }
 
+ttmd_configure() {
+    [ -f /etc/tmux.conf ] && sed -i 's/tmux-256color/xterm-256color/g' /etc/tmux.conf
+    [ -f /root/.tmux.conf ] && sed -i 's/tmux-256color/xterm-256color/g' /root/.tmux.conf
+}
+
 case "$1" in
   'start')
+    ttmd_configure
     ttmd_start
     exit $?
   ;;
   'stop')
+    ttmd_configure
     ttmd_stop
     exit $?
   ;;
   'restart')
+    ttmd_configure
     ttmd_restart
     exit $?
   ;;
