@@ -167,7 +167,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <dd>
                 <select id="SERVICEROUTE" name="SERVICEROUTE" class="dwttm-run" size="1">
                     <?=mk_option($dwttm_service_route, "route", "Default (via Unraid OS)");?>
-                    <?=mk_option($dwttm_service_route, "direct", "Direct (no SSL/VPN)");?>
+                    <?=mk_option($dwttm_service_route, "direct", "Fallback (no SSL/VPN)");?>
                 </select>
             </dd>
         </dl>
@@ -175,8 +175,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <blockquote class="inline_help">
             <p>Sets the routing mode that the TTM frontend should use to access the TTM service.</p>
             <p><strong>Default</strong> relies on the Unraid web service to safely route any connections to the TTM service.</p>
-            <p><strong>Direct</strong> uses direct, non-SSL connections to the configured port that the TTM service is listening on.</p>
-            <p>Please note that the <strong>Direct</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
+            <p><strong>Fallback</strong> uses direct, non-SSL connections to the configured port that the TTM service is listening on.</p>
+            <p>Please note that the <strong>Fallback</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
         </blockquote>
     </div>
 
