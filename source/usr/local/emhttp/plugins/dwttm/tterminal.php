@@ -206,18 +206,22 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
         function createNewNamedSession() {
         // CHECKED - OK
-            const sessionName = prompt("Enter a name for the new session (alphanumeric only):");
+            const sessionName = prompt("Please choose a name for your new session (or leave empty):");
 
-            if(!sessionName) {
+            if (sessionName === null) {
                 return;
+            } else if (sessionName.trim() !== "") {
+                if (!/^[A-Za-z0-9]+$/.test(sessionName)) {
+                    alert("Invalid session name. Please use alphanumeric characters only.");
+                    return;
+                }
             }
 
-            if (!/^[A-Za-z0-9]+$/.test(sessionName)) {
-                alert("Invalid session name. Please use alphanumeric characters only.");
-                return;
-            }
+            const fetchUrl = sessionName.trim() !== ""
+            ? `/plugins/dwttm/include/dwttm_new_session.php?session=${encodeURIComponent(sessionName)}`
+            : `/plugins/dwttm/include/dwttm_new_session.php`;
 
-            fetch(`/plugins/dwttm/include/dwttm_new_session.php?session=${encodeURIComponent(sessionName)}`, {
+            fetch(fetchUrl, {
                 method: 'GET',
             })
             .then(response => response.json())
@@ -225,7 +229,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 if (response.success) {
                     connectToSession(response.session_id);
                 } else {
-                    alert('Failed to create a new session, maybe it already exists?');
+                    alert(
+                        'Failed to create a new session' +
+                        (sessionName.trim() !== ""
+                            ? ', maybe it already exists?'
+                            : '.')
+                    );
                 }
             })
             .catch(error => console.error('Error creating session:', error));
