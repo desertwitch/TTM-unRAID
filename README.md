@@ -1,3 +1,3 @@
 **Tmux Terminal Manager (TTM)**
 
-A graphical interface to Tmux, for people who don't do Tmux.
+Tmux for people who don't do Tmux, integrated into Unraid OS.
