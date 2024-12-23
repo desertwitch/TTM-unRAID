@@ -305,7 +305,60 @@ function freeSession() {
 
 function newDcModal() {
     $('#dwttm-modal-overlay').hide();
-    <?=($dwttm_plus_button === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>;
+    <?php if ($dwttm_plus_button === "named"): ?>
+    if (typeof swal === "function") {
+        swal({
+            title: "New Session",
+            text: "Please choose a name for your new session (or leave empty):",
+            type: "input",
+            showCancelButton: true,
+            confirmButtonText: "Create Session",
+            html: true,
+            inputPlaceholder: "Alphanumeric - no spaces or special characters!",
+            closeOnConfirm: false
+            },
+            function(value){
+                if(value === false) {
+                    swal.close();
+                    return;
+                }
+                if(value.trim() !== "") {
+                    if(!/^[A-Za-z0-9]+$/.test(value.trim())) {
+                        swal("Error", "The chosen session name contained disallowed characters.", "error");
+                    }
+                    else {
+                        swal.close();
+                        setTimeout(function() {
+                            createNewNamedSession(value.trim());
+                        }, 1000);
+                    }
+                } else {
+                    swal.close();
+                    setTimeout(function() {
+                        createNewSession();
+                    }, 1000);
+                }
+            });
+    } else {
+        var value = prompt("Please choose a name for your new session (or leave empty):\nAlphanumeric - no spaces or special characters!");
+
+        if (value === null) {
+            return;
+        }
+
+        if (value.trim() !== "") {
+            if (!/^[A-Za-z0-9]+$/.test(value.trim())) {
+                alert("Error: The chosen session name contained disallowed characters.");
+            } else {
+                createNewNamedSession(value.trim());
+            }
+        } else {
+            createNewSession();
+        }
+    }
+    <?php else: ?>
+    createNewSession();
+    <?php endif; ?>
 }
 
 function closeDcModal() {
