@@ -204,7 +204,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function closeDcModal() {
-            document.getElementById('dwttm-modal-overlay').classList.add('hidden');
+            document.getElementById('dwttm-modal-overlay').style.display = "none";
         }
 
         function createNewSession() {
