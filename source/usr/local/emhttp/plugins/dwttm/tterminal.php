@@ -107,7 +107,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const currentSession = <?= json_encode($currentSession ?? ""); ?>;
 
         let disposable;
-        let switchingSessions;
 
         function freeSession() {
             window.removeEventListener('resize', handleResize);
@@ -167,7 +166,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function connectToSession(session) {
-            switchingSessions = true;
+            freeSession();
             if (!session) {
                 const urlWithoutParams = window.location.origin + window.location.pathname;
                 window.location.href = urlWithoutParams;
@@ -184,14 +183,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             if (!confirmation) {
                 return;
             }
-            switchingSessions = true;
             fetch(`/plugins/dwttm/include/dwttm_close_session.php?session=${encodeURIComponent(currentSession)}`)
                 .then(response => response.json())
                 .then(response => {
                     if (response.success) {
                         connectToSession();
                     } else {
-                        switchingSessions = false;
                         if(response.error) {
                             alert(`Failed closing session: ${response.error}`);
                             console.error("Error while closing session:", response.error);
@@ -202,7 +199,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     }
                 })
                 .catch(error => {
-                    switchingSessions = false;
                     alert(`Failed closing session: ${error}`);
                     console.error("Failed closing session:", error);
                 });
@@ -454,9 +450,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws.onclose = () => {
                 term.write('\r\n*** Disconnected from session ***\r\n');
-                if(!switchingSessions) {
-                    document.getElementById('dwttm-modal-overlay').style.display = "flex";
-                }
+                document.getElementById('dwttm-modal-overlay').style.display = "flex";
                 freeSession();
             };
 
