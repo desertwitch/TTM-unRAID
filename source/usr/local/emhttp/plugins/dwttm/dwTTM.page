@@ -59,8 +59,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <div id="terminal-container"></div>
             <div id="dwttm-modal-overlay">
                 <div class="dwttm-modal">
-                    <button class="dwttm-modal-new" onclick="newDcModal()">New Session</button>
-                    <button class="dwttm-modal-close" onclick="closeDcModal()">Close Message</button>
+                    <span class="dwttm-modal-new" onclick="newDcModal()">New Session</span>
+                    <span class="dwttm-modal-close" onclick="closeDcModal()">Close Message</span>
                     <h2>Your session has been disconnected.</h2>
                     <p>
                         You can start a new one or close this message to inspect why this happened.
