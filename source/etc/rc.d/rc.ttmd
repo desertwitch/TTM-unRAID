@@ -106,8 +106,12 @@ case "$1" in
     ttmd_restart
     exit $?
   ;;
+  'configure')
+    ttmd_configure
+    exit 0
+  ;;
   *)
-    echo "Usage: $0 start|stop|restart"
+    echo "Usage: $0 start|stop|restart|configure"
     exit 1
   ;;
 esac

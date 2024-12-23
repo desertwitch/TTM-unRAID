@@ -141,6 +141,8 @@ if [ "$SERVICE" == "enable" ]; then
         echo "Error: Unable to start 'ttmd' - Tmux not found or not functional."
         echo "Error: Please refer to the 'TTM Settings' for more information on this issue."
     fi
+else
+    /etc/rc.d/rc.ttmd configure 2>&amp;1 | logger -t "rc.ttmd"
 fi
 
 echo ""
