@@ -160,6 +160,19 @@ body {
     color: #888;
 }
 
+#dwttm-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
 .dwttm-modal {
     background-color: #2e2e2e;
     padding: 20px;
