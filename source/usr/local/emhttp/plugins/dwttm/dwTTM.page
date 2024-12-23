@@ -242,7 +242,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
-            <dt>Configure Tmux CLI for Manual Use:</dt>
+            <dt>Optimize Tmux for Command-Line Use:</dt>
             <dd>
                 <select id="OSCONFIGURE" name="OSCONFIGURE" size="1">
                     <?=mk_option($dwttm_os_configure, "disable", "No");?>
@@ -254,7 +254,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <blockquote class="inline_help">
             <p>Sets if the plugin should optimize the Tmux defaults for manual command-line use also.</p>
             <p>This involves setting the default terminal to <strong>xterm-256color</strong> instead of the not-supported default <strong>tmux-256color</strong>.
-            <p>The plugin always does this for its own sessions, but you may also want this, if you frequently create Tmux sessions manually (through the command-line).</p>
+            <p>The plugin always does this for its own sessions, but you may also want this if you frequently create Tmux sessions manually (through the command-line).</p>
         </blockquote>
     </div>
 
