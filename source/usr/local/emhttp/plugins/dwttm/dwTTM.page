@@ -156,7 +156,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <dl>
             <dt>TTM Service Port:</dt>
             <dd>
-                <input name="SERVICEPORT" type="text" class="narrow dwttm-run dwttm-numeric" value="<?=$dwttm_service_port?>">
+                <input name="SERVICEPORT" type="text" class="narrow dwttm-not-run dwttm-numeric" value="<?=$dwttm_service_port?>">
             </dd>
         </dl>
 
@@ -167,7 +167,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <dl>
             <dt>TTM Service Port Security:</dt>
             <dd>
-                <select id="SERVICESEC" name="SERVICESEC" class="dwttm-run" size="1">
+                <select id="SERVICESEC" name="SERVICESEC" class="dwttm-not-run" size="1">
                     <?=mk_option($dwttm_service_security, "csrf", "Token-based (CSRF)");?>
                     <?=mk_option($dwttm_service_security, "disable", "None");?>
                 </select>
@@ -181,7 +181,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <dl>
             <dt>TTM Service Routing Mode:</dt>
             <dd>
-                <select id="SERVICEROUTE" name="SERVICEROUTE" class="dwttm-run" size="1">
+                <select id="SERVICEROUTE" name="SERVICEROUTE" class="dwttm-not-run" size="1">
                     <?=mk_option($dwttm_service_route, "route", "Default (via Unraid OS)");?>
                     <?=mk_option($dwttm_service_route, "direct", "Fallback (no SSL/VPN)");?>
                 </select>
@@ -260,8 +260,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
     <dl>
         <dt>
-            <input type="submit" class="dwttm-run" name="#default" value="Default">
-            <input type="button" id="RESTART" value="Restart Service">
+            <input type="submit" class="dwttm-not-run" name="#default" value="Default">
+            <input type="button" class="dwttm-run" id="RESTART" value="Restart Service">
         </dt>
         <dd>
             <input type="submit" name="#apply" value="Apply">
@@ -1012,9 +1012,11 @@ function checkTTMsettings() {
         $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/stop');
 
     if ("<?=$dwttm_running;?>" == 1){
-        $('.dwttm-run').prop('disabled', true);
-    }else{
+        $('.dwttm-not-run').prop('disabled', true);
         $('.dwttm-run').prop('disabled', false);
+    }else{
+        $('.dwttm-not-run').prop('disabled', false);
+        $('.dwttm-run').prop('disabled', true);
     }
 }
 
