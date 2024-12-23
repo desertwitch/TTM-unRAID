@@ -86,6 +86,16 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 <button id="mouse-button" title="Toggle Scrolling">&#x1F5B1;</button>
             </div>
             <div id="terminal-container"></div>
+            <div id="dwttm-modal-overlay">
+                <div class="dwttm-modal">
+                    <button class="dwttm-modal-new" onclick="<?=($dwttm_plus_button_pop === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>">New Session</button>
+                    <button class="dwttm-modal-close" onclick="closeDcModal()">X</button>
+                    <h2>Your session has been disconnected.</h2>
+                    <p>
+                        You can just start a new one or close this message to inspect why this has happened.
+                    </p>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
 
@@ -191,6 +201,10 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     alert(`Failed closing session: ${error}`);
                     console.error("Failed closing session:", error);
                 });
+        }
+
+        function closeDcModal() {
+            document.getElementById('dwttm-modal-overlay').classList.add('hidden');
         }
 
         function createNewSession() {
@@ -435,6 +449,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws.onclose = () => {
                 term.write('\r\n*** Disconnected from session ***\r\n');
+                document.getElementById('dwttm-modal-overlay').style.display = "flex";
                 freeSession();
             };
 

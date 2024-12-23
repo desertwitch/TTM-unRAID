@@ -27,6 +27,7 @@ $dwttm_service_route = trim(isset($dwttm_cfg['SERVICEROUTE']) ? htmlspecialchars
 $dwttm_os_button = trim(isset($dwttm_cfg['OSBUTTON']) ? htmlspecialchars($dwttm_cfg['OSBUTTON']) : 'enable');
 $dwttm_plus_button = trim(isset($dwttm_cfg['PLUSBUTTONSETT']) ? htmlspecialchars($dwttm_cfg['PLUSBUTTONSETT']) : 'quick');
 $dwttm_plus_button_pop = trim(isset($dwttm_cfg['PLUSBUTTONPOP']) ? htmlspecialchars($dwttm_cfg['PLUSBUTTONPOP']) : 'quick');
+$dwttm_os_configure = trim(isset($dwttm_cfg['OSCONFIGURE']) ? htmlspecialchars($dwttm_cfg['OSCONFIGURE']) : 'enable');
 
 $dwttm_running      = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
 
