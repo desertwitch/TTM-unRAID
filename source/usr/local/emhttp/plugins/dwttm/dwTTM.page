@@ -252,7 +252,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </dl>
 
         <blockquote class="inline_help">
-            <p>Sets if the plugin should optimize the Tmux defaults for manual command-line use also.</p>
+            <p>Sets if the plugin should optimize the Tmux defaults for manual command-line use as well.</p>
             <p>This involves setting the default terminal to <strong>xterm-256color</strong> instead of the non-supported default <strong>tmux-256color</strong>.
             <p>The plugin always does this for its own sessions, this is only for manual Tmux commands you run in the command-line.</p>
         </blockquote>
