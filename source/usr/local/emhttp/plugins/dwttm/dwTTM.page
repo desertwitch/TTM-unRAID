@@ -1,6 +1,6 @@
 Menu="Utilities"
 Type="xmenu"
-Title="Tmux (TTM)"
+Title="Tmux Manager (TTM)"
 Icon="tty"
 Tag="tty"
 Markdown="false"
