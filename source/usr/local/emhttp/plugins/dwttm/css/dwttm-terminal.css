@@ -8,7 +8,7 @@ html, body {
     overflow: hidden;
 }
 
-#content {
+#dwttm-content {
     display: flex;
     flex-direction: column;
     height: 100%;
