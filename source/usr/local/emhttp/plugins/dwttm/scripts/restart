@@ -15,5 +15,5 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 #
-echo "Starting TTM service..."
-/etc/rc.d/rc.ttmd start | logger -t "rc.ttmd"
+echo "Restarting TTM service..."
+/etc/rc.d/rc.ttmd restart | logger -t "rc.ttmd"

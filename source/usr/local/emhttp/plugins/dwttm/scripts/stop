@@ -15,5 +15,5 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 #
-echo "Stopping TTM backend..."
+echo "Stopping TTM service..."
 /etc/rc.d/rc.ttmd stop | logger -t "rc.ttmd"
