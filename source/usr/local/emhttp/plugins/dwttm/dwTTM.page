@@ -210,7 +210,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </dl>
 
         <blockquote class="inline_help">
-            <p>Shows the TTM button in the OS menu for quicker access to the TTM terminals.</p>
+            <p>Shows the TTM button in the OS menu for faster access to the TTM terminals.</p>
         </blockquote>
 
         <dl>
