@@ -28,7 +28,8 @@ ttmd_start() {
         else
             [[ $SERVICEPORT =~ ^[0-9]+$ ]] && PORTOPT="--port=$SERVICEPORT"
             [[ $SERVICESEC == "disable" ]] && SSECOPT="--csrf=false"
-            nohup /usr/bin/ttmd "$PORTOPT" "$SSECOPT" &>/var/log/ttmd.log &
+            [[ $SERVICEROUTE != "direct" ]] && SSECFLG="--internal"
+            nohup /usr/bin/ttmd "$PORTOPT" "$SSECOPT" "$SSECFLG" &>/var/log/ttmd.log &
             TTMD_PID=$!
             echo $TTMD_PID > /var/run/ttmd.pid
             sleep 2

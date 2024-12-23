@@ -162,6 +162,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
         <blockquote class="inline_help">
             <p>Sets the port that the TTM service uses to facilitate the terminal connections.</p>
+            <p>In <strong>Default</strong> routing mode, the service port is only accessible from 127.0.0.1 (as it is internally routed).</p>
         </blockquote>
 
         <dl>
@@ -176,6 +177,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
         <blockquote class="inline_help">
             <p>Sets the security mechanism to prevent unauthorized connections to the TTM service port.</p>
+            <p>In <strong>Default</strong> routing mode, the service port is only accessible from 127.0.0.1 (as it is internally routed).</p>
         </blockquote>
 
         <dl>
@@ -193,6 +195,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p><strong>Default</strong> relies on the Unraid web service to internally route any connections to the TTM service.</p>
             <p><strong>Fallback</strong> uses direct (non-SSL) connections to the configured port that the TTM service is listening on.</p>
             <p>Please note that the <strong>Fallback</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
+            <p>In <strong>Default</strong> routing mode, the service port is only accessible from 127.0.0.1 (as it is internally routed).</p>
         </blockquote>
 
         <div>
