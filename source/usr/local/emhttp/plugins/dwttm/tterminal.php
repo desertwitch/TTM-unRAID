@@ -106,6 +106,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const dropdown = document.getElementById('session-dropdown');
         const currentSession = <?= json_encode($currentSession ?? ""); ?>;
 
+        let ws;
         let disposable;
 
         function freeSession() {
