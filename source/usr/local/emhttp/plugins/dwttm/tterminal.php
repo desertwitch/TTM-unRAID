@@ -92,7 +92,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     <button class="dwttm-modal-close" onclick="closeDcModal()">Close Message</button>
                     <h2>Your session has been disconnected.</h2>
                     <p>
-                        You can just start a new one or close this message to inspect why this has happened.
+                        You can start a new one or close this message to inspect why this happened.
                     </p>
                 </div>
             </div>
