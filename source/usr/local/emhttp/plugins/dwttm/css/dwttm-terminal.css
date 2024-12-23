@@ -189,7 +189,7 @@ html, body {
     background: none;
     border: none;
     font-size: 13px;
-    color: #ffffff;
+    color: #888;
     cursor: pointer;
 }
 
@@ -200,6 +200,10 @@ html, body {
     background: none;
     border: none;
     font-size: 13px;
-    color: #ffffff;
+    color: #888;
     cursor: pointer;
+}
+
+.dwttm-modal-close:hover, .dwttm-modal-new:hover {
+    color: white;
 }

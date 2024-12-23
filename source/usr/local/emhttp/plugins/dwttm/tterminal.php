@@ -107,6 +107,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const currentSession = <?= json_encode($currentSession ?? ""); ?>;
 
         let disposable;
+        let switchingSessions;
 
         function freeSession() {
             window.removeEventListener('resize', handleResize);
@@ -166,6 +167,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function connectToSession(session) {
+            switchingSessions = true;
             if (!session) {
                 const urlWithoutParams = window.location.origin + window.location.pathname;
                 window.location.href = urlWithoutParams;
@@ -449,7 +451,9 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws.onclose = () => {
                 term.write('\r\n*** Disconnected from session ***\r\n');
-                document.getElementById('dwttm-modal-overlay').style.display = "flex";
+                if(!switchingSessions) {
+                    document.getElementById('dwttm-modal-overlay').style.display = "flex";
+                }
                 freeSession();
             };
 
