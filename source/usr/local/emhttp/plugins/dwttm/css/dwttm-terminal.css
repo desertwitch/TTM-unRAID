@@ -14,14 +14,14 @@ html, body {
     height: 100%;
 }
 
-#dropdown-container {
+#dwttm-dropdown-container {
     display: flex;
     align-items: center;
     width: 100%;
     background-color: #333;
 }
 
-#session-dropdown {
+#dwttm-session-dropdown {
     flex: 1;
     height: 40px;
     font-size: 16px;
@@ -33,7 +33,7 @@ html, body {
     color: #fff;
 }
 
-#close-button {
+#dwttm-close-button {
     height: 40px;
     width: 40px;
     background-color: #444;
@@ -49,12 +49,12 @@ html, body {
     transition: background-color 0.3s ease;
 }
 
-#close-button:hover {
+#dwttm-close-button:hover {
     background-color: darkred;
     color: white;
 }
 
-#new-button, #rename-button {
+#dwttm-new-button, #dwttm-rename-button {
     height: 40px;
     width: 40px;
     background-color: #444;
@@ -70,12 +70,12 @@ html, body {
     transition: background-color 0.3s ease;
 }
 
-#new-button:hover, #rename-button:hover {
+#dwttm-new-button:hover, #dwttm-rename-button:hover {
     background-color: #555;
     color: white;
 }
 
-#mouse-button {
+#dwttm-mouse-button {
     height: 40px;
     width: 40px;
     background-color: #444;
@@ -91,19 +91,19 @@ html, body {
     transition: background-color 0.3s ease;
 }
 
-#mouse-button:hover {
+#dwttm-mouse-button:hover {
     background-color: #555;
 }
 
-.mouse-on {
+.dwttm-mouse-on {
     color: white;
 }
 
-.mouse-off {
+.dwttm-mouse-off {
     color: #888;
 }
 
-#terminal-container {
+#dwttm-terminal-container {
     flex-grow: 1;
     padding: 10px;
     overflow: hidden;
@@ -113,13 +113,13 @@ html, body {
     overflow: hidden;
 }
 
-.split-container {
+.dwttm-split-container {
     flex-grow: 1;
     overflow: hidden;
     box-sizing: border-box;
 }
 
-.session-half {
+.dwttm-session-half {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -130,26 +130,26 @@ html, body {
     transition: background-color 0.3s ease;
 }
 
-.top-half {
+.dwttm-top-half {
     height: 60%;
     border-bottom: 2px solid #222;
 }
 
-.bottom-half {
+.dwttm-bottom-half {
     height: 40%;
 }
 
-.session-half:hover {
+.dwttm-session-half:hover {
     background-color: #222;
 }
 
-.plus-icon {
+.dwttm-plus-icon {
     font-size: 50px;
     color: white;
     margin-bottom: 10px;
 }
 
-.session-text {
+.dwttm-session-text {
     font-size: 16px;
     color: white;
     font-weight: bold;

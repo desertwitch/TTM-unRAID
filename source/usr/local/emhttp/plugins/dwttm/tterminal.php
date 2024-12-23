@@ -62,30 +62,30 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 <body>
 
 
-    <div id="content">
+    <div id="dwttm-content">
         <?php if (!$currentSession): ?>
-            <div id="dropdown-container">
-                <select id="session-dropdown"></select>
+            <div id="dwttm-dropdown-container">
+                <select id="dwttm-session-dropdown"></select>
             </div>
-            <div class="split-container">
-                <div class="session-half top-half" id="new-session-container" onclick="createNewSession()">
-                    <div class="plus-icon">+</div>
-                    <div class="session-text">New Quick Session</div>
+            <div class="dwttm-split-container">
+                <div class="dwttm-session-half dwttm-top-half" onclick="createNewSession()">
+                    <div class="dwttm-plus-icon">+</div>
+                    <div class="dwttm-session-text">New Quick Session</div>
                 </div>
-                <div class="session-half bottom-half" id="new-named-session-container" onclick="createNewNamedSession()">
-                    <div class="plus-icon">&#x270E;</div>
-                    <div class="session-text">New Named Session</div>
+                <div class="dwttm-session-half dwttm-bottom-half" onclick="createNewNamedSession()">
+                    <div class="dwttm-plus-icon">&#x270E;</div>
+                    <div class="dwttm-session-text">New Named Session</div>
                 </div>
             </div>
         <?php else: ?>
-            <div id="dropdown-container">
-                <select id="session-dropdown"></select>
-                <button id="new-button" title="New Session" onclick="<?=($dwttm_plus_button_pop === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>">+</button>
-                <button id="rename-button" title="Rename Session" onclick="renameSession()">&#x270E;</button>
-                <button id="close-button" title="Terminate Session" onclick="closeSession()">&#x1F5D1;</button>
-                <button id="mouse-button" title="Toggle Scrolling">&#x1F5B1;</button>
+            <div id="dwttm-dropdown-container">
+                <select id="dwttm-session-dropdown"></select>
+                <button id="dwttm-new-button" title="New Session" onclick="<?=($dwttm_plus_button_pop === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>">+</button>
+                <button id="dwttm-rename-button" title="Rename Session" onclick="renameSession()">&#x270E;</button>
+                <button id="dwttm-close-button" title="Terminate Session" onclick="closeSession()">&#x1F5D1;</button>
+                <button id="dwttm-mouse-button" title="Toggle Scrolling">&#x1F5B1;</button>
             </div>
-            <div id="terminal-container"></div>
+            <div id="dwttm-terminal-container"></div>
             <div id="dwttm-modal-overlay">
                 <div class="dwttm-modal">
                     <button class="dwttm-modal-new" onclick="<?=($dwttm_plus_button_pop === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>">New Session</button>
@@ -103,7 +103,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         const ttimers = {};
         const term = new Terminal({ scrollback: 0 });
         const fitAddon = new FitAddon.FitAddon();
-        const dropdown = document.getElementById('session-dropdown');
+        const dropdown = document.getElementById('dwttm-session-dropdown');
         const currentSession = <?= json_encode($currentSession ?? ""); ?>;
 
         let ws;
@@ -136,7 +136,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
                         sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-                        const dropdown = document.getElementById('session-dropdown');
+                        const dropdown = document.getElementById('dwttm-session-dropdown');
 
                         const fragment = document.createDocumentFragment();
                         sessions.forEach(session => {
@@ -342,7 +342,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function fetchSessionMouse(sessionId) {
-            const mouseButton = document.getElementById('mouse-button');
+            const mouseButton = document.getElementById('dwttm-mouse-button');
             fetch(`/plugins/dwttm/include/dwttm_mouse_session.php?session=${encodeURIComponent(sessionId)}`)
                 .then(response => response.json())
                 .then(response => {
@@ -352,12 +352,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
                         if (response.mouse === "on") {
                             mouseButton.onclick = () => setSessionMouse(sessionId, "off");
-                            mouseButton.classList.remove("mouse-off");
-                            mouseButton.classList.add("mouse-on");
+                            mouseButton.classList.remove("dwttm-mouse-off");
+                            mouseButton.classList.add("dwttm-mouse-on");
                         } else {
                             mouseButton.onclick = () => setSessionMouse(sessionId, "on");
-                            mouseButton.classList.remove("mouse-on");
-                            mouseButton.classList.add("mouse-off");
+                            mouseButton.classList.remove("dwttm-mouse-on");
+                            mouseButton.classList.add("dwttm-mouse-off");
                         }
                     } else {
                         mouseButton.style.display = "none";
@@ -375,7 +375,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function setSessionMouse(sessionId, requestedMouse) {
-            const mouseButton = document.getElementById('mouse-button');
+            const mouseButton = document.getElementById('dwttm-mouse-button');
             fetch(`/plugins/dwttm/include/dwttm_mouse_session.php?session=${encodeURIComponent(sessionId)}&mouse=${encodeURIComponent(requestedMouse)}`)
                 .then(response => response.json())
                 .then(response => {
@@ -384,12 +384,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
                         if (response.newmouse === "on") {
                             mouseButton.onclick = () => setSessionMouse(sessionId, "off");
-                            mouseButton.classList.remove("mouse-off");
-                            mouseButton.classList.add("mouse-on");
+                            mouseButton.classList.remove("dwttm-mouse-off");
+                            mouseButton.classList.add("dwttm-mouse-on");
                         } else {
                             mouseButton.onclick = () => setSessionMouse(sessionId, "on");
-                            mouseButton.classList.remove("mouse-on");
-                            mouseButton.classList.add("mouse-off");
+                            mouseButton.classList.remove("dwttm-mouse-on");
+                            mouseButton.classList.add("dwttm-mouse-off");
                         }
 
                         if(!response.requestmouse || !response.newmouse || response.requestmouse !== response.newmouse) {
@@ -413,7 +413,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
         document.addEventListener('DOMContentLoaded', () => {
             <?php if ($currentSession): ?>
-            const terminalContainer = document.getElementById('terminal-container');
+            const terminalContainer = document.getElementById('dwttm-terminal-container');
 
             term.loadAddon(fitAddon);
             term.open(terminalContainer);
@@ -472,7 +472,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         });
 
         document.addEventListener('change', (event) => {
-            if (event.target && event.target.id === 'session-dropdown') {
+            if (event.target && event.target.id === 'dwttm-session-dropdown') {
                 const selectedSession = event.target.value;
                 if(selectedSession !== currentSession) {
                     connectToSession(selectedSession);

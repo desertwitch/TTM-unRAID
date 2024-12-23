@@ -41,22 +41,22 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <link type="text/css" rel="stylesheet" href="<?=autov("/plugins/dwttm/css/dwttm-{$theme}.css");?>">
 
 <?if($dwttm_running):?>
-<table class="tablesorter shift termtable">
+<table class="tablesorter shift dwttm-termtable">
 <thead>
     <tr>
         <th>
             <strong><em>TTerminal</em></strong>
             <span style="float:right;text-transform:none;">
-                <span id="mouse-button-info" style="display:none;margin-right:5px;"><em>Scrolling Mode:</em></span>
-                <i id="mouse-button" class="fa fa-mouse-pointer" style="display:none;"></i>
+                <span id="dwttm-mouse-button-info" style="display:none;margin-right:5px;"><em>Scrolling Mode:</em></span>
+                <i id="dwttm-mouse-button" class="fa fa-mouse-pointer" style="display:none;"></i>
             </span>
         </th>
     </tr>
 </thead>
 <tbody>
     <tr>
-        <td id="terminal-content">
-            <div id="terminal-container"></div>
+        <td id="dwttm-terminal-content">
+            <div id="dwttm-terminal-container"></div>
             <div id="dwttm-modal-overlay">
                 <div class="dwttm-modal">
                     <span class="dwttm-modal-new" onclick="newDcModal()">New Session</span>
@@ -87,8 +87,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <tbody>
     <tr>
         <td>
-            <div id="session-list-container">
-                <ul id="session-list"></ul>
+            <div id="dwttm-session-list-container">
+                <ul></ul>
             </div>
         </td>
     </tr>
@@ -99,7 +99,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <?endif;?>
 
 <?if (!$dwttm_tmux_functional):?>
-<div class="tmux-message tmux-red-text">
+<div class="dwttm-tmux-message dwttm-tmux-red-text">
     <strong>Failure: The Tmux installation on your system is either not available or not functional.</strong><br>
     Please remove any custom Tmux installations and either reboot the system or reinstall the plugin.<br>
     The plugin will then automatically install a functional Tmux installation that is tailored to your OS version.
@@ -107,7 +107,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 <?endif;?>
 
 <?if ($dwttm_tmux_custom):?>
-<div class="tmux-message tmux-gray-text">
+<div class="dwttm-tmux-message dwttm-tmux-gray-text">
     A custom Tmux installation was detected on your server, so the plugin did not install its own over it.<br>
     If you are running into unexpected behavior, consider removing the custom Tmux installation from your system.<br>
     After a plugin reinstall or reboot, a functional Tmux installation (that is tailored to your OS version) will be reinstalled.
@@ -373,11 +373,11 @@ function fetchSessions() {
 
             sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-            const $sessionListContainer = $('#session-list-container');
+            const $sessionListContainer = $('#dwttm-session-list-container');
             $sessionListContainer.empty();
 
             const $newSessionItem = $('<div>')
-                .addClass('session-item add-new')
+                .addClass('dwttm-session-item dwttm-add-new')
                 .on('click', function (e) {
                     e.stopPropagation();
                     <?php if ($dwttm_plus_button === "named"): ?>
@@ -437,11 +437,11 @@ function fetchSessions() {
                 });
 
             const $plusIcon = $('<div>')
-                .addClass('plus-icon')
+                .addClass('dwttm-plus-icon')
                 .html('<i class="fa fa-plus"></i>');
 
             const $newSessionText = $('<div>')
-                .addClass('add-new-text')
+                .addClass('dwttm-add-new-text')
                 .text('Add New Session');
 
             $newSessionItem.append($plusIcon).append($newSessionText);
@@ -454,7 +454,7 @@ function fetchSessions() {
                 const createdAt = session.created_at;
 
                 const $sessionItem = $('<div>')
-                    .addClass('session-item')
+                    .addClass('dwttm-session-item')
                     .on('click', function (e) {
                         e.stopPropagation();
                         connectToSession(sessionId);
@@ -463,11 +463,11 @@ function fetchSessions() {
                 $sessionItem.attr('data-session-id', sessionId);
 
                 if(sessionId === connectedSessionId) {
-                    $sessionItem.addClass('connected');
+                    $sessionItem.addClass('dwttm-connected');
                 }
 
                 const $infoHead = $('<div>')
-                    .addClass('info-header')
+                    .addClass('dwttm-info-header')
                     .text(sessionName)
                     .on('click', function (e) {
                         e.stopPropagation();
@@ -519,7 +519,7 @@ function fetchSessions() {
                 $sessionItem.append($infoHead);
 
                 const $trashIcon = $('<div>')
-                    .addClass('trash-icon')
+                    .addClass('dwttm-trash-icon')
                     .html('<i class="fa fa-trash"></i>')
                     .on('click', function (e) {
                         e.stopPropagation();
@@ -542,7 +542,7 @@ function fetchSessions() {
                 $sessionItem.append($trashIcon);
 
                 const $popupIcon = $('<div>')
-                    .addClass('popup-icon')
+                    .addClass('dwttm-popup-icon')
                     .html('<i class="fa fa-window-restore"></i>')
                     .on('click', function (e) {
                         e.stopPropagation();
@@ -591,14 +591,14 @@ function fetchSessions() {
                     $sessionItem.append($canvas);
                 } else {
                     const $fallbackText = $('<div>')
-                        .addClass('fallback-text')
+                        .addClass('dwttm-fallback-text')
                         .text("No preview available for this session.");
 
                     $sessionItem.append($fallbackText);
                 }
 
                 const $infoFooter = $('<div>')
-                    .addClass('info-footer')
+                    .addClass('dwttm-info-footer')
                     .text(`${session.created_at}`);
                 $sessionItem.append($infoFooter);
 
@@ -783,8 +783,8 @@ function renameSession(sessionId, sessionName) {
 }
 
 function fetchSessionMouse(sessionId) {
-    const $mouseButton = $('#mouse-button');
-    const $mouseButtonInfo = $('#mouse-button-info');
+    const $mouseButton = $('#dwttm-mouse-button');
+    const $mouseButtonInfo = $('#dwttm-mouse-button-info');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId }, function (response) {
         if (response.mouse) {
             $mouseButton.off("click");
@@ -794,14 +794,14 @@ function fetchSessionMouse(sessionId) {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "off");
                 });
-                $mouseButton.removeClass("mouse-off");
-                $mouseButton.addClass("mouse-on");
+                $mouseButton.removeClass("dwttm-mouse-off");
+                $mouseButton.addClass("dwttm-mouse-on");
             } else {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "on");
                 });
-                $mouseButton.removeClass("mouse-on");
-                $mouseButton.addClass("mouse-off");
+                $mouseButton.removeClass("dwttm-mouse-on");
+                $mouseButton.addClass("dwttm-mouse-off");
             }
         } else {
             $mouseButton.off("click");
@@ -822,7 +822,7 @@ function fetchSessionMouse(sessionId) {
 }
 
 function setSessionMouse(sessionId, requestedMouse) {
-    const $mouseButton = $('#mouse-button');
+    const $mouseButton = $('#dwttm-mouse-button');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId, mouse: requestedMouse }, function (response) {
         if(response.newmouse) {
             $mouseButton.off("click");
@@ -830,14 +830,14 @@ function setSessionMouse(sessionId, requestedMouse) {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "off");
                 });
-                $mouseButton.removeClass("mouse-off");
-                $mouseButton.addClass("mouse-on");
+                $mouseButton.removeClass("dwttm-mouse-off");
+                $mouseButton.addClass("dwttm-mouse-on");
             } else {
                 $mouseButton.on( "click", function() {
                     setSessionMouse(sessionId, "on");
                 });
-                $mouseButton.removeClass("mouse-on");
-                $mouseButton.addClass("mouse-off");
+                $mouseButton.removeClass("dwttm-mouse-on");
+                $mouseButton.addClass("dwttm-mouse-off");
             }
             if(!response.requestmouse || !response.newmouse || response.requestmouse !== response.newmouse) {
                 if (typeof swal === "function") {
@@ -958,11 +958,11 @@ function connectToSession(sessionId) {
 
     ws = new WebSocket(wsUrl);
 
-    $('.session-item').removeClass('connected');
+    $('.dwttm-session-item').removeClass('dwttm-connected');
 
-    $('.session-item').filter(function () {
+    $('.dwttm-session-item').filter(function () {
         return $(this).attr('data-session-id') === sessionId;
-    }).addClass('connected');
+    }).addClass('dwttm-connected');
 
     ws.onopen = () => {
         term.clear();
@@ -1038,7 +1038,7 @@ $(function() {
     });
 
     <?if($dwttm_running):?>
-        const terminalContainer = document.getElementById('terminal-container');
+        const terminalContainer = document.getElementById('dwttm-terminal-container');
 
         term.loadAddon(fitAddon);
         term.open(terminalContainer);

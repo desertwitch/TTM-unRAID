@@ -4,20 +4,20 @@ body {
     overflow-x: hidden;
 }
 
-.termtable {
+.dwttm-termtable {
     width: 100%;
     table-layout: fixed;
 }
 
-.termtable td {
+.dwttm-termtable td {
     overflow: hidden;
 }
 
-#terminal-content {
+#dwttm-terminal-content {
     position: relative;
 }
 
-#terminal-container {
+#dwttm-terminal-container {
     width: 100%;
     height: 435px;
     padding: 10px;
@@ -28,14 +28,14 @@ body {
     overflow: hidden;
 }
 
-#session-list-container {
+#dwttm-session-list-container {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     justify-content: flex-start;
 }
 
-.session-item {
+.dwttm-session-item {
     position: relative;
     width: 300px;
     border: 1px solid #ddd;
@@ -47,26 +47,26 @@ body {
     cursor: pointer;
 }
 
-.session-item canvas {
+.dwttm-session-item canvas {
     display: block;
     margin: 0 auto 10px;
     border: 1px solid #ccc;
 }
 
-.session-item .fallback-text {
+.dwttm-session-item .dwttm-fallback-text {
     font-size: 14px;
     color: #666;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
 
-.session-item.connected {
+.dwttm-session-item.dwttm-connected {
     background-color: #333;
     color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.session-item.add-new {
+.dwttm-session-item.dwttm-add-new {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,37 +74,37 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.session-item.add-new:hover {
+.dwttm-session-item.dwttm-add-new:hover {
     background-color: #e6f7ff;
 }
 
-.session-item .info-header {
+.dwttm-session-item .dwttm-info-header {
     display: inline-block;
     font-family: monospace;
     font-weight: bold;
     cursor: text;
 }
 
-.session-item .info-header:hover {
+.dwttm-session-item .dwttm-info-header:hover {
     text-decoration: underline;
 }
 
-.session-item .info-footer {
+.dwttm-session-item .dwttm-info-footer {
     font-family: monospace;
 }
 
-.plus-icon {
+.dwttm-plus-icon {
     font-size: 50px;
     color: #007bff;
 }
 
-.add-new-text {
+.dwttm-add-new-text {
     font-size: 14px;
     color: #007bff;
     margin-top: 10px;
 }
 
-.trash-icon {
+.dwttm-trash-icon {
     position: absolute;
     top: 7px;
     left: 12px;
@@ -113,11 +113,11 @@ body {
     transition: color 0.2s ease;
 }
 
-.trash-icon:hover {
+.dwttm-trash-icon:hover {
     color: #a71d2a;
 }
 
-.popup-icon {
+.dwttm-popup-icon {
     position: absolute;
     top: 7px;
     right: 12px;
@@ -126,11 +126,11 @@ body {
     transition: color 0.2s ease;
 }
 
-.popup-icon:hover {
+.dwttm-popup-icon:hover {
     color: #0056b3;
 }
 
-.tmux-message {
+.dwttm-tmux-message {
         border: 1px solid;
         padding: 10px;
         font-size: x-small;
@@ -141,22 +141,22 @@ body {
         margin-bottom: 10px;
     }
 
-.tmux-red-text {
+.dwttm-tmux-red-text {
     color: red;
 }
 
-.tmux-gray-text {
+.dwttm-tmux-gray-text {
     color: gray;
 }
 
-#mouse-button {
+#dwttm-mouse-button {
     cursor: pointer;
     transition: color 0.3s ease;
 }
-.mouse-on {
+.dwttm-mouse-on {
     color: black;
 }
-.mouse-off {
+.dwttm-mouse-off {
     color: darkgray;
 }
 
