@@ -242,7 +242,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
-            <dt>Optimize Tmux for Command-Line Use:</dt>
+            <dt>Optimize Tmux for Manual Command-Line:</dt>
             <dd>
                 <select id="OSCONFIGURE" name="OSCONFIGURE" size="1">
                     <?=mk_option($dwttm_os_configure, "disable", "No");?>
