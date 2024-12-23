@@ -184,12 +184,14 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             if (!confirmation) {
                 return;
             }
+            switchingSessions = true;
             fetch(`/plugins/dwttm/include/dwttm_close_session.php?session=${encodeURIComponent(currentSession)}`)
                 .then(response => response.json())
                 .then(response => {
                     if (response.success) {
                         connectToSession();
                     } else {
+                        switchingSessions = false;
                         if(response.error) {
                             alert(`Failed closing session: ${response.error}`);
                             console.error("Error while closing session:", response.error);
@@ -200,6 +202,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     }
                 })
                 .catch(error => {
+                    switchingSessions = false;
                     alert(`Failed closing session: ${error}`);
                     console.error("Failed closing session:", error);
                 });
