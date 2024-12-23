@@ -3,14 +3,14 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "dwttm">
 <!ENTITY author    "desertwitch">
-<!ENTITY version   "2024.12.21b">
+<!ENTITY version   "2024.12.23">
 <!ENTITY launch    "Settings/dwTTM">
 <!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/main">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
 <!ENTITY pkgURL    "&gitURL;/packages">
 <!ENTITY plgPATH   "/boot/config/plugins/&name;">
-<!ENTITY plgNAME   "dwttm-2024.12.21-x86_64-3">
-<!ENTITY plgMD5    "925e979832e37d2cd22b0330835276ff">
+<!ENTITY plgNAME   "dwttm-2024.12.23-x86_64-1">
+<!ENTITY plgMD5    "7b5f51d08c008a2f52d98411e13f4fa2">
 <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
 ]>
 
