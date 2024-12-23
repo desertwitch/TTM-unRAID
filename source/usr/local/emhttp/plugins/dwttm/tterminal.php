@@ -89,7 +89,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             <div id="dwttm-modal-overlay">
                 <div class="dwttm-modal">
                     <button class="dwttm-modal-new" onclick="<?=($dwttm_plus_button_pop === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>">New Session</button>
-                    <button class="dwttm-modal-close" onclick="closeDcModal()">X</button>
+                    <button class="dwttm-modal-close" onclick="closeDcModal()">Close Message</button>
                     <h2>Your session has been disconnected.</h2>
                     <p>
                         You can just start a new one or close this message to inspect why this has happened.
