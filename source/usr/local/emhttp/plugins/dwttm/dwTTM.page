@@ -1,6 +1,6 @@
 Menu="Utilities"
 Type="xmenu"
-Title="TTerminal Manager (TTM)"
+Title="Tmux Terminal Manager"
 Icon="tty"
 Tag="tty"
 Markdown="false"
@@ -1056,14 +1056,14 @@ $(function() {
         term.write("\t\t                          \r\n");
         term.write("\t\t    #### ###  ###  ###    \r\n");
         term.write("\t\t    ###. ###  ###  ###    \r\n");
-        term.write("\r\n\t/ TTerminal Manager (TTM) for UNRAID /\r\n\r\n");
+        term.write("\r\n\t/ Tmux Terminal Manager (TTM) /\r\n\r\n");
         term.write("\x1b[3;38;2;200;200;200m\t\t Please scroll down and select a terminal session...\r\n\r\n\x1b[0m");
 
         fetchSessions();
     <?endif;?>
 
     if ( typeof caPluginUpdateCheck === "function" ) {
-        caPluginUpdateCheck("dwttm.plg",{name:"TTerminal Manager (TTM)"});
+        caPluginUpdateCheck("dwttm.plg",{name:"Tmux Terminal Manager (TTM)"});
     }
 });
 </script>
