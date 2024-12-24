@@ -187,6 +187,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                     <?=mk_option($dwttm_service_route, "route", "Default (with Unraid OS)");?>
                     <?=mk_option($dwttm_service_route, "direct", "Fallback (Unsafe/no SSL)");?>
                 </select>
+                <span style="margin-left:10px;"><i class="fa fa-exclamation-triangle dwttm-tooltip" title="Keep this setting on default unless having read and fully understood the help description."></i></span>
             </dd>
         </dl>
 
@@ -194,7 +195,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p>Sets the routing mode that the TTM frontend should use to access the TTM service.</p>
             <p><strong>Default</strong> relies on the Unraid web service to internally route any connections to the TTM service.</p>
             <p><strong>Fallback</strong> uses direct (non-SSL) connections to the configured port that the TTM service is listening on.</p>
-            <p>Please note that the <strong>Fallback</strong> mode does not support SSL and should only ever be used in secure local environments.</p>
+            <p>Please note that the <strong>Fallback</strong> mode does not support SSL and <strong>should only ever be used in secure local environments.</strong></p>
+            <p>In <strong>Fallback</strong> mode it is <strong>your responsibility</strong> to <strong>ensure that the service port is not accessible</strong> from outside your local network.</p>
         </blockquote>
 
         <div>
@@ -1107,6 +1109,12 @@ $(function() {
 
         fetchSessions();
     <?endif;?>
+
+    if(typeof $.fn.tooltipster === 'function') {
+        $('.dwttm-tooltip').tooltipster({
+            maxWidth: 300
+        });
+    }
 
     if ( typeof caPluginUpdateCheck === "function" ) {
         caPluginUpdateCheck("dwttm.plg",{name:"Tmux Terminal Manager (TTM)"});
