@@ -47,6 +47,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <th>
             <strong><em>TTerminal</em></strong>
             <span style="float:right;text-transform:none;">
+                <span id="dwttm-mouse-start-message" style="margin-right:5px;"><strong><em>You can close this page and come back to your terminals at any later time.</em></strong></span>
                 <span id="dwttm-mouse-button-info" style="display:none;margin-right:5px;"><em>Scrolling Mode:</em></span>
                 <i id="dwttm-mouse-button" class="fa fa-mouse-pointer" style="display:none;"></i>
             </span>
@@ -840,9 +841,11 @@ function renameSession(sessionId, sessionName) {
 function fetchSessionMouse(sessionId) {
     const $mouseButton = $('#dwttm-mouse-button');
     const $mouseButtonInfo = $('#dwttm-mouse-button-info');
+    const $mouseButtonStart = $('#dwttm-mouse-start-message');
     $.getJSON('/plugins/dwttm/include/dwttm_mouse_session.php', { session: sessionId }, function (response) {
         if (response.mouse) {
             $mouseButton.off("click");
+            $mouseButtonStart.hide();
             $mouseButton.show();
             $mouseButtonInfo.show();
             if(response.mouse === "on") {
@@ -862,6 +865,7 @@ function fetchSessionMouse(sessionId) {
             $mouseButton.off("click");
             $mouseButton.hide();
             $mouseButtonInfo.hide();
+            $mouseButtonStart.show();
             if(response.error) {
                 console.error('Error while fetching mouse mode for session:', response.error);
             } else {
@@ -872,6 +876,7 @@ function fetchSessionMouse(sessionId) {
         $mouseButton.off("click");
         $mouseButton.hide();
         $mouseButtonInfo.hide();
+        $mouseButtonStart.show();
         console.error('Error fetching mouse mode for session:', error);
     });
 }
