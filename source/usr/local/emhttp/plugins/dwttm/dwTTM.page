@@ -291,10 +291,10 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 </form>
 
 <div>
-            <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-trophy"></i>CREDITS AND ACKNOWLEDGEMENTS</strong></span>
+    <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-trophy"></i>CREDITS AND ACKNOWLEDGEMENTS</strong></span>
 </div><br>
 
-<div style="font-family:monospace;">
+<div>
     This plugin would not have been possible without the guidance and careful testing of my friend <strong>jcofer555</strong> - thank you.
 </div>
 
