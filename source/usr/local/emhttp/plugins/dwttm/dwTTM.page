@@ -277,13 +277,12 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
     <dl>
         <dt>
-
             <input type="button" class="dwttm-run" id="KILLSESSIONS" value="Kill All Sessions">
-            <input type="button" class="dwttm-run" id="RESTART" value="Restart Service">
+            <input type="submit" class="dwttm-not-run" name="#default" value="Restore Defaults">
         </dt>
         <dd>
             <input type="submit" name="#apply" value="Apply Settings">
-            <input type="submit" class="dwttm-not-run" name="#default" value="Restore Defaults">
+            <input type="button" class="dwttm-run" id="RESTART" value="Restart Service">
         </dd>
     </dl>
 </form>
