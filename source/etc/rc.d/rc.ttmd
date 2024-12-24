@@ -56,7 +56,7 @@ ttmd_stop() {
         while killall ttmd 2>/dev/null; do
             sleep 1
             TIMER=$((TIMER+1))
-            if [ $TIMER -ge 10 ]; then
+            if [ $TIMER -ge 70 ]; then
                 echo "Hard-killing non-responsive ttmd service..."
                 killall -9 ttmd 2>/dev/null
                 sleep 1
