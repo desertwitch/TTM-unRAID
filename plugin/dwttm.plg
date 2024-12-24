@@ -196,6 +196,7 @@ removepkg &plgPATH;/*.txz
 rm -rf &plgPATH;
 rm -rf &emhttp;
 rm -f /var/log/ttmd.log
+rm -f /etc/cron.daily/dwttm-poller >/dev/null 2>&amp;1
 
 echo ""
 echo "----------------------------------------------------------------"
