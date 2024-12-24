@@ -141,8 +141,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                     <?=mk_option($dwttm_service, "enable", "Yes");?>
                 </select>
                 <?if(file_exists("/var/log/ttmd.log")):?>
-                <a onclick="openTerminal('log','ttmd','ttmd.log')" style="color:inherit;margin-left:5px;cursor:pointer;">
-                    <i class="fa fa-book" title="TTM Service Logs"></i>
+                <a onclick="openTerminal('log','ttmd','ttmd.log')" style="color:inherit;margin-left:5px;cursor:help;">
+                    <i class="fa fa-book dwttm-tooltip" title="TTM Service Logs"></i>
                 </a>
                 <?endif;?>
             </dd>
