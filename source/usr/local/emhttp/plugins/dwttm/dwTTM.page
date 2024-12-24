@@ -273,7 +273,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
         <blockquote class="inline_help">
             <p>Sets if the plugin should optimize the Tmux defaults for manual command-line use as well.</p>
-            <p>This involves setting the default terminal to <strong>xterm-256color</strong> instead of the non-supported default <strong>tmux-256color</strong>.
+            <p>This involves setting the default terminal to <strong>xterm-256color</strong> instead of the non-supported default <strong>tmux-256color</strong>.</p>
             <p>The plugin always does this for its own sessions, this is only for manual Tmux commands you run in the command-line.</p>
         </blockquote>
     </div>
@@ -289,6 +289,14 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </dd>
     </dl>
 </form>
+
+<div>
+            <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-trophy"></i>CREDITS AND ACKNOWLEDGEMENTS</strong></span>
+</div><br>
+
+<div style="font-family:monospace;">
+    This plugin would not have been possible without the guidance and careful testing of my friend <strong>jcofer555</strong> - thank you.
+</div>
 
 <script>
 const term = new Terminal({ scrollback: 0 });
