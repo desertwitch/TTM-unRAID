@@ -216,6 +216,21 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
+            <dt>General - Close Session Button Behavior:</dt>
+            <dd>
+                <select id="CLOSEBUTTON" name="CLOSEBUTTON" size="1">
+                    <?=mk_option($dwttm_close_button, "confirm", "Ask Confirmation");?>
+                    <?=mk_option($dwttm_close_button, "noconfirm", "No Confirmations");?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Sets if you want to be asked for confirmation when closing sessions.</p>
+            <p>Beware that closing a session <strong>also kills the running programs inside</strong> that session.</p>
+        </blockquote>
+
+        <dl>
             <dt>Page - New Session Button Behavior:</dt>
             <dd>
                 <select id="PLUSBUTTONSETT" name="PLUSBUTTONSETT" size="1">
@@ -267,7 +282,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </dt>
         <dd>
             <input type="submit" name="#apply" value="Apply">
-            <input type="button" value="Done" onclick="done()">
+            <input type="button" value="dwttm-run" id="KILLSESSIONS" value="Kill All Sessions">
         </dd>
     </dl>
 </form>
@@ -366,6 +381,27 @@ function newDcModal() {
 
 function closeDcModal() {
     $('#dwttm-modal-overlay').hide();
+}
+
+function KillSessions() {
+    if (typeof swal === "function") {
+        swal({
+            title: "--- DANGER ---",
+            text: "This will terminate <b>all Tmux sessions</b> and <b>running programs inside them</b>.</b><br>Are you sure that you want to do this?",
+            type: "error",
+            html: true,
+            confirmButtonText: "Terminate Sessions",
+            showCancelButton: true
+        }, function() {
+            $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/killsessions');
+            $('#dwttm-settings').submit();
+        });
+    } else {
+        if (confirm("--- DANGER --- DANGER --- DANGER ---\n\nThis will terminate all Tmux sessions and running programs inside them.\n\nAre you sure that you want to do this?")) {
+            $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/killsessions');
+            $('#dwttm-settings').submit();
+        }
+    }
 }
 
 function fetchSessions() {
@@ -525,6 +561,7 @@ function fetchSessions() {
                     .html('<i class="fa fa-trash"></i>')
                     .on('click', function (e) {
                         e.stopPropagation();
+                        <?php if ($dwttm_close_button !== "noconfirm"): ?>
                         if (typeof swal === "function") {
                             swal({
                                 title: "Session: " + sessionName,
@@ -537,8 +574,13 @@ function fetchSessions() {
                                 closeSession(sessionId);
                             });
                         } else {
-                            closeSession(sessionId);
+                            if (confirm("Session: " + sessionName + "\n\nTerminate the session and its running programs?")) {
+                                closeSession(sessionId);
+                            }
                         }
+                        <?php else: ?>
+                        closeSession(sessionId);
+                        <?php endif; ?>
                     });
 
                 $sessionItem.append($trashIcon);
@@ -1040,6 +1082,8 @@ $(function() {
         $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/restart');
         $('#dwttm-settings').submit();
     });
+
+    $('#KILLSESSIONS').click(KillSessions);
 
     <?if($dwttm_running):?>
         const terminalContainer = document.getElementById('dwttm-terminal-container');

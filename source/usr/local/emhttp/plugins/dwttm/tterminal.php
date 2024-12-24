@@ -180,10 +180,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function closeSession() {
+            <?php if ($dwttm_close_button !== "noconfirm"): ?>
             const confirmation = confirm("Terminate the session and its running programs?");
             if (!confirmation) {
                 return;
             }
+            <?php endif; ?>
             fetch(`/plugins/dwttm/include/dwttm_close_session.php?session=${encodeURIComponent(currentSession)}`)
                 .then(response => response.json())
                 .then(response => {
