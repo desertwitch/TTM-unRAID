@@ -234,8 +234,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <dt>Page - New Session Button Behavior:</dt>
             <dd>
                 <select id="PLUSBUTTONSETT" name="PLUSBUTTONSETT" size="1">
-                    <?=mk_option($dwttm_plus_button, "quick", "Quick Session");?>
-                    <?=mk_option($dwttm_plus_button, "named", "Named Session");?>
+                    <?=mk_option($dwttm_plus_button, "quick", "New Quick Session");?>
+                    <?=mk_option($dwttm_plus_button, "named", "New Named Session");?>
                 </select>
             </dd>
         </dl>
@@ -248,8 +248,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <dt>Window - New Session Button Behavior:</dt>
             <dd>
                 <select id="PLUSBUTTONPOP" name="PLUSBUTTONPOP" size="1">
-                    <?=mk_option($dwttm_plus_button_pop, "quick", "Quick Session");?>
-                    <?=mk_option($dwttm_plus_button_pop, "named", "Named Session");?>
+                    <?=mk_option($dwttm_plus_button_pop, "quick", "New Quick Session");?>
+                    <?=mk_option($dwttm_plus_button_pop, "named", "New Named Session");?>
                 </select>
             </dd>
         </dl>
