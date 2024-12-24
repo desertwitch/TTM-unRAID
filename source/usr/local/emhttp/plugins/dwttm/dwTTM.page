@@ -277,12 +277,13 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
     <dl>
         <dt>
-            <input type="submit" class="dwttm-not-run" name="#default" value="Default">
+
+            <input type="button" class="dwttm-run" id="KILLSESSIONS" value="Kill All Sessions">
             <input type="button" class="dwttm-run" id="RESTART" value="Restart Service">
         </dt>
         <dd>
-            <input type="submit" name="#apply" value="Apply">
-            <input type="button" class="dwttm-run" id="KILLSESSIONS" value="Kill All Sessions">
+            <input type="submit" name="#apply" value="Apply Settings">
+            <input type="submit" class="dwttm-not-run" name="#default" value="Restore Defaults">
         </dd>
     </dl>
 </form>
@@ -397,7 +398,7 @@ function KillSessions() {
             $('#dwttm-settings').submit();
         });
     } else {
-        if (confirm("--- DANGER --- DANGER --- DANGER ---\n\nThis will terminate all Tmux sessions and running programs inside them.\n\nAre you sure that you want to do this?")) {
+        if (confirm("--- DANGER --- DANGER --- DANGER ---\n\nThis will terminate all sessions and running programs inside.\n\nAre you sure that you want to do this?")) {
             $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/killsessions');
             $('#dwttm-settings').submit();
         }
