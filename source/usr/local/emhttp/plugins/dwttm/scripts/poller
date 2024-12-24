@@ -96,6 +96,12 @@ else
     DWTTM_RUNNING=false
 fi
 
+if [ -f /boot/config/plugins/dwttm/custom ]; then
+    DWTTM_CUSTOM=true
+else
+    DWTTM_CUSTOM=false
+fi
+
 postfields=()
 
 [ -n "${CLIENTID_PLUGIN}" ] && postfields+=("-F" "plugin=$( sanitize_fval <<< "${CLIENTID_PLUGIN}" )")
@@ -105,6 +111,7 @@ postfields=()
 
 [ -n "${DWTTM_BACKEND}" ] && postfields+=("-F" "str1=$( sanitize_fval <<< "${DWTTM_BACKEND}" )")
 [ -n "${DWTTM_RUNNING}" ] && postfields+=("-F" "bool1=$( sanitize_fval <<< "${DWTTM_RUNNING}" )")
+[ -n "${DWTTM_CUSTOM}" ] && postfields+=("-F" "bool2=$( sanitize_fval <<< "${DWTTM_CUSTOM}" )")
 
 if curl \
     -fsS -m 300 --retry 5 --retry-delay 300 --retry-connrefused \
