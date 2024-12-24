@@ -265,7 +265,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <dl>
             <dt>Optimize Tmux for Manual Command-Line:</dt>
             <dd>
-                <select id="OSCONFIGURE" name="OSCONFIGURE" size="1">
+                <select class="dwttm-not-run" id="OSCONFIGURE" name="OSCONFIGURE" size="1">
                     <?=mk_option($dwttm_os_configure, "disable", "No");?>
                     <?=mk_option($dwttm_os_configure, "enable", "Yes");?>
                 </select>
@@ -276,6 +276,23 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p>Sets if the plugin should optimize the Tmux defaults for manual command-line use as well.</p>
             <p>This involves setting the default terminal to <strong>xterm-256color</strong> instead of the non-supported default <strong>tmux-256color</strong>.</p>
             <p>The plugin always does this for its own sessions, this is only for manual Tmux commands you run in the command-line.</p>
+        </blockquote>
+
+        <dl>
+            <dt>TTM Plugin Usage Metric Functions:</dt>
+            <dd>
+                <select class="dwttm-not-run" name="METRICSAPI" size="1">
+                    <?=mk_option($dwttm_metricsapi, 'disable', 'No');?>
+                    <?=mk_option($dwttm_metricsapi, 'enable', 'Yes');?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Enables collection of <strong>anonymized</strong> plugin usage statistics through the plugin usage metrics API.</p>
+            <p>This aids prioritization of bug reports, development of new features and planning for plugin updates/deprecation.</p>
+            <p><em>Attributes: Metric ID, Plugin Version, Unraid Version, Tmux Backend Version, TTM Service Active (Yes/No).</em></p>
+            <p><strong><i class="fa fa-heart" style="color:red;"></i> If possible, please keep this setting <u>enabled</u> to support the continued development of this plugin - thank you!</strong></p>
         </blockquote>
     </div>
 
