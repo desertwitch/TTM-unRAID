@@ -38,6 +38,7 @@ if [ -x /etc/rc.d/rc.ttmd ]; then
 else
     killall ttmd >/dev/null 2>&amp;1
 fi
+killall dwttm-poller >/dev/null 2>&amp;1
 exit 0
 </INLINE>
 </FILE>
@@ -145,6 +146,7 @@ else
     /etc/rc.d/rc.ttmd configure 2>&amp;1 | logger -t "rc.ttmd"
 fi
 
+/etc/cron.daily/dwttm-poller conntest >/dev/null 2>&amp;1 &amp;
 echo ""
 echo "----------------------------------------------------------------"
 echo " Tmux Terminal Manager (TTM) has been installed."
@@ -170,6 +172,7 @@ if [ -x /etc/rc.d/rc.ttmd ]; then
 else
     killall ttmd >/dev/null 2>&amp;1
 fi
+killall dwttm-poller >/dev/null 2>&amp;1
 
 if [ -f /boot/config/plugins/unassigned.devices.preclear.plg ]; then
     echo ""
