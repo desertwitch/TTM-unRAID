@@ -108,6 +108,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
         let ws;
         let disposable;
+        let disposable2;
 
         function freeSession() {
             window.removeEventListener('resize', handleResize);
@@ -124,6 +125,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             if (disposable) {
                 disposable.dispose();
                 disposable = null;
+            }
+
+            if (disposable2) {
+                disposable2.dispose();
+                disposable2 = null;
             }
         }
 
@@ -334,9 +340,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 }
             }
 
-            disposable.dispose();
+            if (disposable2) {
+                disposable2.dispose();
+                disposable2 = null;
+            }
             term.clearSelection();
-            disposable = term.onSelectionChange(handleSelectionChange);
+            disposable2 = term.onSelectionChange(handleSelectionChange);
         }
 
         function handleResize() {
@@ -457,13 +466,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 freeSession();
             };
 
-            term.onData((data) => {
+            disposable = term.onData((data) => {
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.send(data);
                 }
             });
-
-            disposable = term.onSelectionChange(handleSelectionChange);
+            disposable2 = term.onSelectionChange(handleSelectionChange);
 
             window.addEventListener('resize', handleResize);
 
