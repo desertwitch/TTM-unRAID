@@ -315,11 +315,6 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
 <div style="font-family:monospace;padding-left:5px;">
     <p>This plugin would not have been possible without the guidance of my friend <strong>jcofer555</strong> - thank you.</p>
-    <? if ($theme === "light"): ?>
-        <p>It was built using <img src="/plugins/dwttm/images/Go-Logo_Black.svg" alt="Go Logo" width="36" height="36" style="vertical-align: middle;" /> for both reliability and performance.</p>
-    <? else: ?>
-        <p>It was built using <img src="/plugins/dwttm/images/Go-Logo_White.svg" alt="Go Logo" width="36" height="36" style="vertical-align: middle;" /> for both reliability and performance.</p>
-    <? endif; ?>
 </div><br>
 
 <script>
