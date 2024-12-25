@@ -254,6 +254,20 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
+            <dt>Show TTM Dashboard on OS Frontpage:</dt>
+            <dd>
+                <select id="OSDASHBOARD" name="OSDASHBOARD" size="1">
+                    <?=mk_option($dwttm_os_dashboard, "disable", "No");?>
+                    <?=mk_option($dwttm_os_dashboard, "enable", "Yes");?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Shows the TTM dashboard on the OS frontpage for faster overview of the TTM terminals.</p>
+        </blockquote>
+
+        <dl>
             <dt>General - Close Session Button Behavior:</dt>
             <dd>
                 <select id="CLOSEBUTTON" name="CLOSEBUTTON" size="1">
