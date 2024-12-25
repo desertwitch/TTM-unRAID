@@ -253,6 +253,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p>Shows the TTM button in the OS menu for faster access to the TTM terminals.</p>
         </blockquote>
 
+        <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'6.12.0-beta5', '>')):?>
         <dl>
             <dt>Show TTM Dashboard on OS Frontpage:</dt>
             <dd>
@@ -266,6 +267,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <blockquote class="inline_help">
             <p>Shows the TTM dashboard on the OS frontpage for faster overview of the TTM terminals.</p>
         </blockquote>
+        <?endif;?>
 
         <dl>
             <dt>General - Close Session Button Behavior:</dt>
