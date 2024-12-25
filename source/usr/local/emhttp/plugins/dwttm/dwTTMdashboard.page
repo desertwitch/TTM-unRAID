@@ -125,7 +125,7 @@ EOT;
                 dropdown.innerHTML = '<option value="">Error loading sessions.</option>';
             })
             .finally(() => {
-                timers.fetchSessions = setTimeout(fetchSessions, 3000);
+                timers.fetchSessions = setTimeout(fetchSessions, 5000);
             });
     }
     $(function() {

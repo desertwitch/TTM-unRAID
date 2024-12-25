@@ -170,7 +170,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     dropdown.innerHTML = '<option value="">Error loading sessions.</option>';
                 })
                 .finally(() => {
-                    ttimers.fetchSessions = setTimeout(fetchSessions, 3000);
+                    ttimers.fetchSessions = setTimeout(fetchSessions, 5000);
                 });
         }
 
