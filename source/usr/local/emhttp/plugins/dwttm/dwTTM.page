@@ -643,43 +643,52 @@ function fetchSessions() {
                 $sessionItem.append($popupIcon);
 
                 if (session.preview_success) {
-                    const canvasWidth = 300;
-                    const canvasHeight = 150;
-                    const $canvas = $('<canvas>')
-                        .attr('width', canvasWidth)
-                        .attr('height', canvasHeight);
+                    let $canvas;
+                    try {
+                        $canvas = null;
+                        const canvasWidth = 300;
+                        const canvasHeight = 150;
+                        $canvas = $('<canvas>')
+                            .attr('width', canvasWidth)
+                            .attr('height', canvasHeight);
 
-                    const canvas = $canvas[0];
-                    const ctx = canvas.getContext('2d');
+                        const canvas = $canvas[0];
+                        const ctx = canvas.getContext('2d');
 
-                    ctx.fillStyle = '#000000';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = '#000000';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    let fontSize = 12;
-                    const padding = 10;
-                    const lineHeightFactor = 1.2;
-                    let lineHeight = fontSize * lineHeightFactor;
+                        let fontSize = 12;
+                        const padding = 10;
+                        const lineHeightFactor = 1.2;
+                        let lineHeight = fontSize * lineHeightFactor;
 
-                    const lines = sessionPreview.split('\n');
-                    const totalLines = lines.length;
+                        const lines = sessionPreview.split('\n');
+                        const totalLines = lines.length;
 
-                    const maxContentHeight = totalLines * lineHeight;
-                    const scalingFactor = Math.min(1, (canvasHeight - 2 * padding) / maxContentHeight);
+                        const maxContentHeight = totalLines * lineHeight;
+                        const scalingFactor = Math.min(1, (canvasHeight - 2 * padding) / maxContentHeight);
 
-                    fontSize = Math.floor(fontSize * scalingFactor);
-                    lineHeight = fontSize * lineHeightFactor;
+                        fontSize = Math.floor(fontSize * scalingFactor);
+                        lineHeight = fontSize * lineHeightFactor;
 
-                    ctx.font = `${fontSize}px monospace`;
-                    ctx.fillStyle = '#ffffff';
+                        ctx.font = `${fontSize}px monospace`;
+                        ctx.fillStyle = '#ffffff';
 
-                    lines.forEach((line, index) => {
-                        const y = padding + (index + 1) * lineHeight;
-                        if (y <= canvasHeight - padding) {
-                            ctx.fillText(line, padding, y);
-                        }
-                    });
-
-                    $sessionItem.append($canvas);
+                        lines.forEach((line, index) => {
+                            const y = padding + (index + 1) * lineHeight;
+                            if (y <= canvasHeight - padding) {
+                                ctx.fillText(line, padding, y);
+                            }
+                        });
+                    } catch(e) {
+                        $canvas = null;
+                        $canvas = $('<div>')
+                        .addClass('dwttm-fallback-text')
+                        .text("No preview available for this session.");
+                    } finally {
+                        $sessionItem.append($canvas);
+                    }
                 } else {
                     const $fallbackText = $('<div>')
                         .addClass('dwttm-fallback-text')
