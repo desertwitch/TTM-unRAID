@@ -97,8 +97,12 @@ EOT;
                         fragment.appendChild(option);
                     });
 
-                    dropdown.innerHTML = '<option value="">Connect to Session...</option>';
-                    dropdown.appendChild(fragment);
+                    if(sessionCounter > 0) {
+                        dropdown.innerHTML = '<option value="">Connect to Session...</option>';
+                        dropdown.appendChild(fragment);
+                    } else {
+                        dropdown.innerHTML = '<option value="">There are no active sessions.</option>';
+                    }
 
                     document.getElementById('dwttm-sessions').innerHTML = sessionCounter;
 
