@@ -645,7 +645,6 @@ function fetchSessions() {
                 if (session.preview_success) {
                     let $canvas;
                     try {
-                        $canvas = null;
                         const canvasWidth = 300;
                         const canvasHeight = 150;
                         $canvas = $('<canvas>')
