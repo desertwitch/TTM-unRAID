@@ -330,7 +330,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 </div><br>
 
 <div style="font-family:monospace;padding-left:5px;">
-    <p>This plugin would not have been possible without the guidance of my friend <strong>jcofer555</strong> - thank you.</p>
+    <p>This plugin would not have been possible without the guidance of my friend <strong>jcofer555</strong>.</p>
 </div><br>
 
 <script>
