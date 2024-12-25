@@ -34,13 +34,13 @@ $mytiles[$pluginname]['column2'] =
                 display: block;
                 width: 100%;
                 padding: 0 5px;
-                ${dwttm_border}
+                {$dwttm_border}
                 font-size: 14px;
                 height: 30px;
                 box-sizing: border-box;
                 user-select: none;
                 font-style: italic;
-                ${dwttm_color}
+                {$dwttm_color}
             ">
                 <option value="">Connect to Session...</option>
             </select>
