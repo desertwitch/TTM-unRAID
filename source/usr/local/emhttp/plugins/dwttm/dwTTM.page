@@ -451,6 +451,7 @@ function KillSessions() {
 }
 
 function fetchSessions() {
+    clearTimeout(timers.fetchSessions);
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.response) {
             let sessions = data.response;
@@ -703,9 +704,9 @@ function fetchSessions() {
         }
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
+    }).always(function() {
+        timers.fetchSessions = setTimeout(fetchSessions, 3000);
     });
-    clearTimeout(timers.fetchSessions);
-    timers.fetchSessions = setTimeout(fetchSessions, 3000);
 }
 
 function createNewSession() {

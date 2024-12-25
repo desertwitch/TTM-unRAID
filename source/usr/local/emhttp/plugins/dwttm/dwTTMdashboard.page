@@ -11,6 +11,9 @@ Link="nav-user"
 <?if($dwttm_tmp_running && $dwttm_tmp_os_dashboard === "enable"):?>
 <?
 $pluginname = "dwttm";
+$dwttm_border = 'border: 1px solid rgba(' . (($display["theme"] == 'white' || $display["theme"] == 'azure') ? '0, 0, 0, 0.1' : '255, 255, 255, 0.1') . ');';
+$dwttm_color = 'color: rgba(' . (($display["theme"] == 'white' || $display["theme"] == 'azure') ? '0, 0, 0, 0.3' : '255, 255, 255, 0.3') . ');';
+
 $mytiles[$pluginname]['column2'] =
 <<<EOT
 <tbody id="dwttm-dashboard" title="Tmux Terminal Manager (TTM)">
@@ -18,10 +21,29 @@ $mytiles[$pluginname]['column2'] =
         <td>
             <i class="fa fa-tty f32"></i>
                 <div class="section">Tmux Terminal Manager (TTM)<br>
-		            <span>There are <span class="dwttm-sessions" style="font-weight:bold;"><i class="fa fa-spinner fa-spin icon"></i></span> active persistent terminal sessions.</span>
+		            <span>There are <span id="dwttm-sessions" style="font-weight:bold;"><i class="fa fa-spinner fa-spin icon"></i></span> active persistent terminal sessions.</span>
                 </div>
             <a href="/Dashboard/dwTTM" title="_(Go to TTM Settings)_"><i class="fa fa-fw fa-cog control"></i></a>
             <a href="#" title="_(Open TTerminal)_" id="dwttm-tterminal-button"><i class="fa fa-fw fa-terminal control"></i></a>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-left:15px;padding-right:15px;padding-top:5px;">
+            <select id="dwttm-sessions-select" style="
+                all: unset;
+                display: block;
+                width: 100%;
+                padding: 0 5px;
+                ${dwttm_border}
+                font-size: 14px;
+                height: 30px;
+                box-sizing: border-box;
+                user-select: none;
+                font-style: italic;
+                ${dwttm_color}
+            ">
+                <option value="">Connect to Session...</option>
+            </select>
         </td>
     </tr>
 </tbody>
@@ -29,7 +51,7 @@ EOT;
 ?>
 
 <script>
-    function dwTTMDashButton() {
+    function dwTTMDashButton(sessionId) {
         const width = Math.min(screen.availWidth,1200);
         const height = Math.min(screen.availHeight,800);
 
@@ -38,37 +60,69 @@ EOT;
         let left = (screen.width-width)/2;
         if (!left || left < 0) {left = 0;}
 
-        window.open(
-            '/plugins/dwttm/tterminal.php',
-            'TTerminal',
-            `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
-        );
+        if(sessionId) {
+            window.open(
+                `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`,
+                'TTerminal',
+                `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+            );
+        } else {
+            window.open(
+                '/plugins/dwttm/tterminal.php',
+                'TTerminal',
+                `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+            );
+        }
     }
     function fetchSessions() {
-        $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
-            if (data.response) {
-                let sessions = data.response;
-                let sessionCount = 0;
-
-                $.each(sessions, function (index, session) {
-                    sessionCount++;
-                });
-
-                $('.dwttm-sessions').html(sessionCount);
-            } else {
-                if (data.error) {
-                    console.error('Error processing sessions:', data.error)
-                } else {
-                    console.error('Error processing sessions, no error message.');
-                }
-                $('.dwttm-sessions').html("?");
-            }
-        }).fail(function (xhr, status, error) {
-            console.error('Error fetching sessions:', error);
-            $('.dwttm-sessions').html("?");
-        });
+        const dropdown = document.getElementById('dwttm-sessions-select');
         clearTimeout(timers.fetchSessions);
-        timers.fetchSessions = setTimeout(fetchSessions, 5000);
+        fetch('/plugins/dwttm/include/dwttm_sessions.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.response) {
+                    const sessions = data.response;
+                    let sessionCounter = 0;
+
+                    sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                    dropdown.onchange = null;
+
+                    const fragment = document.createDocumentFragment();
+                    sessions.forEach(session => {
+                        sessionCounter++;
+                        const option = document.createElement('option');
+                        option.value = session.session_id;
+                        option.textContent = `${session.session_name} - ${session.created_at}`;
+                        fragment.appendChild(option);
+                    });
+
+                    dropdown.innerHTML = '<option value="">Connect to Session...</option>';
+                    dropdown.appendChild(fragment);
+
+                    document.getElementById('dwttm-sessions').innerHTML = sessionCounter;
+
+                    dropdown.onchange = function () {
+                        const value = this.value;
+                        if (value) {
+                            dwTTMDashButton(value);
+                        }
+                    };
+                } else {
+                    if (data.error) {
+                        console.error('Error processing sessions:', data.error)
+                    } else {
+                        console.error('Error processing sessions, no error message.');
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching sessions:', error);
+                dropdown.innerHTML = '<option value="">Error loading sessions.</option>';
+            })
+            .finally(() => {
+                timers.fetchSessions = setTimeout(fetchSessions, 3000);
+            });
     }
     $(function() {
         $('#dwttm-tterminal-button').on('click', function (event) {

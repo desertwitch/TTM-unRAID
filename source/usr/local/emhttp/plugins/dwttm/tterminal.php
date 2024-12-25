@@ -134,6 +134,8 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function fetchSessions() {
+            const dropdown = document.getElementById('dwttm-session-dropdown');
+            clearTimeout(ttimers.fetchSessions);
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
                 .then(response => response.json())
                 .then(data => {
@@ -141,8 +143,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                         const sessions = data.response;
 
                         sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-                        const dropdown = document.getElementById('dwttm-session-dropdown');
 
                         const fragment = document.createDocumentFragment();
                         sessions.forEach(session => {
@@ -167,9 +167,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 })
                 .catch(error => {
                     console.error('Error fetching sessions:', error);
+                    dropdown.innerHTML = '<option value="">Error loading sessions.</option>';
+                })
+                .finally(() => {
+                    ttimers.fetchSessions = setTimeout(fetchSessions, 3000);
                 });
-                clearTimeout(ttimers.fetchSessions);
-                ttimers.fetchSessions = setTimeout(fetchSessions, 3000);
         }
 
         function connectToSession(session) {
