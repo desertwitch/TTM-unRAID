@@ -38,13 +38,14 @@ ttmd_start() {
                 return 0
             else
                 echo "ttmd service was started but then died - port already in use?"
-                rm -f /var/run/ttmd.pid
+                ttmd_stop
                 return 1
             fi
         fi
     else
         echo "Error: Unable to start ttmd - Tmux not found or not functional."
         echo "Error: Please refer to the 'TTM Settings' for more information on this issue."
+        ttmd_stop
         return 1
     fi
 }
