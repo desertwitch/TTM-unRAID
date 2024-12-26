@@ -71,10 +71,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 <div class="dwttm-session-half dwttm-top-half" onclick="createNewSession()">
                     <div class="dwttm-plus-icon">+</div>
                     <div class="dwttm-session-text">New Quick Session</div>
+                    <div class="dwttm-session-subtext">You can leave and resume your session anytime.</div>
                 </div>
                 <div class="dwttm-session-half dwttm-bottom-half" onclick="createNewNamedSession()">
                     <div class="dwttm-plus-icon">&#x270E;</div>
                     <div class="dwttm-session-text">New Named Session</div>
+                    <div class="dwttm-session-subtext">You can leave and resume your session anytime.</div>
                 </div>
             </div>
         <?php else: ?>
