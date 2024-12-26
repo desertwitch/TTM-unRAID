@@ -17,7 +17,7 @@
  * included in all copies or substantial portions of the Software.
  *
  */
-function dwttm_executeCommand($command) {
+function dwttm_executeCommand($command, $trim = true) {
     $descriptorspec = [
         1 => ['pipe', 'w'], // stdout
         2 => ['pipe', 'w']  // stderr
@@ -35,7 +35,7 @@ function dwttm_executeCommand($command) {
             $returnCode = proc_close($process);
         }
 
-        return ['stdout' => trim($stdout ?? ''), 'stderr' => trim($stderr ?? ''), 'returnCode' => ($returnCode ?? -1)];
+        return ['stdout' => ($trim ? trim($stdout ?? '') : ($stdout ?? '')) , 'stderr' => ($trim ? trim($stderr ?? '') : ($stderr ?? '')), 'returnCode' => ($returnCode ?? -1)];
     }
 
     return ['stdout' => '', 'stderr' => 'Failed to open process', 'returnCode' => -1];
