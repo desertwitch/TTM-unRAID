@@ -234,10 +234,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 if (response.success) {
                     connectToSession(response.session_id);
                 } else {
-                    alert('Failed to create a new session, please try again.');
                     if(response.error) {
+                        alert(`Failed to create a new session: ${response.error}`);
                         console.error('Error while creating session:', response.error);
                     } else {
+                        alert('Failed to create a new session, please try again.');
                         console.error('Error while creating session, no error message.');
                     }
                 }
@@ -272,15 +273,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 if (response.success) {
                     connectToSession(response.session_id);
                 } else {
-                    alert(
-                        'Failed to create a new session' +
-                        (sessionName.trim() !== ""
-                            ? ', maybe it already exists?'
-                            : '.')
-                    );
                     if(response.error) {
+                        alert(`Failed to create a new session: ${response.error}`);
                         console.error('Error while creating session:', response.error);
                     } else {
+                        alert('Failed to create a new session, please try again.');
                         console.error('Error while creating session, no error message.');
                     }
                 }

@@ -30,36 +30,52 @@ try {
 
     $session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
 
-    if($session) {
-        $command = "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash' 2>/dev/null";
+    if ($session) {
+        $command = "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
     } else {
-        $command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash' 2>/dev/null";
+        $command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
     }
 
-    $output = [];
-    $returnCode = null;
-    exec($command, $output, $returnCode);
+    $descriptorspec = [
+        1 => ['pipe', 'w'], // stdout
+        2 => ['pipe', 'w']  // stderr
+    ];
 
-    if ($returnCode === 0 && !empty($output)) {
-        echo json_encode([
-            'success' => true,
-            'session_id' => trim($output[0])
-        ]);
+    $process = proc_open($command, $descriptorspec, $pipes);
+
+    if (is_resource($process)) {
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $returnCode = proc_close($process);
+
+        if ($returnCode === 0 && !empty($stdout)) {
+            echo json_encode([
+                'success' => true,
+                'session_id' => trim($stdout)
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'error' => trim($stderr ?? "") ?: 'Non-zero return code.'
+            ]);
+        }
     } else {
         echo json_encode([
             'success' => false,
-            'error' => 'Non-zero return code.'
+            'error' => 'Failed to execute tmux command.'
         ]);
     }
     exit;
-} catch(\Throwable $t) {
+} catch (\Throwable $t) {
     error_log($t);
     echo json_encode([
         'success' => false,
         'error' => $t->getMessage()
     ]);
     exit;
-} catch(\Exception $e) {
+} catch (\Exception $e) {
     error_log($e);
     echo json_encode([
         'success' => false,

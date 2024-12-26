@@ -727,14 +727,25 @@ function createNewSession() {
             fetchSessions(true);
             connectToSession(response.session_id);
         } else {
-            if (typeof swal === "function") {
-                swal("Error", "Failed to create a new session, please try again.", "error");
-            } else {
-                alert('Failed to create a new session, please try again.');
-            }
             if(response.error) {
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed to create a new session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed to create a new session: ${response.error}`);
+                }
                 console.error('Error while creating session:', response.error);
             } else {
+                if (typeof swal === "function") {
+                    swal("Error", "Failed to create a new session, please try again.", "error");
+                } else {
+                    alert('Failed to create a new session, please try again.');
+                }
                 console.error('Error while creating session, no error message.');
             }
         }
@@ -760,14 +771,25 @@ function createNewNamedSession(sessionName) {
             fetchSessions(true);
             connectToSession(response.session_id);
         } else {
-            if (typeof swal === "function") {
-                swal("Error", "Failed to create a new session, maybe it already exists?", "error");
-            } else {
-                alert('Failed to create a new session, maybe it already exists?');
-            }
             if(response.error) {
+                if (typeof swal === "function") {
+                    swal({
+                        title: "Error",
+                        text: "Failed to create a new session:<br><pre>" + response.error + "</pre>Further details may be found in the system log, where applicable.",
+                        type: "error",
+                        confirmButtonText: 'Close',
+                        html: true
+                    });
+                } else {
+                    alert(`Failed to create a new session: ${response.error}`);
+                }
                 console.error('Error while creating session:', response.error);
             } else {
+                if (typeof swal === "function") {
+                    swal("Error", "Failed to create a new session, please try again.", "error");
+                } else {
+                    alert('Failed to create a new session, please try again.');
+                }
                 console.error('Error while creating session, no error message.');
             }
         }
