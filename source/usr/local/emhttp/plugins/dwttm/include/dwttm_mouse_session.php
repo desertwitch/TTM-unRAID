@@ -17,6 +17,7 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_helpers.php';
 try {
     header('Content-Type: application/json');
 
@@ -37,17 +38,15 @@ try {
     $session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
     $mouseState = isset($_GET['mouse']) ? strtolower($_GET['mouse']) : null;
 
-    $currentMouseStateCommand = "tmux display -p -t $session:0 \"#{pane_in_mode}\" 2>/dev/null";
-    $currentMouseStateOutput = [];
-    $currentMouseStateReturnVar = null;
+    $currentMouseStateCommand = "tmux display -p -t $session:0 '#{pane_in_mode}'";
+    $result = dwttm_executeCommand($currentMouseStateCommand);
 
-    exec($currentMouseStateCommand, $currentMouseStateOutput, $currentMouseStateReturnVar);
-
-    if ($currentMouseStateReturnVar !== 0) {
-        echo json_encode(["error" => "Failed to retrieve tmux mouse state"]);
+    if ($result['returnCode'] !== 0) {
+        echo json_encode(['error' => $result['stderr'] ?: 'Failed to retrieve tmux mouse state.']);
         exit;
     }
-    $currentMouseState = strpos(implode("\n", $currentMouseStateOutput), "1") !== false ? "on" : "off";
+
+    $currentMouseState = strpos($result['stdout'], "1") !== false ? "on" : "off";
 
     if ($mouseState === null) {
         echo json_encode(["mouse" => $currentMouseState]);
@@ -58,43 +57,33 @@ try {
             exit;
         }
 
-        if ($mouseState === "off") {
-            if($currentMouseState === "on") {
-                $exitCopyModeCommand = "tmux send-keys -t $session:0 q 2>/dev/null";
-                $exitCopyModeOutput = [];
-                $exitCopyModeReturnVar = null;
-                exec($exitCopyModeCommand, $exitCopyModeOutput, $exitCopyModeReturnVar);
+        if ($mouseState === "off" && $currentMouseState === "on") {
+            $exitCopyModeCommand = "tmux send-keys -t $session:0 q";
+            $result = dwttm_executeCommand($exitCopyModeCommand);
 
-                if($exitCopyModeReturnVar !== 0) {
-                    echo json_encode(["error" => "Failed to leave mouse mode."]);
-                    exit;
-                }
+            if ($result['returnCode'] !== 0) {
+                echo json_encode(['error' => $result['stderr'] ?: 'Failed to leave mouse mode.']);
+                exit;
             }
-        } else {
-            if($currentMouseState === "off") {
-                $toggleMouseCommand = "tmux copy-mode -t $session:0 2>/dev/null";
-                $toggleOutput = [];
-                $toggleReturnVar = null;
-                exec($toggleMouseCommand, $toggleOutput, $toggleReturnVar);
+        } elseif ($mouseState === "on" && $currentMouseState === "off") {
+            $toggleMouseCommand = "tmux copy-mode -t $session:0";
+            $result = dwttm_executeCommand($toggleMouseCommand);
 
-                if ($toggleReturnVar !== 0) {
-                    echo json_encode(["error" => "Failed to enter mouse mode."]);
-                    exit;
-                }
+            if ($result['returnCode'] !== 0) {
+                echo json_encode(['error' => $result['stderr'] ?: 'Failed to enter mouse mode.']);
+                exit;
             }
         }
 
-        $newMouseStateCommand = "tmux display -p -t $session:0 \"#{pane_in_mode}\" 2>/dev/null";
-        $newMouseStateOutput = [];
-        $newMouseStateReturnVar = null;
-        exec($newMouseStateCommand, $newMouseStateOutput, $newMouseStateReturnVar);
+        $newMouseStateCommand = "tmux display -p -t $session:0 '#{pane_in_mode}'";
+        $result = dwttm_executeCommand($newMouseStateCommand);
 
-        if ($newMouseStateReturnVar !== 0) {
-            echo json_encode(["error" => "Failed to retrieve tmux mouse state after change"]);
+        if ($result['returnCode'] !== 0) {
+            echo json_encode(['error' => $result['stderr'] ?: 'Failed to retrieve tmux mouse state after change.']);
             exit;
         }
 
-        $newMouseState = strpos(implode("\n", $newMouseStateOutput), "1") !== false ? "on" : "off";
+        $newMouseState = strpos($result['stdout'], "1") !== false ? "on" : "off";
 
         echo json_encode(["oldmouse" => $currentMouseState, "requestmouse" => $mouseState, "newmouse" => $newMouseState]);
         exit;

@@ -17,15 +17,14 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_helpers.php';
 try {
     header('Content-Type: application/json');
 
-    $command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}" 2>/dev/null';
-    $output = [];
-    $returnCode = null;
-    exec($command, $output, $returnCode);
+    $command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}"';
+    $result = dwttm_executeCommand($command);
 
-    if ($returnCode !== 0) {
+    if ($result['returnCode'] !== 0) {
         echo json_encode([
             "success" => false,
             "response" => []
@@ -34,17 +33,22 @@ try {
     }
 
     $response = [];
+    $output = explode("\n", trim($result['stdout']));
 
     foreach ($output as $line) {
+        if (empty($line)) {
+            continue;
+        }
+
         list($sessionId, $sessionName, $sessionCreated) = explode('/', $line, 3);
 
-        $captureCommand = "tmux capture-pane -t '{$sessionId}:0' -p 2>/dev/null";
-        $captureOutput = [];
-        $captureReturnCode = 0;
-        exec($captureCommand, $captureOutput, $captureReturnCode);
+        $captureCommand = "tmux capture-pane -t '{$sessionId}:0' -p";
+        $captureResult = dwttm_executeCommand($captureCommand);
 
-        $previewSuccess = ($captureReturnCode === 0);
-        $preview = $previewSuccess ? implode("\n", $captureOutput) : "Failed to retrieve preview for session {$sessionName}.";
+        $previewSuccess = ($captureResult['returnCode'] === 0);
+        $preview = $previewSuccess
+            ? $captureResult['stdout']
+            : "Failed to retrieve preview for session {$sessionName}.";
 
         $response[] = [
             "session_id" => $sessionId,

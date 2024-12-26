@@ -17,6 +17,7 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_helpers.php';
 try {
     header('Content-Type: application/json');
 
@@ -29,20 +30,17 @@ try {
     }
 
     $sessionID = escapeshellarg($_GET['session']);
+    $command = "tmux kill-session -t {$sessionID}";
+    $result = dwttm_executeCommand($command);
 
-    $command = "tmux kill-session -t {$sessionID} 2>&1";
-    $output = [];
-    $returnCode = null;
-    exec($command, $output, $returnCode);
-
-    if ($returnCode === 0) {
+    if ($result['returnCode'] === 0) {
         echo json_encode([
             'success' => true
         ]);
     } else {
         echo json_encode([
             'success' => false,
-            'error' => implode("\n", $output)
+            'error' => $result['stderr'] ?: 'Failed to kill the session.'
         ]);
     }
     exit;

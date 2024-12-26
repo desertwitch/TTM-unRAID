@@ -17,6 +17,7 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_helpers.php';
 try {
     header('Content-Type: application/json');
 
@@ -30,41 +31,21 @@ try {
 
     $session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
 
-    if ($session) {
-        $command = "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
-    } else {
-        $command = "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
-    }
+    $command = $session
+        ? "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'"
+        : "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
 
-    $descriptorspec = [
-        1 => ['pipe', 'w'], // stdout
-        2 => ['pipe', 'w']  // stderr
-    ];
+    $result = dwttm_executeCommand($command);
 
-    $process = proc_open($command, $descriptorspec, $pipes);
-
-    if (is_resource($process)) {
-        $stdout = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        $returnCode = proc_close($process);
-
-        if ($returnCode === 0 && !empty($stdout)) {
-            echo json_encode([
-                'success' => true,
-                'session_id' => trim($stdout)
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'error' => trim($stderr ?? "") ?: 'Non-zero return code.'
-            ]);
-        }
+    if ($result['returnCode'] === 0 && !empty($result['stdout'])) {
+        echo json_encode([
+            'success' => true,
+            'session_id' => $result['stdout']
+        ]);
     } else {
         echo json_encode([
             'success' => false,
-            'error' => 'Failed to execute tmux command.'
+            'error' => $result['stderr'] ?: 'Non-zero return code.'
         ]);
     }
     exit;

@@ -17,6 +17,7 @@
  * included in all copies or substantial portions of the Software.
  *
  */
+require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_helpers.php';
 try {
     header('Content-Type: application/json');
 
@@ -39,19 +40,17 @@ try {
     $sessionID = escapeshellarg($_GET['session']);
     $sessionName = escapeshellarg($_GET['sessionName']);
 
-    $command = "tmux rename-session -t {$sessionID} {$sessionName} 2>&1";
-    $output = [];
-    $returnCode = null;
-    exec($command, $output, $returnCode);
+    $command = "tmux rename-session -t {$sessionID} {$sessionName}";
+    $result = dwttm_executeCommand($command);
 
-    if ($returnCode === 0) {
+    if ($result['returnCode'] === 0) {
         echo json_encode([
             'success' => true
         ]);
     } else {
         echo json_encode([
             'success' => false,
-            'error' => implode("\n", $output)
+            'error' => $result['stderr'] ?: 'Failed to rename session.'
         ]);
     }
     exit;
