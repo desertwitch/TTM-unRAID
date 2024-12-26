@@ -145,6 +145,11 @@ if [ "$SERVICE" == "enable" ]; then
     fi
 else
     /etc/rc.d/rc.ttmd configure 2>&amp;1 | logger -t "rc.ttmd"
+    echo ""
+    echo "****************************************************************"
+    echo " The service is disabled, please go to the TTM Settings"
+    echo " page in order to configure and enable the TTM Service."
+    echo "****************************************************************"
 fi
 
 /etc/cron.daily/dwttm-poller conntest >/dev/null 2>&amp;1 &amp;
