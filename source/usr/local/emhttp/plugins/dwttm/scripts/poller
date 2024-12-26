@@ -92,8 +92,10 @@ DWTTM_BACKEND=$(find /var/log/packages/ -type f -iname 'tmux-*' ! -iname '*upgra
 
 if pgrep -x ttmd >/dev/null 2>&1; then
     DWTTM_RUNNING=true
+    DWTTM_RUNTIME=$(ps -p "$(cat /var/run/ttmd.pid)" -o etimes | awk 'NR==2 {print $1}')
 else
     DWTTM_RUNNING=false
+    DWTTM_RUNTIME=-1
 fi
 
 if [ -f /boot/config/plugins/dwttm/custom ]; then
@@ -112,6 +114,7 @@ postfields=()
 [ -n "${DWTTM_BACKEND}" ] && postfields+=("-F" "str1=$( sanitize_fval <<< "${DWTTM_BACKEND}" )")
 [ -n "${DWTTM_RUNNING}" ] && postfields+=("-F" "bool1=$( sanitize_fval <<< "${DWTTM_RUNNING}" )")
 [ -n "${DWTTM_CUSTOM}" ] && postfields+=("-F" "bool2=$( sanitize_fval <<< "${DWTTM_CUSTOM}" )")
+[ -n "${DWTTM_RUNTIME}" ] && postfields+=("-F" "num1=$( sanitize_fval <<< "${DWTTM_RUNTIME}" )")
 
 if curl \
     -fsS -m 300 --retry 5 --retry-delay 300 --retry-connrefused \

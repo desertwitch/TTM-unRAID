@@ -450,8 +450,10 @@ function KillSessions() {
     }
 }
 
-function fetchSessions() {
-    clearTimeout(timers.fetchSessions);
+function fetchSessions(manuallyInvoked) {
+    if(!manuallyInvoked) {
+        clearTimeout(timers.fetchSessions);
+    }
     $.getJSON('/plugins/dwttm/include/dwttm_sessions.php', function (data) {
         if (data.response) {
             let sessions = data.response;
@@ -713,14 +715,16 @@ function fetchSessions() {
     }).fail(function (xhr, status, error) {
         console.error('Error fetching sessions:', error);
     }).always(function() {
-        timers.fetchSessions = setTimeout(fetchSessions, 3000);
+        if(!manuallyInvoked) {
+            timers.fetchSessions = setTimeout(fetchSessions, 3000);
+        }
     });
 }
 
 function createNewSession() {
     $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', function (response) {
         if (response.success && response.session_id) {
-            fetchSessions();
+            fetchSessions(true);
             connectToSession(response.session_id);
         } else {
             if (typeof swal === "function") {
@@ -753,7 +757,7 @@ function createNewSession() {
 function createNewNamedSession(sessionName) {
     $.getJSON('/plugins/dwttm/include/dwttm_new_session.php', { session: sessionName }, function (response) {
         if (response.success && response.session_id) {
-            fetchSessions();
+            fetchSessions(true);
             connectToSession(response.session_id);
         } else {
             if (typeof swal === "function") {
@@ -786,7 +790,7 @@ function createNewNamedSession(sessionName) {
 function closeSession(sessionId) {
     $.getJSON('/plugins/dwttm/include/dwttm_close_session.php', { session: sessionId }, function (response) {
         if (response.success) {
-            fetchSessions();
+            fetchSessions(true);
         } else {
             if(response.error) {
                 if (typeof swal === "function") {
@@ -835,7 +839,7 @@ function closeSession(sessionId) {
 function renameSession(sessionId, sessionName) {
     $.getJSON('/plugins/dwttm/include/dwttm_rename_session.php', { session: sessionId, sessionName: sessionName }, function (response) {
         if (response.success) {
-            fetchSessions();
+            fetchSessions(true);
         } else {
             if(response.error) {
                 if (typeof swal === "function") {

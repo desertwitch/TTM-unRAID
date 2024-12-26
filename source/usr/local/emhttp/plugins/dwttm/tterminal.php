@@ -133,9 +133,11 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             }
         }
 
-        function fetchSessions() {
+        function fetchSessions(manuallyInvoked) {
             const dropdown = document.getElementById('dwttm-session-dropdown');
-            clearTimeout(ttimers.fetchSessions);
+            if(!manuallyInvoked) {
+                clearTimeout(ttimers.fetchSessions);
+            }
             fetch('/plugins/dwttm/include/dwttm_sessions.php')
                 .then(response => response.json())
                 .then(data => {
@@ -170,7 +172,9 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                     dropdown.innerHTML = '<option value="">Error loading sessions.</option>';
                 })
                 .finally(() => {
-                    ttimers.fetchSessions = setTimeout(fetchSessions, 5000);
+                    if(!manuallyInvoked) {
+                        ttimers.fetchSessions = setTimeout(fetchSessions, 5000);
+                    }
                 });
         }
 
@@ -303,7 +307,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
-                    fetchSessions();
+                    fetchSessions(true);
                 } else {
                     if(response.error) {
                         alert(`Failed to rename session: ${response.error}\nFurther details may be found in the system log, where applicable.`);

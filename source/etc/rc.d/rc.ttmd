@@ -74,6 +74,9 @@ ttmd_stop() {
             return 1
         fi
     else
+        if [ -f /var/run/ttmd.pid ]; then
+            rm -f /var/run/ttmd.pid
+        fi
         echo "ttmd service is not running."
         return 0
     fi
