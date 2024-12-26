@@ -432,7 +432,7 @@ function closeDcModal() {
 function KillSessions() {
     if (typeof swal === "function") {
         swal({
-            title: "--- DANGER ---",
+            title: "DANGER",
             text: "This will terminate all sessions and running programs inside.<br>Are you really sure that you want to do this?",
             type: "error",
             html: true,
