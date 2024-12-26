@@ -14,7 +14,7 @@
 <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
 ]>
 
-<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" support="" min="6.11.0" icon="tty">
+<PLUGIN name="&name;" author="&author;" version="&version;" launch="&launch;" pluginURL="&pluginURL;" support="https://forums.unraid.net/topic/183427-plugin-tmux-terminal-manager-ttm/" min="6.11.0" icon="tty">
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
