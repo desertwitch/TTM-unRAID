@@ -387,7 +387,7 @@ function newDcModal() {
                     return;
                 }
                 if(value.trim() !== "") {
-                    if(!/^[A-Za-z0-9]+$/.test(value.trim())) {
+                    if(!/^[A-Za-z0-9\-]+$/.test(value.trim())) {
                         swal("Error", "The chosen session name contained disallowed characters.", "error");
                     }
                     else {
@@ -411,7 +411,7 @@ function newDcModal() {
         }
 
         if (value.trim() !== "") {
-            if (!/^[A-Za-z0-9]+$/.test(value.trim())) {
+            if (!/^[A-Za-z0-9\-]+$/.test(value.trim())) {
                 alert("Error: The chosen session name contained disallowed characters.");
             } else {
                 createNewNamedSession(value.trim());
@@ -485,7 +485,7 @@ function fetchSessions(manuallyInvoked) {
                                     return;
                                 }
                                 if(value.trim() !== "") {
-                                    if(!/^[A-Za-z0-9]+$/.test(value.trim())) {
+                                    if(!/^[A-Za-z0-9\-]+$/.test(value.trim())) {
                                         swal("Error", "The chosen session name contained disallowed characters.", "error");
                                     }
                                     else {
@@ -509,7 +509,7 @@ function fetchSessions(manuallyInvoked) {
                         }
 
                         if (value.trim() !== "") {
-                            if (!/^[A-Za-z0-9]+$/.test(value.trim())) {
+                            if (!/^[A-Za-z0-9\-]+$/.test(value.trim())) {
                                 alert("Error: The chosen session name contained disallowed characters.");
                             } else {
                                 createNewNamedSession(value.trim());
@@ -571,7 +571,7 @@ function fetchSessions(manuallyInvoked) {
                                 },
                                 function(value){
                                     if(value !== false && value.trim() !== "") {
-                                        if(!/^[A-Za-z0-9]+$/.test(value.trim())) {
+                                        if(!/^[A-Za-z0-9\-]+$/.test(value.trim())) {
                                             swal("Error", "The chosen session name contained disallowed characters.", "error");
                                         }
                                         else {
@@ -592,7 +592,7 @@ function fetchSessions(manuallyInvoked) {
                             }
 
                             if (value.trim() !== "") {
-                                if (!/^[A-Za-z0-9]+$/.test(value.trim())) {
+                                if (!/^[A-Za-z0-9\-]+$/.test(value.trim())) {
                                     alert("Error: The chosen session name contained disallowed characters.");
                                 } else {
                                     renameSession(sessionId, value.trim());

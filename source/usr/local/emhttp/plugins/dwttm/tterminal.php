@@ -252,7 +252,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             if (sessionName === null) {
                 return;
             } else if (sessionName.trim() !== "") {
-                if (!/^[A-Za-z0-9]+$/.test(sessionName.trim())) {
+                if (!/^[A-Za-z0-9\-]+$/.test(sessionName.trim())) {
                     alert("Invalid session name. Please use alphanumeric characters only.");
                     return;
                 }
@@ -296,7 +296,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 return;
             }
 
-            if (!/^[A-Za-z0-9]+$/.test(sessionName.trim())) {
+            if (!/^[A-Za-z0-9\-]+$/.test(sessionName.trim())) {
                 alert("Invalid session name. Please use alphanumeric characters only.");
                 return;
             }
