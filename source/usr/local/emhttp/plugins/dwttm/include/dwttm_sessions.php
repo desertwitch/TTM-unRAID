@@ -42,7 +42,7 @@ try {
 
         list($sessionId, $sessionName, $sessionCreated) = explode('/', $line, 3);
 
-        $captureCommand = "tmux -u capture-pane -t '{$sessionId}:0' -p";
+        $captureCommand = "tmux capture-pane -t '{$sessionId}:0' -p";
         $captureResult = dwttm_executeCommand($captureCommand, false);
 
         $previewSuccess = ($captureResult['returnCode'] === 0);
