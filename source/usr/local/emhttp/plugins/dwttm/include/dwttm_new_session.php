@@ -32,8 +32,8 @@ try {
     $session = isset($_GET['session']) ? escapeshellarg($_GET['session']) : null;
 
     $command = $session
-        ? "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'"
-        : "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env TERM=xterm-256color /bin/bash'";
+        ? "tmux new-session -s $session -d -x 80 -y 24 -P -F '#{session_id}' 'env LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 TERM=xterm-256color /bin/bash'"
+        : "tmux new-session -d -x 80 -y 24 -P -F '#{session_id}' 'env LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 TERM=xterm-256color /bin/bash'";
 
     $result = dwttm_executeCommand($command);
 

@@ -447,13 +447,15 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 
             ws = new WebSocket(wsUrl);
 
+            ws.binaryType = "arraybuffer";
+
             ws.onopen = () => {
                 term.clear();
                 sendTerminalSize();
             };
 
             ws.onmessage = (event) => {
-                term.write(event.data);
+                term.write(new Uint8Array(event.data))
             };
 
             ws.onerror = (error) => {

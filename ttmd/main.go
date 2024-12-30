@@ -183,7 +183,7 @@ func shellWebSocketHandler(w http.ResponseWriter, r *http.Request, mainWG *sync.
 	session = sanitizeInputString(session)
 	if session == "" {
 		log.Printf("Invalid session name received.\n")
-		conn.WriteMessage(websocket.TextMessage, []byte("Invalid session name"))
+		conn.WriteMessage(websocket.BinaryMessage, []byte("Invalid session name"))
 		return
 	}
 	log.Printf("%s -- Session request received.\n", session)
@@ -200,7 +200,7 @@ func shellWebSocketHandler(w http.ResponseWriter, r *http.Request, mainWG *sync.
 		authtoken = sanitizeInputString(authtoken)
 		if authtoken == "" || authtoken != currentToken {
 			log.Printf("%s -- Invalid CSRF token received: %s\n", session, authtoken)
-			conn.WriteMessage(websocket.TextMessage, []byte("Invalid CSRF token, reload the page."))
+			conn.WriteMessage(websocket.BinaryMessage, []byte("Invalid CSRF token, reload the page."))
 			return
 		}
 		log.Printf("%s -- CSRF authenticated.\n", session)
@@ -208,17 +208,21 @@ func shellWebSocketHandler(w http.ResponseWriter, r *http.Request, mainWG *sync.
 
 	if !checkTmuxSessionExists(session) {
 		log.Printf("%s -- TMUX session does not exist.\n", session)
-		conn.WriteMessage(websocket.TextMessage, []byte("Session does not exist"))
+		conn.WriteMessage(websocket.BinaryMessage, []byte("Session does not exist"))
 		return
 	}
 
-	cmd := exec.Command("tmux", "new-session", "-A", "-t", session, "-x", "80", "-y", "24")
-	cmd.Env = append(cmd.Env, "TERM=xterm-256color")
+	cmd := exec.Command("tmux", "-u", "new-session", "-A", "-t", session, "-x", "80", "-y", "24")
+	cmd.Env = append(cmd.Env,
+		"TERM=xterm-256color",
+		"LC_ALL=en_US.UTF-8",
+		"LANG=en_US.UTF-8",
+	)
 
 	ptmx, err := pty.Start(cmd)
 	if err != nil {
 		log.Printf("%s -- Failed to start PTY for TMUX session: %v\n", session, err)
-		conn.WriteMessage(websocket.TextMessage, []byte("Failed to start PTY for TMUX session"))
+		conn.WriteMessage(websocket.BinaryMessage, []byte("Failed to start PTY for TMUX session"))
 		return
 	}
 	defer func() {
@@ -292,12 +296,12 @@ func shellWebSocketHandler(w http.ResponseWriter, r *http.Request, mainWG *sync.
 				n, err := ptmx.Read(buf)
 				if err != nil {
 					log.Printf("%s -- PTY read error: %v\n", session, err)
-					conn.WriteMessage(websocket.TextMessage, []byte("Session ended."))
+					conn.WriteMessage(websocket.BinaryMessage, []byte("Session ended."))
 					cancel()
 					return
 				}
 				conn.SetWriteDeadline(time.Now().Add(30 * time.Second))
-				if err := conn.WriteMessage(websocket.TextMessage, buf[:n]); err != nil {
+				if err := conn.WriteMessage(websocket.BinaryMessage, buf[:n]); err != nil {
 					log.Printf("%s -- WebSocket write error: %v\n", session, err)
 					cancel()
 					return

@@ -1087,11 +1087,7 @@ function connectToSession(sessionId) {
 
     ws = new WebSocket(wsUrl);
 
-    $('.dwttm-session-item').removeClass('dwttm-connected');
-
-    $('.dwttm-session-item').filter(function () {
-        return $(this).attr('data-session-id') === sessionId;
-    }).addClass('dwttm-connected');
+    ws.binaryType = "arraybuffer";
 
     ws.onopen = () => {
         term.clear();
@@ -1099,7 +1095,7 @@ function connectToSession(sessionId) {
     };
 
     ws.onmessage = (event) => {
-        term.write(event.data);
+        term.write(new Uint8Array(event.data))
     };
 
     ws.onerror = (error) => {
@@ -1125,6 +1121,12 @@ function connectToSession(sessionId) {
     disposable2 = term.onSelectionChange(handleSelectionChange);
 
     connectedSessionId = sessionId;
+
+    $('.dwttm-session-item').removeClass('dwttm-connected');
+
+    $('.dwttm-session-item').filter(function () {
+        return $(this).attr('data-session-id') === sessionId;
+    }).addClass('dwttm-connected');
 
     window.scrollTo({
         top: 0,
