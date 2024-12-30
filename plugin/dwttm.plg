@@ -18,6 +18,9 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2024.12.30
+- new: support for unicode (thanks hurui200320)
+- fix: improved handling of processes and encountered errors
 ###2024.12.26
 - release note: welcome to the first version of the plugin
 - release note: please report any issues in the support thread on the forums
