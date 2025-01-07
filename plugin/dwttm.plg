@@ -3,14 +3,14 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "dwttm">
 <!ENTITY author    "desertwitch">
-<!ENTITY version   "2024.12.30">
+<!ENTITY version   "2025.01.07a">
 <!ENTITY launch    "Settings/dwTTM">
 <!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/main">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
 <!ENTITY pkgURL    "&gitURL;/packages">
 <!ENTITY plgPATH   "/boot/config/plugins/&name;">
-<!ENTITY plgNAME   "dwttm-2024.12.30-x86_64-1">
-<!ENTITY plgMD5    "ea73fd49445d90287d209b94e8e03f75">
+<!ENTITY plgNAME   "dwttm-2025.01.07-x86_64-2">
+<!ENTITY plgMD5    "b89aa084c19dd4b8775edcc1796757f6">
 <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
 ]>
 
@@ -18,6 +18,8 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.01.07
+- fix: service startup failure after reboot with custom tmux
 ###2024.12.30
 - new: support for unicode (thanks hurui200320)
 - fix: improved handling of processes and encountered errors
@@ -142,9 +144,14 @@ if [ "$SERVICE" == "enable" ]; then
             echo "WARNING: TTM service failed to start, check SYSLOG for more information."
         fi
     else
-        echo "Starting TTM service..."
-        echo "Error: Unable to start 'ttmd' - Tmux not found or not functional."
-        echo "Error: Please refer to the 'TTM Settings' for more information on this issue."
+        if [ -f &plgPATH;/custom ]; then
+            echo "Delaying TTM service start... (waiting on Tmux from another plugin/package)"
+            /etc/rc.d/rc.ttmd delaystart >/dev/null 2>&amp;1 &amp;
+        else
+            echo "Starting TTM service..."
+            echo "Error: Unable to start 'ttmd' - Tmux not found or not functional."
+            echo "Error: Please refer to the 'TTM Settings' for more information on this issue."
+        fi
     fi
 else
     /etc/rc.d/rc.ttmd configure 2>&amp;1 | logger -t "rc.ttmd"

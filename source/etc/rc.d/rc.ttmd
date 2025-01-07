@@ -38,14 +38,14 @@ ttmd_start() {
                 return 0
             else
                 echo "ttmd service was started but then died - port already in use?"
-                ttmd_stop
+                ttmd_stop &>/dev/null
                 return 1
             fi
         fi
     else
         echo "Error: Unable to start ttmd - Tmux not found or not functional."
         echo "Error: Please refer to the 'TTM Settings' for more information on this issue."
-        ttmd_stop
+        ttmd_stop &>/dev/null
         return 1
     fi
 }
@@ -95,9 +95,25 @@ ttmd_configure() {
         [ -f /etc/tmux.conf ] && sed -i 's/tmux-256color/xterm-256color/g' /etc/tmux.conf
         [ -f /root/.tmux.conf ] && sed -i 's/tmux-256color/xterm-256color/g' /root/.tmux.conf
     fi
+    return 0
+}
+
+ttmd_delaystart() {
+    timer=120
+    while ! type tmux >/dev/null 2>&1 || ! tmux -V >/dev/null 2>&1; do
+        ((timer--)) || break
+        sleep 1
+    done
+    ttmd_configure
+    ttmd_start
+    return 0
 }
 
 case "$1" in
+  'delaystart')
+    ttmd_delaystart | logger -t "rc.ttmd"
+    exit 0
+  ;;
   'start')
     ttmd_configure
     ttmd_start
@@ -115,7 +131,7 @@ case "$1" in
   ;;
   'configure')
     ttmd_configure
-    exit 0
+    exit $?
   ;;
   *)
     echo "Usage: $0 start|stop|restart|configure"
