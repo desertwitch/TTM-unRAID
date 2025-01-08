@@ -18,6 +18,8 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.01.08
+- fix: improve popup handling (allow multiple windows)
 ###2025.01.07
 - fix: service startup failure after reboot with custom tmux
 ###2024.12.30
