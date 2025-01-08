@@ -72,13 +72,13 @@ EOT;
 
 <script>
     function dwTTMDashButton(sessionId) {
-        const width = Math.min(screen.availWidth,1200);
-        const height = Math.min(screen.availHeight,800);
+        const width = Math.min(screen.availWidth, 1200);
+        const height = Math.min(screen.availHeight, 800);
 
-        let top = (screen.height-height)/2;
-        if (!top || top < 0) {top = 0;}
-        let left = (screen.width-width)/2;
-        if (!left || left < 0) {left = 0;}
+        let top = (screen.height - height) / 2;
+        if (!top || top < 0) { top = 0; }
+        let left = (screen.width - width) / 2;
+        if (!left || left < 0) { left = 0; }
 
         if(sessionId) {
             const windowName = `ttm_sess_${sessionId}`;
