@@ -81,15 +81,17 @@ EOT;
         if (!left || left < 0) {left = 0;}
 
         if(sessionId) {
+            const windowName = `ttm_sess_${sessionId}`;
             window.open(
                 `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`,
-                'TTerminal',
+                windowName,
                 `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
             );
         } else {
+            const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
             window.open(
                 '/plugins/dwttm/tterminal.php',
-                'TTerminal',
+                windowName,
                 `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
             );
         }

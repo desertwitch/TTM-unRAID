@@ -26,17 +26,18 @@ Cond="@shell_exec('pgrep -x ttmd 2>/dev/null') && (($ttmc = @parse_ini_file('/bo
 ?>
 <script>
 function dwTTMbutton() {
-    const width = Math.min(screen.availWidth,1200);
-    const height = Math.min(screen.availHeight,800);
+    const width = Math.min(screen.availWidth, 1200);
+    const height = Math.min(screen.availHeight, 800);
 
-    let top = (screen.height-height)/2;
-    if (!top || top < 0) {top = 0;}
-    let left = (screen.width-width)/2;
-    if (!left || left < 0) {left = 0;}
+    let top = (screen.height - height) / 2;
+    if (!top || top < 0) { top = 0; }
+    let left = (screen.width - width) / 2;
+    if (!left || left < 0) { left = 0; }
 
+    const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
     window.open(
         '/plugins/dwttm/tterminal.php',
-        'TTerminal',
+        windowName,
         `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
     );
 }

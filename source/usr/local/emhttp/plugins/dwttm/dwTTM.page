@@ -1027,9 +1027,6 @@ function setSessionMouse(sessionId, requestedMouse) {
 }
 
 function popupSession(sessionId) {
-    const url = `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`;
-    const windowName = `${sessionId}: TTerminal`;
-
     const width = Math.min(screen.availWidth,1200);
     const height = Math.min(screen.availHeight,800);
 
@@ -1038,11 +1035,21 @@ function popupSession(sessionId) {
     let left = (screen.width - width) / 2;
     if (!left || left < 0) { left = 0; }
 
-    window.open(
-        url,
-        windowName,
-        `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
-    );
+    if(sessionId) {
+        const windowName = `ttm_sess_${sessionId}`;
+        window.open(
+            `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`,
+            windowName,
+            `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+        );
+    } else {
+        const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
+        window.open(
+            '/plugins/dwttm/tterminal.php',
+            windowName,
+            `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+        );
+    }
 }
 
 function handleSelectionChange() {
