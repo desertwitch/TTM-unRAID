@@ -98,7 +98,6 @@ else
             readarray -t child_descendants < <(get_descendants_ps "$child")
             descendants+=("${child_descendants[@]}")
         done < <(ps --ppid "$parent" -o pid= 2>/dev/null | tr -d ' ' 2>/dev/null)
-        descendants+=("$parent")
 
         printf '%s\n' "${descendants[@]}"
     }
@@ -163,8 +162,8 @@ else
         readarray -t DESCENDANTS < <(get_descendants_ps "$PANE_PID")
         if [[ ${#DESCENDANTS[@]} -eq 0 ]] || [[ -z "${DESCENDANTS[*]}" ]]; then
             echo "-- No descendants found for pane PID $PANE_PID, adding pane PID itself."
-            DESCENDANTS=("$PANE_PID")
         fi
+        DESCENDANTS+=("$PANE_PID")
         echo "-- Descendants of pane PID $PANE_PID: ${DESCENDANTS[*]}"
 
         for DESC_PID in "${DESCENDANTS[@]}"; do
