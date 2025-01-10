@@ -39,7 +39,6 @@ if [[ $ARRAYDOWN == "all" ]]; then
     fi
     echo "Killing the sessions that eventually qualified..."
     for SESSION in "${TMUX_SESSIONS[@]}"; do
-        echo "Killing active Tmux session: $SESSION"
         if tmux kill-session -t "$SESSION"; then
             echo "Killed active Tmux session: $SESSION"
             echo "Killed active Tmux session: $SESSION" | logger -t "ttm-plugin"
@@ -63,7 +62,6 @@ elif [[ $ARRAYDOWN == "ttm" ]]; then
     fi
     echo "Killing the sessions that eventually qualified..."
     for SESSION in "${TMUX_SESSIONS[@]}"; do
-        echo "Killing active TTM session: $SESSION"
         if tmux kill-session -t "$SESSION"; then
             echo "Killed active TTM session: $SESSION"
             echo "Killed active TTM session: $SESSION" | logger -t "ttm-plugin"
@@ -197,11 +195,6 @@ else
 
     echo "Killing the sessions that eventually qualified..."
     for SESSION in "${U_SESSIONS_TO_KILL[@]}"; do
-        if [[ $ARRAYDOWN == "allacc" ]]; then
-            echo "Killing active Tmux session: $SESSION"
-        else
-            echo "Killing active TTM session: $SESSION"
-        fi
         if tmux kill-session -t "$SESSION"; then
             if [[ $ARRAYDOWN == "allacc" ]]; then
                 echo "Killed active Tmux session: $SESSION"
