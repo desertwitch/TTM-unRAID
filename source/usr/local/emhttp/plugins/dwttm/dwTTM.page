@@ -249,7 +249,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </dl>
 
         <blockquote class="inline_help">
-            <p>Sets if Tmux/TTM sessions that are accessing (or not) the array/pools should be killed when the array is stopping.</p>
+            <p>Sets if Tmux/TTM sessions accessing (or not) the array/pools should be killed when the array is stopping.</p>
             <p><strong>Please note that this does not ensure a graceful exit of the programs that are running inside such sessions.</strong></p>
         </blockquote>
 
