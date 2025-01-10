@@ -80,7 +80,7 @@ else
     fi
 
     echo "Checking if all required programs are available..."
-    for cmd in lsof ps grep tmux; do
+    for cmd in lsof ps grep awk tmux; do
         if ! type "$cmd" &>/dev/null; then
             echo "Error: $cmd is not available - exiting."
             echo "An error occured - a required program was not available." | logger -t "ttm-plugin"
@@ -98,7 +98,7 @@ else
             descendants+=("$child")
             readarray -t child_descendants < <(get_descendants_ps "$child")
             descendants+=("${child_descendants[@]}")
-        done < <(ps --ppid "$parent" -o pid= 2>/dev/null)
+        done < <(ps --ppid "$parent" -o pid= 2>/dev/null | awk '{$1=$1};1' 2>/dev/null)
 
         printf '%s\n' "${descendants[@]}"
     }
@@ -160,7 +160,9 @@ else
         SESSION=${TMUX_SESSIONS[$PANE_PID]}
         echo "-- Inspecting pane PID: $PANE_PID (session: $SESSION)"
 
-        readarray -t DESCENDANTS < <(get_descendants_ps "$PANE_PID")
+        readarray -t DESCENDANTS < <(get_descendants_ps "$PANE_PID" 2>/dev/null)
+        DESCENDANTS=("${DESCENDANTS[@]/#/}")  # Remove empty strings
+        DESCENDANTS=("${DESCENDANTS[@]// /}") # Remove whitespace-only elements
         if [[ ${#DESCENDANTS[@]} -eq 0 ]] || [[ -z "${DESCENDANTS[*]}" ]]; then
             echo "-- No descendants found for pane PID $PANE_PID, adding pane PID itself."
         fi
