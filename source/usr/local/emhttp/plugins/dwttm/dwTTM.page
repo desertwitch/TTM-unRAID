@@ -319,7 +319,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                     <?=mk_option($dwttm_array_down, "disable", "No");?>
                     <?=mk_option($dwttm_array_down, "ttm", "Accessing TTM Sessions");?>
                     <?=mk_option($dwttm_array_down, "acc", "All Accessing Sessions");?>
-                    <?=mk_option($dwttm_array_down, "all", "All incl Non-Accessing");?>
+                    <?=mk_option($dwttm_array_down, "all", "All incl. Non-Accessing");?>
                 </select>
             </dd>
         </dl>
