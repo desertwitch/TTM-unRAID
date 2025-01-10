@@ -94,7 +94,6 @@ else
         local descendants=()
 
         while IFS= read -r child; do
-            [[ ! "$child" =~ ^[0-9]+$ ]] && continue
             descendants+=("$child")
             readarray -t child_descendants < <(get_descendants_ps "$child")
             descendants+=("${child_descendants[@]}")
