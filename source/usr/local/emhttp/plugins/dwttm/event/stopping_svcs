@@ -100,7 +100,7 @@ else
             for dchild in "${child_descendants[@]}"; do
                 [[ "$dchild" =~ ^[0-9]+$ ]] && descendants+=("$dchild")
             done
-        done < <(ps --ppid "$parent" -o pid= 2>/dev/null | awk 'NF && $1 ~ /^[0-9]+$/')
+        done < <(ps --ppid "$parent" -o pid= 2>/dev/null | awk 'NF && $1 ~ /^[0-9]+$/' 2>/dev/null)
 
         printf '%s\n' "${descendants[@]}"
     }
