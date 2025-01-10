@@ -93,7 +93,6 @@ else
         local parent=$1
         local descendants=()
 
-        descendants+=("$parent")
         while IFS= read -r child; do
             descendants+=("$child")
             readarray -t child_descendants < <(get_descendants_ps "$child")
