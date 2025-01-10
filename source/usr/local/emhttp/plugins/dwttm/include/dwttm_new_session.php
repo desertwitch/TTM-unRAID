@@ -38,14 +38,26 @@ try {
     $result = dwttm_executeCommand($command);
 
     if ($result['returnCode'] === 0 && !empty($result['stdout'])) {
-        echo json_encode([
-            'success' => true,
-            'session_id' => $result['stdout']
-        ]);
+        $session_id = $result['stdout'];
+
+        $command = "tmux set-option -t '$session_id' @byttm \"byttm\"";
+        $result = dwttm_executeCommand($command);
+
+        if ($result['returnCode'] === 0) {
+            echo json_encode([
+                'success' => true,
+                'session_id' => $session_id
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'error' => $result['stderr'] ?: 'Non-zero return code setting tag on new session.'
+            ]);
+        }
     } else {
         echo json_encode([
             'success' => false,
-            'error' => $result['stderr'] ?: 'Non-zero return code.'
+            'error' => $result['stderr'] ?: 'Non-zero return code creating the new session.'
         ]);
     }
     exit;
