@@ -241,9 +241,9 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                 <select id="ARRAYDOWN" name="ARRAYDOWN" size="1">
                     <?=mk_option($dwttm_array_down, "disable", "No");?>
                     <?=mk_option($dwttm_array_down, "ttmacc", "Accessing TTM Sessions");?>
-                    <?=mk_option($dwttm_array_down, "allacc", "Accessing Tmux Sessions");?>
+                    <?=mk_option($dwttm_array_down, "allacc", "All Accessing Sessions");?>
                     <?=mk_option($dwttm_array_down, "ttm", "TTM incl. Non-Accessing");?>
-                    <?=mk_option($dwttm_array_down, "all", "Tmux incl. Non-Accessing");?>
+                    <?=mk_option($dwttm_array_down, "all", "All incl. Non-Accessing");?>
                 </select>
             </dd>
         </dl>
