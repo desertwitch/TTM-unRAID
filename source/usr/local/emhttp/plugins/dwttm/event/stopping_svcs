@@ -94,9 +94,12 @@ else
         local descendants=()
 
         while IFS= read -r child; do
+            [[ -z $child ]] && continue
             descendants+=("$child")
             readarray -t child_descendants < <(get_descendants_ps "$child" 2>/dev/null)
-            descendants+=("${child_descendants[@]}")
+            for dchild in "${child_descendants[@]}"; do
+                [[ -n "$dchild" ]] && descendants+=("$dchild")
+            done
         done < <(ps --ppid "$parent" -o pid= 2>/dev/null)
 
         printf '%s\n' "${descendants[@]}"
