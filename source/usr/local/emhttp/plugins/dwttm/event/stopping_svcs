@@ -162,7 +162,7 @@ else
         readarray -t DESCENDANTS < <(get_descendants_ps "$PANE_PID")
         if [[ ${#DESCENDANTS[@]} -eq 0 ]] || [[ -z "${DESCENDANTS[*]}" ]]; then
             echo "-- No descendants found for pane PID $PANE_PID, adding pane PID itself."
-            DESCENDANTS+=("$PANE_PID")
+            DESCENDANTS=("$PANE_PID")
         fi
         echo "-- Descendants of pane PID $PANE_PID: ${DESCENDANTS[*]}"
 
