@@ -72,7 +72,7 @@ if [[ $ARRAYDOWN == "all" ]]; then
         fi
     done
 #
-# KILL ALL TTM-CREATED TMUX SESSIONS
+# KILL TTM-CREATED TMUX SESSIONS
 #
 elif [[ $ARRAYDOWN == "ttm" ]]; then
     echo "Killing all TTM sessions (as configured)..."
@@ -100,7 +100,7 @@ elif [[ $ARRAYDOWN == "ttm" ]]; then
         fi
     done
 #
-# KILL ALL (TTM-CREATED) TMUX SESSIONS ACCESSING THE ARRAY/POOLS
+# KILL ALL OR TTM-CREATED TMUX SESSIONS ACCESSING THE ARRAY/POOLS
 #
 else
     if [[ $ARRAYDOWN == "allacc" ]]; then
