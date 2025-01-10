@@ -236,7 +236,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         </blockquote>
 
         <dl>
-            <dt>Kill Array/Pool-Accessing Sessions with Array:</dt>
+            <dt><strong>Kill Array/Pool-Accessing Sessions with Array:</strong></dt>
             <dd>
                 <select id="ARRAYDOWN" name="ARRAYDOWN" size="1">
                     <?=mk_option($dwttm_array_down, "disable", "No");?>
