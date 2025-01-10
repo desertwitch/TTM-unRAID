@@ -177,8 +177,10 @@ else
         fi
         if tmux kill-session -t "$SESSION"; then
             if [[ $ARRAYDOWN == "acc" ]]; then
+                echo "Killed active Tmux session: $SESSION"
                 echo "Killed active Tmux session: $SESSION" | logger -t "ttm-plugin"
             else
+                echo "Killed active TTM session: $SESSION"
                 echo "Killed active TTM session: $SESSION" | logger -t "ttm-plugin"
             fi
         else
