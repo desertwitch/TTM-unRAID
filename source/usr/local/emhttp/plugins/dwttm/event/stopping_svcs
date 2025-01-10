@@ -80,7 +80,7 @@ else
     fi
 
     echo "Checking if all required programs are available..."
-    for cmd in lsof tmux pstree grep; do
+    for cmd in lsof ps grep tmux; do
         if ! type "$cmd" &>/dev/null; then
             echo "Error: $cmd is not available - exiting."
             echo "An error occured - a required program was not available." | logger -t "ttm-plugin"
@@ -88,6 +88,20 @@ else
         fi
     done
     echo "All required programs are available."
+
+    get_descendants_ps() {
+        local parent=$1
+        local descendants=()
+
+        descendants+=("$parent")
+        while IFS= read -r child; do
+            descendants+=("$child")
+            readarray -t child_descendants < <(get_descendants_ps "$child")
+            descendants+=("${child_descendants[@]}")
+        done < <(ps --ppid "$parent" -o pid= 2>/dev/null | tr -d ' ' 2>/dev/null)
+
+        printf '%s\n' "${descendants[@]}"
+    }
 
     echo "Enumerating cache/pool locations..."
     if [[ -d /boot/config/pools ]]; then
@@ -146,7 +160,7 @@ else
         SESSION=${TMUX_SESSIONS[$PANE_PID]}
         echo "-- Inspecting pane PID: $PANE_PID (session: $SESSION)"
 
-        readarray -t DESCENDANTS < <(pstree -p "$PANE_PID" 2>/dev/null | grep -oP '\((\d+)\)' 2>/dev/null | grep -oP '\d+' 2>/dev/null)
+        readarray -t DESCENDANTS < <(get_descendants_ps "$PANE_PID")
         if [[ ${#DESCENDANTS[@]} -eq 0 ]]; then
             echo "-- No descendants found for pane PID $PANE_PID, adding pane PID itself."
             DESCENDANTS+=("$PANE_PID")
