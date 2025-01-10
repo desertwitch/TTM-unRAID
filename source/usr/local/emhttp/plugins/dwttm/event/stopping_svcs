@@ -114,7 +114,7 @@ else
 
     echo "Enumerating array/pool accessing processes..."
     readarray -t LTOUCH_PIDS < <(lsof -t /mnt/disk[0-9]* "$cache" /mnt/user /mnt/user0 2>/dev/null)
-    if [[ ${#LTOUCH_PIDS[@]} -eq 0 ]]; then
+    if [[ ${#LTOUCH_PIDS[@]} -eq 0 ]] || [[ -z "${LTOUCH_PIDS[*]}" ]]; then
         echo "No processes found accessing the array/pools - exiting."
         if [[ $ARRAYDOWN == "allacc" ]]; then
             echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
@@ -161,7 +161,7 @@ else
         echo "-- Inspecting pane PID: $PANE_PID (session: $SESSION)"
 
         readarray -t DESCENDANTS < <(get_descendants_ps "$PANE_PID")
-        if [[ ${#DESCENDANTS[@]} -eq 0 ]]; then
+        if [[ ${#DESCENDANTS[@]} -eq 0 ]] || [[ -z "${DESCENDANTS[*]}" ]]; then
             echo "-- No descendants found for pane PID $PANE_PID, adding pane PID itself."
             DESCENDANTS+=("$PANE_PID")
         fi
@@ -187,7 +187,7 @@ else
     done
 
     echo "Enumerating the sessions to kill..."
-    if [[ ${#SESSIONS_TO_KILL[@]} -eq 0 ]]; then
+    if [[ ${#SESSIONS_TO_KILL[@]} -eq 0 ]] || [[ -z "${SESSIONS_TO_KILL[*]}" ]]; then
         echo "No Tmux sessions are accessing the array/pools - exiting."
         if [[ $ARRAYDOWN == "allacc" ]]; then
             echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
