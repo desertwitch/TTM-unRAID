@@ -240,15 +240,16 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <dd>
                 <select id="ARRAYDOWN" name="ARRAYDOWN" size="1">
                     <?=mk_option($dwttm_array_down, "disable", "No");?>
-                    <?=mk_option($dwttm_array_down, "ttm", "Accessing TTM Sessions");?>
-                    <?=mk_option($dwttm_array_down, "acc", "All Accessing Sessions");?>
-                    <?=mk_option($dwttm_array_down, "all", "All incl. Non-Accessing");?>
+                    <?=mk_option($dwttm_array_down, "ttmacc", "Accessing TTM Sessions");?>
+                    <?=mk_option($dwttm_array_down, "allacc", "Accessing Tmux Sessions");?>
+                    <?=mk_option($dwttm_array_down, "ttm", "TTM incl. Non-Accessing");?>
+                    <?=mk_option($dwttm_array_down, "all", "Tmux incl. Non-Accessing");?>
                 </select>
             </dd>
         </dl>
 
         <blockquote class="inline_help">
-            <p>Sets if Tmux sessions that are accessing the array/pools should be killed when the array is stopping.</p>
+            <p>Sets if Tmux/TTM sessions that are accessing (or not) the array/pools should be killed when the array is stopping.</p>
             <p><strong>Please note that this does not ensure a graceful exit of the programs that are running inside such sessions.</strong></p>
         </blockquote>
 
