@@ -28,9 +28,9 @@ if [[ $ARRAYDOWN == "all" ]]; then
     echo "Killing all active Tmux sessions (as configured)..."
     echo "Killing all active Tmux sessions (as configured)..." | logger -t "ttm-plugin"
     declare -A TMUX_SESSIONS
-    while IFS='/' read -r session _ pid _; do
+    while IFS='/' read -r session _ _ pid _; do
         TMUX_SESSIONS["$pid"]=$session
-    done < <(tmux list-panes -a -F "#{session_id}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null)
+    done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null)
     if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
         echo "No Tmux panes detected - exiting."
         echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
@@ -89,9 +89,9 @@ else
     if [[ $ARRAYDOWN == "acc" ]]; then
         echo "Enumerating Tmux sessions..."
         declare -A TMUX_SESSIONS
-        while IFS='/' read -r session _ pid _; do
+        while IFS='/' read -r session _ _ pid _; do
             TMUX_SESSIONS["$pid"]=$session
-        done < <(tmux list-panes -a -F "#{session_id}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear)
+        done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear)
         if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
             echo "No Tmux panes detected - exiting."
             echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
@@ -100,9 +100,9 @@ else
     else
         echo "Enumerating TTM sessions..."
         declare -A TMUX_SESSIONS
-        while IFS='/' read -r session _ pid _; do
+        while IFS='/' read -r session _ _ pid _; do
             TMUX_SESSIONS["$pid"]=$session
-        done < <(tmux list-panes -a -F "#{session_id}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null | grep byttm 2>/dev/null)
+        done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null | grep byttm 2>/dev/null)
         if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
             echo "No TTM panes detected - exiting."
             echo "There are no active TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
