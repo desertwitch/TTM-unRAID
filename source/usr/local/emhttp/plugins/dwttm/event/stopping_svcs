@@ -20,108 +20,114 @@ exec &>/tmp/ttm_arraystop.log
 TTMCONF="/boot/config/plugins/dwttm/dwttm.cfg"
 [ -e "$TTMCONF" ] && source $TTMCONF
 
+get_descendants_ps() {
+    local parent=$1
+    local descendants=()
+
+    while IFS= read -r child; do
+        [[ "$child" =~ ^[0-9]+$ ]] || continue
+        descendants+=("$child")
+        readarray -t child_descendants < <(get_descendants_ps "$child" 2>/dev/null)
+        for dchild in "${child_descendants[@]}"; do
+            [[ "$dchild" =~ ^[0-9]+$ ]] && descendants+=("$dchild")
+        done
+    done < <(ps --ppid "$parent" -o pid= 2>/dev/null | awk 'NF && $1 ~ /^[0-9]+$/ { print $1 }' 2>/dev/null)
+
+    printf '%s\n' "${descendants[@]}"
+}
+
+#
+# KILL NO SESSIONS
+#
 if [[ -z $ARRAYDOWN ]] || [[ $ARRAYDOWN == "disable" ]]; then
     exit 0
 fi
 
+#
+# KILL ALL TMUX SESSIONS
+#
 if [[ $ARRAYDOWN == "all" ]]; then
-    echo "Killing all active Tmux sessions (as configured)..."
-    echo "Killing all active Tmux sessions (as configured)..." | logger -t "ttm-plugin"
+    echo "Killing all Tmux sessions (as configured)..."
+    echo "Killing all Tmux sessions (as configured)..." | logger -t "ttm-plugin"
+
     echo "Enumerating Tmux sessions..."
     declare -A TMUX_SESSIONS
     while IFS='/' read -r session _ _ pid _; do
         TMUX_SESSIONS["$pid"]=$session
     done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null)
     if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
-        echo "No Tmux panes detected - exiting."
-        echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
+        echo "No Tmux sessions detected - exiting."
+        echo "There are no Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
         exit 0
     fi
+
     echo "Killing the sessions that eventually qualified..."
     for SESSION in "${TMUX_SESSIONS[@]}"; do
         if tmux kill-session -t "$SESSION"; then
-            echo "Killed active Tmux session: $SESSION"
-            echo "Killed active Tmux session: $SESSION" | logger -t "ttm-plugin"
+            echo "Killed Tmux session: $SESSION"
+            echo "Killed Tmux session: $SESSION" | logger -t "ttm-plugin"
         else
-            echo "Failed killing active Tmux session: $SESSION"
-            echo "Failed killing active Tmux session: $SESSION" | logger -t "ttm-plugin"
+            echo "Failed killing Tmux session: $SESSION"
+            echo "Failed killing Tmux session: $SESSION" | logger -t "ttm-plugin"
         fi
     done
+#
+# KILL ALL TTM-CREATED TMUX SESSIONS
+#
 elif [[ $ARRAYDOWN == "ttm" ]]; then
-    echo "Killing all active TTM sessions (as configured)..."
-    echo "Killing all active TTM sessions (as configured)..." | logger -t "ttm-plugin"
+    echo "Killing all TTM sessions (as configured)..."
+    echo "Killing all TTM sessions (as configured)..." | logger -t "ttm-plugin"
+
     echo "Enumerating TTM sessions..."
     declare -A TMUX_SESSIONS
     while IFS='/' read -r session _ _ pid _; do
         TMUX_SESSIONS["$pid"]=$session
     done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null | grep byttm 2>/dev/null)
     if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
-        echo "No TTM panes detected - exiting."
-        echo "There are no active TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
+        echo "No TTM sessions detected - exiting."
+        echo "There are no TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
         exit 0
     fi
+
     echo "Killing the sessions that eventually qualified..."
     for SESSION in "${TMUX_SESSIONS[@]}"; do
         if tmux kill-session -t "$SESSION"; then
-            echo "Killed active TTM session: $SESSION"
-            echo "Killed active TTM session: $SESSION" | logger -t "ttm-plugin"
+            echo "Killed TTM session: $SESSION"
+            echo "Killed TTM session: $SESSION" | logger -t "ttm-plugin"
         else
-            echo "Failed killing active TTM session: $SESSION"
-            echo "Failed killing active TTM session: $SESSION" | logger -t "ttm-plugin"
+            echo "Failed killing TTM session: $SESSION"
+            echo "Failed killing TTM session: $SESSION" | logger -t "ttm-plugin"
         fi
     done
+#
+# KILL ALL (TTM-CREATED) TMUX SESSIONS ACCESSING THE ARRAY/POOLS
+#
 else
     if [[ $ARRAYDOWN == "allacc" ]]; then
-        echo "Killing all active Tmux sessions accessing the array/pools (as configured)..."
-        echo "Killing all active Tmux sessions accessing the array/pools (as configured)..." | logger -t "ttm-plugin"
+        echo "Killing all Tmux sessions accessing the array/pools (as configured)..."
+        echo "Killing all Tmux sessions accessing the array/pools (as configured)..." | logger -t "ttm-plugin"
     else
-        echo "Killing all active TTM sessions accessing the array/pools (as configured)..."
-        echo "Killing all active TTM sessions accessing the array/pools (as configured)..." | logger -t "ttm-plugin"
+        echo "Killing all TTM sessions accessing the array/pools (as configured)..."
+        echo "Killing all TTM sessions accessing the array/pools (as configured)..." | logger -t "ttm-plugin"
     fi
 
-    echo "Checking if all required programs are available..."
-    for cmd in lsof ps grep tmux awk; do
-        if ! type "$cmd" &>/dev/null; then
-            echo "Error: $cmd is not available - exiting."
-            echo "An error occured - a required program was not available." | logger -t "ttm-plugin"
-            exit 0
-        fi
-    done
-    echo "All required programs are available."
-
-    get_descendants_ps() {
-        local parent=$1
-        local descendants=()
-
-        while IFS= read -r child; do
-            [[ "$child" =~ ^[0-9]+$ ]] || continue
-            descendants+=("$child")
-            readarray -t child_descendants < <(get_descendants_ps "$child" 2>/dev/null)
-            for dchild in "${child_descendants[@]}"; do
-                [[ "$dchild" =~ ^[0-9]+$ ]] && descendants+=("$dchild")
-            done
-        done < <(ps --ppid "$parent" -o pid= 2>/dev/null | awk 'NF && $1 ~ /^[0-9]+$/ { print $1 }' 2>/dev/null)
-
-        printf '%s\n' "${descendants[@]}"
-    }
-
-    echo "Enumerating cache/pool locations..."
+    echo "Establishing cache/pool locations..."
     if [[ -d /boot/config/pools ]]; then
         cache=$(find /boot/config/pools -type f -name "*.cfg" -exec basename {} .cfg \; 2>/dev/null | sed 's:^:/mnt/:' 2>/dev/null | tr '\n' ' ' 2>/dev/null)
     else
         cache=/mnt/cache
     fi
     [[ -z $cache ]] && cache=/mnt/cache
-    echo "Cache/Pool locations are: $cache"
+    echo "Established cache/pool locations are: $cache"
 
     echo "Enumerating array/pool accessing processes..."
     readarray -t LTOUCH_PIDS < <(lsof -t /mnt/disk[0-9]* "$cache" /mnt/user /mnt/user0 2>/dev/null)
     if [[ ${#LTOUCH_PIDS[@]} -eq 0 ]] || [[ -z "${LTOUCH_PIDS[*]}" ]]; then
         echo "No processes found accessing the array/pools - exiting."
         if [[ $ARRAYDOWN == "allacc" ]]; then
-            echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
+            echo "There are no Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
         else
-            echo "There are no active TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
+            echo "There are no TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
         fi
         exit 0
     fi
@@ -134,8 +140,8 @@ else
             TMUX_SESSIONS["$pid"]=$session
         done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear)
         if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
-            echo "No Tmux panes detected - exiting."
-            echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
+            echo "No Tmux sessions detected - exiting."
+            echo "There are no Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
             exit 0
         fi
     else
@@ -145,8 +151,8 @@ else
             TMUX_SESSIONS["$pid"]=$session
         done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null | grep byttm 2>/dev/null)
         if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
-            echo "No TTM panes detected - exiting."
-            echo "There are no active TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
+            echo "No TTM sessions detected - exiting."
+            echo "There are no TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
             exit 0
         fi
     fi
@@ -183,7 +189,7 @@ else
                     continue
                 fi
                 if [[ "$DESC_PID" == "$LTOUCH_PID" ]]; then
-                    echo "-- Match found: PID $DESC_PID is accessing array/pools in session $SESSION"
+                    echo "-- Match: PID $DESC_PID is accessing array/pools in session $SESSION."
                     SESSIONS_TO_KILL+=("$SESSION")
                     break 2
                 fi
@@ -195,9 +201,9 @@ else
     if [[ ${#SESSIONS_TO_KILL[@]} -eq 0 ]] || [[ -z "${SESSIONS_TO_KILL[*]}" ]]; then
         echo "No Tmux sessions are accessing the array/pools - exiting."
         if [[ $ARRAYDOWN == "allacc" ]]; then
-            echo "There are no active Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
+            echo "There are no Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
         else
-            echo "There are no active TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
+            echo "There are no TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
         fi
         exit 0
     fi
@@ -216,19 +222,19 @@ else
     for SESSION in "${U_SESSIONS_TO_KILL[@]}"; do
         if tmux kill-session -t "$SESSION"; then
             if [[ $ARRAYDOWN == "allacc" ]]; then
-                echo "Killed active Tmux session: $SESSION"
-                echo "Killed active Tmux session: $SESSION" | logger -t "ttm-plugin"
+                echo "Killed Tmux session: $SESSION"
+                echo "Killed Tmux session: $SESSION" | logger -t "ttm-plugin"
             else
-                echo "Killed active TTM session: $SESSION"
-                echo "Killed active TTM session: $SESSION" | logger -t "ttm-plugin"
+                echo "Killed TTM session: $SESSION"
+                echo "Killed TTM session: $SESSION" | logger -t "ttm-plugin"
             fi
         else
             if [[ $ARRAYDOWN == "allacc" ]]; then
-                echo "Failed killing active Tmux session: $SESSION"
-                echo "Failed killing active Tmux session: $SESSION" | logger -t "ttm-plugin"
+                echo "Failed killing Tmux session: $SESSION"
+                echo "Failed killing Tmux session: $SESSION" | logger -t "ttm-plugin"
             else
-                echo "Failed killing active TTM session: $SESSION"
-                echo "Failed killing active TTM session: $SESSION" | logger -t "ttm-plugin"
+                echo "Failed killing TTM session: $SESSION"
+                echo "Failed killing TTM session: $SESSION" | logger -t "ttm-plugin"
             fi
         fi
     done
