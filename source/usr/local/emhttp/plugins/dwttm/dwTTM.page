@@ -245,7 +245,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                     <?=mk_option($dwttm_array_down, "ttm", "TTM incl. Non-Accessing");?>
                     <?=mk_option($dwttm_array_down, "all", "All incl. Non-Accessing");?>
                 </select>
-                <span style="margin-left:5px;cursor:help;"><i class="fa fa-exclamation-triangle dwttm-tooltip" title="This setting does not ensure graceful exit of programs running inside such sessions. Ideally always ensure no more sessions are accessing the array/pools before stopping the array. This setting is a failsafe to ensure that array shutdown does not block in emergency shutdown situations (e.g. when on UPS battery power)."></i></span>
+                <span style="margin-left:5px;cursor:help;"><i class="fa fa-exclamation-triangle dwttm-tooltip" title="This does NOT ensure graceful exit of programs running inside such sessions. Ideally no sessions are accessing the array/pools before stopping the array. This setting is a failsafe to ensure that array shutdown does not block in emergency shutdown situations (e.g. when on UPS battery power)."></i></span>
             </dd>
         </dl>
 
