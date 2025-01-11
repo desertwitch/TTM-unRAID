@@ -40,7 +40,7 @@ try {
     if ($result['returnCode'] === 0 && !empty($result['stdout'])) {
         $session_id = $result['stdout'];
 
-        $command = "tmux set-option -t '$session_id' @byttm \"byttm\"";
+        $command = "tmux set-option -t '$session_id' '@byttm' 'byttm'";
         $result = dwttm_executeCommand($command);
 
         if ($result['returnCode'] === 0) {

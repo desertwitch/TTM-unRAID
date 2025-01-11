@@ -18,6 +18,9 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.01.11
+- fix: changed default array stop behavior for new installations
+- fix: changed escaping for some backend commands
 ###2025.01.10
 - new: added setting to kill array-accessing sessions when array stops
 - release note: the default is disabled (go to TTM settings to enable this)
