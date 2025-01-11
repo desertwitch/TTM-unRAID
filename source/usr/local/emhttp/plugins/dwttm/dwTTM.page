@@ -117,7 +117,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
 <div style="margin-right:20px;">
     <span style="float:right">
-        <i class="fa fa-map-o" aria-hidden="true"></i>
+        <i class="fa fa-map-o"></i>
         <a href="https://tmuxcheatsheet.com/" target="_blank">Tmux Cheat Sheet</a>
     </span>
     <br>
