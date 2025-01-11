@@ -89,6 +89,7 @@ source /boot/config/plugins/dwttm/dwttm.cfg >/dev/null 2>&1
 # ---------------------------------------------------------------------------------------
 
 DWTTM_BACKEND=$(find /var/log/packages/ -type f -iname 'tmux-*' ! -iname '*upgraded*' -printf '%f\n')
+DWTTM_ARRAYSTOP="$ARRAYDOWN"
 
 if pgrep -x ttmd >/dev/null 2>&1; then
     DWTTM_RUNNING=true
@@ -112,6 +113,7 @@ postfields=()
 [ -n "${CLIENTID_PLUGIN_VERSION}" ] && postfields+=("-F" "plugin_version=$( sanitize_fval <<< "${CLIENTID_PLUGIN_VERSION}" )")
 
 [ -n "${DWTTM_BACKEND}" ] && postfields+=("-F" "str1=$( sanitize_fval <<< "${DWTTM_BACKEND}" )")
+[ -n "${DWTTM_ARRAYSTOP}" ] && postfields+=("-F" "str2=$( sanitize_fval <<< "${DWTTM_ARRAYSTOP}" )")
 [ -n "${DWTTM_RUNNING}" ] && postfields+=("-F" "bool1=$( sanitize_fval <<< "${DWTTM_RUNNING}" )")
 [ -n "${DWTTM_CUSTOM}" ] && postfields+=("-F" "bool2=$( sanitize_fval <<< "${DWTTM_CUSTOM}" )")
 [ -n "${DWTTM_RUNTIME}" ] && postfields+=("-F" "num1=$( sanitize_fval <<< "${DWTTM_RUNTIME}" )")

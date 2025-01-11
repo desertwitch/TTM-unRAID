@@ -215,7 +215,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <blockquote class="inline_help">
             <p>Enables collection of <strong>anonymized</strong> plugin usage statistics through the plugin usage metrics API.</p>
             <p>This aids prioritization of bug reports, development of new features and planning for plugin updates/deprecation.</p>
-            <p><em>Attributes: Metric ID, Plugin Version, Unraid Version, Tmux Backend Version, TTM Service Active (Yes/No).</em></p>
+            <p><em>Attributes: Metric ID, Plugin Version, Unraid Version, Tmux Backend Version, TTM Service Active/Runtime, TTM Array Stop Setting.</em></p>
             <p><strong><i class="fa fa-heart" style="color:red;"></i> If possible, please keep this setting <u>enabled</u> to support the continued development of this plugin - thank you!</strong></p>
         </blockquote>
 
