@@ -115,6 +115,17 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 </div><br>
 <?endif;?>
 
+<div style="margin-right:20px;">
+    <span style="float:right">
+        <i class="fa fa-map-o" aria-hidden="true"></i>
+        <a href="https://tmuxcheatsheet.com/" target="_blank">Tmux Cheat Sheet</a>
+    </span>
+    <br>
+    <span style="float:right; font-size:x-small;">
+    Not required knowledge for this plugin, but e.g. connecting to your sessions from PuTTY.
+    </span>
+</div>
+
 <div>
     <span class="left" style="font-size:1.1rem;letter-spacing:1px;padding-left:5px;"><strong><i class="icon fa fa-cogs"></i>GENERAL SETTINGS</strong></span>
 </div><br>
