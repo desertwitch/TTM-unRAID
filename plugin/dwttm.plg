@@ -19,6 +19,7 @@
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
 ###2025.01.11
+- new: added a link to a tmux cheat sheet (thanks Barry Staes)
 - fix: changed default array stop behavior for new installations
 - fix: changed escaping for some backend commands
 ###2025.01.10
