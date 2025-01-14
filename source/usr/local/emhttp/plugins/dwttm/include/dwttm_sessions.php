@@ -21,7 +21,7 @@ require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_helpers.php';
 try {
     header('Content-Type: application/json');
 
-    $command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}"';
+    $command = 'tmux list-sessions -F "#{session_id}/#{session_name}/#{session_created}/#{@byttm}"';
     $result = dwttm_executeCommand($command);
 
     if ($result['returnCode'] !== 0) {
@@ -40,7 +40,8 @@ try {
             continue;
         }
 
-        list($sessionId, $sessionName, $sessionCreated) = explode('/', $line, 3);
+        list($sessionId, $sessionName, $sessionCreated, $ttmManaged) = explode('/', $line, 4);
+        $ttmManaged = (!empty($ttmManaged) && $ttmManaged === "byttm") ? true : false;
 
         $captureCommand = "tmux capture-pane -t '{$sessionId}:0' -p";
         $captureResult = dwttm_executeCommand($captureCommand, false);
@@ -55,7 +56,8 @@ try {
             "session_name" => $sessionName,
             "created_at" => date('Y-m-d H:i:s', intval($sessionCreated)),
             "preview" => $preview,
-            "preview_success" => $previewSuccess
+            "preview_success" => $previewSuccess,
+            "ttm_managed" => $ttmManaged
         ];
     }
 

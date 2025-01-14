@@ -19,6 +19,12 @@
  */
 require_once '/usr/local/emhttp/plugins/dwttm/include/dwttm_config.php';
 
+if(!$dwttm_running) {
+    echo("<b>Error: The TTM service is not running (anymore?).</b><br>");
+    echo("<b>Error: Please (re-)start it within the 'TTM Settings' page.</b>");
+    die();
+}
+
 if($dwttm_running && !$dwttm_tmux_functional) {
     @shell_exec("/etc/rc.d/rc.ttmd stop &>/dev/null");
     echo("<b>Error: Tmux not found or not functional.</b><br>");
@@ -45,6 +51,7 @@ if (!function_exists('autov')) {
     }
 }
 
+$showGrid = isset($_GET['grid']);
 $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 ?>
 
@@ -60,11 +67,16 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
     <link type="text/css" rel="stylesheet" href="<?=autov('/plugins/dwttm/css/dwttm-terminal.css');?>">
 </head>
 <body>
-
-
     <div id="dwttm-content">
-        <?php if (!$currentSession): ?>
+        <?php if ($showGrid): ?>
             <div id="dwttm-dropdown-container">
+                <button id="dwttm-grid-button" title="Show Session Grid" onclick="window.location.href='/plugins/dwttm/tterminal.php?grid'">&#x22EE;&#x22EE;&#x22EE;</button>
+                <select id="dwttm-session-dropdown"></select>
+            </div>
+            <div id="dwttm-session-list-container"></div>
+        <?php elseif (!$currentSession): ?>
+            <div id="dwttm-dropdown-container">
+                <button id="dwttm-grid-button" title="Show Session Grid" onclick="window.location.href='/plugins/dwttm/tterminal.php?grid'">&#x22EE;&#x22EE;&#x22EE;</button>
                 <select id="dwttm-session-dropdown"></select>
             </div>
             <div class="dwttm-split-container">
@@ -81,6 +93,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             </div>
         <?php else: ?>
             <div id="dwttm-dropdown-container">
+                <button id="dwttm-grid-button" title="Show Session Grid" onclick="window.location.href='/plugins/dwttm/tterminal.php?grid'">&#x22EE;&#x22EE;&#x22EE;</button>
                 <select id="dwttm-session-dropdown"></select>
                 <button id="dwttm-new-button" title="New Session" onclick="<?=($dwttm_plus_button_pop === 'named' ? 'createNewNamedSession()' : 'createNewSession()')?>">+</button>
                 <button id="dwttm-rename-button" title="Rename Session" onclick="renameSession()">&#x270E;</button>
@@ -152,14 +165,22 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                         sessions.forEach(session => {
                             const option = document.createElement('option');
                             option.value = session.session_id;
-                            option.textContent = `${session.session_name} - ${session.created_at}`;
+                            if(session.ttm_managed) {
+                                option.textContent = `${session.session_name} - ${session.created_at}`;
+                            } else {
+                                option.textContent = `${session.session_name} - ${session.created_at} (non-TTM)`;
+                            }
                             if (session.session_id === currentSession) {
                                 option.selected = true;
                                 document.title = `${session.session_name}: TTerminal`;
                             }
                             fragment.appendChild(option);
                         });
-                        dropdown.innerHTML = '<option value="">New Session / Select Session</option>';
+                        <?php if ($showGrid): ?>
+                            dropdown.innerHTML = '<option value=""></option><option value="#">New Session / Select Session</option>';
+                        <?php else: ?>
+                            dropdown.innerHTML = '<option value="">New Session / Select Session</option>';
+                        <?php endif; ?>
                         dropdown.appendChild(fragment);
                     } else {
                         if (data.error) {
@@ -180,31 +201,232 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 });
         }
 
+        function fetchSessionsGrid(manuallyInvoked) {
+            if (!manuallyInvoked) {
+                clearTimeout(ttimers.fetchSessionsGrid);
+            }
+
+            fetch('/plugins/dwttm/include/dwttm_sessions.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response) {
+                        let sessions = data.response;
+
+                        sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                        const sessionListContainer = document.createDocumentFragment();
+
+                        const newSessionItem = document.createElement('div');
+                        newSessionItem.className = 'dwttm-session-item dwttm-add-new';
+                        newSessionItem.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            <?php if ($dwttm_plus_button_pop === 'named'): ?>
+                                createNewNamedSession();
+                            <?php else: ?>
+                                createNewSession();
+                            <?php endif; ?>
+                        });
+
+                        const plusIcon = document.createElement('div');
+                        plusIcon.className = 'dwttm-grid-plus-icon';
+                        plusIcon.innerHTML = '+';
+                        newSessionItem.appendChild(plusIcon);
+
+                        const newSessionText = document.createElement('div');
+                        newSessionText.className = 'dwttm-add-new-text';
+                        newSessionText.textContent = 'Add New Session';
+                        newSessionItem.appendChild(newSessionText);
+
+                        sessionListContainer.appendChild(newSessionItem);
+
+                        sessions.forEach(session => {
+                            const sessionId = session.session_id;
+                            const sessionName = session.session_name;
+                            const sessionPreviewSuccess = session.preview_success;
+                            const sessionPreview = session.preview;
+                            const sessionCreatedAt = session.created_at;
+                            const sessionManagedTTM = session.ttm_managed;
+
+                            const sessionItem = document.createElement('div');
+                            sessionItem.className = 'dwttm-session-item';
+                            sessionItem.dataset.sessionId = sessionId;
+                            sessionItem.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                connectToSession(sessionId);
+                            });
+
+                            const infoHead = document.createElement('div');
+                            infoHead.className = 'dwttm-info-header';
+                            infoHead.textContent = sessionName;
+                            infoHead.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                renameSession(sessionId);
+                            });
+                            sessionItem.appendChild(infoHead);
+
+                            const trashIcon = document.createElement('div');
+                            trashIcon.className = 'dwttm-trash-icon';
+                            trashIcon.innerHTML = '&#x1F5D1;';
+                            trashIcon.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                closeSession(sessionId, sessionName);
+                            });
+                            sessionItem.appendChild(trashIcon);
+
+                            const popupIcon = document.createElement('div');
+                            popupIcon.className = 'dwttm-popup-icon';
+                            popupIcon.innerHTML = '&#x29c9;';
+                            popupIcon.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                popupSession(sessionId)
+                            });
+                            sessionItem.appendChild(popupIcon);
+
+                            if (sessionPreviewSuccess) {
+                                let canvasElement;
+                                try {
+                                    const canvasWidth = 240;
+                                    const canvasHeight = 120;
+
+                                    canvasElement = document.createElement('canvas');
+                                    canvasElement.width = canvasWidth;
+                                    canvasElement.height = canvasHeight;
+
+                                    const ctx = canvasElement.getContext('2d');
+
+                                    ctx.fillStyle = '#000000';
+                                    ctx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+
+                                    let fontSize = 12;
+                                    const padding = 10;
+                                    const lineHeightFactor = 1.2;
+                                    let lineHeight = fontSize * lineHeightFactor;
+
+                                    const lines = sessionPreview.split('\n');
+                                    const totalLines = lines.length;
+
+                                    const maxContentHeight = totalLines * lineHeight;
+                                    const scalingFactor = Math.min(1, (canvasHeight - 2 * padding) / maxContentHeight);
+
+                                    fontSize = Math.floor(fontSize * scalingFactor);
+                                    lineHeight = fontSize * lineHeightFactor;
+
+                                    ctx.font = `${fontSize}px monospace`;
+                                    ctx.fillStyle = '#ffffff';
+
+                                    lines.forEach((line, index) => {
+                                        const y = padding + (index + 1) * lineHeight;
+                                        if (y <= canvasHeight - padding) {
+                                            ctx.fillText(line, padding, y);
+                                        }
+                                    });
+                                } catch (e) {
+                                    console.error('Error generating preview for session:', e);
+                                    canvasElement = document.createElement('div');
+                                    canvasElement.className = 'dwttm-fallback-text';
+                                    canvasElement.textContent = "No preview available for this session.";
+                                } finally {
+                                    sessionItem.appendChild(canvasElement);
+                                }
+                            } else {
+                                const fallbackText = document.createElement('div');
+                                fallbackText.className = 'dwttm-fallback-text';
+                                fallbackText.textContent = "No preview available for this session.";
+                                sessionItem.appendChild(fallbackText);
+                            }
+
+                            const infoFooter = document.createElement('div');
+                            infoFooter.className = 'dwttm-info-footer';
+                            if(sessionManagedTTM) {
+                                infoFooter.textContent = sessionCreatedAt;
+                            } else {
+                                infoFooter.textContent = sessionCreatedAt + " (non-TTM)";
+                            }
+                            sessionItem.appendChild(infoFooter);
+
+                            sessionListContainer.appendChild(sessionItem);
+                        });
+
+                        const sessionListContainerActual = document.getElementById('dwttm-session-list-container');
+                        sessionListContainerActual.replaceChildren(sessionListContainer);
+                    } else {
+                        console.error('Error processing sessions:', data.error || 'Unknown error');
+                    }
+                })
+                .catch(error => console.error('Error fetching sessions:', error))
+                .finally(() => {
+                    if (!manuallyInvoked) {
+                        ttimers.fetchSessionsGrid = setTimeout(fetchSessionsGrid, 3000);
+                    }
+                });
+        }
+
+        function popupSession(sessionId) {
+            const width = Math.min(screen.availWidth, 1200);
+            const height = Math.min(screen.availHeight, 800);
+
+            let top = ((screen.height - height) / 2) - 50;
+            if (!top || top < 0) { top = 0; }
+            let left = (screen.width - width) / 2;
+            if (!left || left < 0) { left = 0; }
+
+            if(sessionId) {
+                const windowName = `ttm_sess_${sessionId}`;
+                window.open(
+                    `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`,
+                    windowName,
+                    `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+                );
+            } else {
+                const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
+                window.open(
+                    '/plugins/dwttm/tterminal.php',
+                    windowName,
+                    `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+                );
+            }
+        }
+
         function connectToSession(session) {
             freeSession();
+
+            // If no session is provided, clear the query string and redirect to the base URL
             if (!session) {
                 const urlWithoutParams = window.location.origin + window.location.pathname;
                 window.location.href = urlWithoutParams;
                 return;
             }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('session', session);
-            window.location.search = urlParams.toString();
+            // Construct a new URL with only the desired 'session' parameter
+            const newUrl = `${window.location.origin}${window.location.pathname}?session=${encodeURIComponent(session)}`;
+            window.location.href = newUrl;
         }
 
-        function closeSession() {
+        function closeSession(session, sessionName) {
+            if(!session) {
+                session = currentSession;
+            }
             <?php if ($dwttm_close_button !== "noconfirm"): ?>
-            const confirmation = confirm("Terminate the session and its running programs?");
+            let confirmation;
+            if(!sessionName) {
+                confirmation = confirm("Terminate the session and its running programs?");
+            } else {
+                confirmation = confirm(`Terminate the session '${sessionName}' and its running programs?`);
+            }
             if (!confirmation) {
                 return;
             }
             <?php endif; ?>
-            fetch(`/plugins/dwttm/include/dwttm_close_session.php?session=${encodeURIComponent(currentSession)}`)
+            fetch(`/plugins/dwttm/include/dwttm_close_session.php?session=${encodeURIComponent(session)}`)
                 .then(response => response.json())
                 .then(response => {
                     if (response.success) {
-                        connectToSession();
+                        <?php if ($showGrid): ?>
+                            fetchSessionsGrid(true);
+                            fetchSessions(true);
+                        <?php else: ?>
+                            connectToSession();
+                        <?php endif; ?>
                     } else {
                         if(response.error) {
                             alert(`Failed closing session: ${response.error}`);
@@ -232,7 +454,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
-                    connectToSession(response.session_id);
+                    <?php if ($showGrid): ?>
+                        fetchSessionsGrid(true);
+                        fetchSessions(true);
+                    <?php else: ?>
+                        connectToSession(response.session_id);
+                    <?php endif; ?>
                 } else {
                     if(response.error) {
                         alert(`Failed to create a new session: ${response.error}`);
@@ -271,7 +498,12 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
-                    connectToSession(response.session_id);
+                    <?php if ($showGrid): ?>
+                        fetchSessionsGrid(true);
+                        fetchSessions(true);
+                    <?php else: ?>
+                        connectToSession(response.session_id);
+                    <?php endif; ?>
                 } else {
                     if(response.error) {
                         alert(`Failed to create a new session: ${response.error}`);
@@ -288,7 +520,10 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             });
         }
 
-        function renameSession() {
+        function renameSession(session) {
+            if(!session) {
+                session = currentSession;
+            }
             const sessionName = prompt("Enter a new session name (alphanumeric only):");
 
             if(!sessionName) {
@@ -300,12 +535,15 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 return;
             }
 
-            fetch(`/plugins/dwttm/include/dwttm_rename_session.php?session=${encodeURIComponent(currentSession)}&sessionName=${encodeURIComponent(sessionName.trim())}`, {
+            fetch(`/plugins/dwttm/include/dwttm_rename_session.php?session=${encodeURIComponent(session)}&sessionName=${encodeURIComponent(sessionName.trim())}`, {
                 method: 'GET',
             })
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
+                    <?php if ($showGrid): ?>
+                        fetchSessionsGrid(true);
+                    <?php endif; ?>
                     fetchSessions(true);
                 } else {
                     if(response.error) {
@@ -486,12 +724,18 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             fetchSessionMouse(currentSession);
             <?php endif; ?>
             fetchSessions();
+            <?php if ($showGrid): ?>
+                fetchSessionsGrid();
+            <?php endif; ?>
         });
 
         document.addEventListener('change', (event) => {
             if (event.target && event.target.id === 'dwttm-session-dropdown') {
                 const selectedSession = event.target.value;
-                if(selectedSession !== currentSession) {
+                if((selectedSession !== currentSession) && (selectedSession === "#")) {
+                    connectToSession();
+                }
+                else if(selectedSession !== currentSession) {
                     connectToSession(selectedSession);
                 }
             }

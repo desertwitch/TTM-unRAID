@@ -1,0 +1,36 @@
+#!/bin/bash
+#
+# Copyright Derek Macias (parts of code from NUT package)
+# Copyright macester (parts of code from NUT package)
+# Copyright gfjardim (parts of code from NUT package)
+# Copyright SimonF (parts of code from NUT package)
+# Copyright Lime Technology (any and all other parts of Unraid)
+#
+# Copyright desertwitch (as author and maintainer of this file)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License 2
+# as published by the Free Software Foundation.
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+echo "Killing all Tmux sessions..."
+
+echo "Killing all Tmux sessions (as requested in GUI)..." | logger -t "ttm-plugin"
+declare -A TMUX_SESSIONS
+while IFS='/' read -r session _ _ pid _; do
+    TMUX_SESSIONS["$pid"]=$session
+done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null)
+if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
+    echo "There are no Tmux sessions that would qualify for killing." | logger -t "ttm-plugin"
+    exit 0
+fi
+
+for SESSION in "${TMUX_SESSIONS[@]}"; do
+    if tmux kill-session -t "$SESSION"; then
+        echo "Killed Tmux session: $SESSION" | logger -t "ttm-plugin"
+    else
+        echo "Failed killing Tmux session: $SESSION" | logger -t "ttm-plugin"
+    fi
+done

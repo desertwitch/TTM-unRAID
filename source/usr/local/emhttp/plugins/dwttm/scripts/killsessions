@@ -15,5 +15,22 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 #
-echo "Killing all Tmux sessions..."
-tmux kill-server | logger -t "tmux"
+echo "Killing all TTM sessions..."
+
+echo "Killing all TTM sessions (as requested in GUI)..." | logger -t "ttm-plugin"
+declare -A TMUX_SESSIONS
+while IFS='/' read -r session _ _ pid _; do
+    TMUX_SESSIONS["$pid"]=$session
+done < <(tmux list-panes -a -F "#{session_id}/#{session_name}/#{pane_id}/#{pane_pid}/#{@byttm}" 2>/dev/null | grep -v preclear 2>/dev/null | grep byttm 2>/dev/null)
+if [[ -z "${TMUX_SESSIONS[*]}" ]]; then
+    echo "There are no TTM sessions that would qualify for killing." | logger -t "ttm-plugin"
+    exit 0
+fi
+
+for SESSION in "${TMUX_SESSIONS[@]}"; do
+    if tmux kill-session -t "$SESSION"; then
+        echo "Killed TTM session: $SESSION" | logger -t "ttm-plugin"
+    else
+        echo "Failed killing TTM session: $SESSION" | logger -t "ttm-plugin"
+    fi
+done

@@ -54,7 +54,7 @@ html, body {
     color: white;
 }
 
-#dwttm-new-button, #dwttm-rename-button {
+#dwttm-new-button, #dwttm-rename-button, #dwttm-grid-button {
     height: 40px;
     width: 40px;
     background-color: #444;
@@ -70,7 +70,7 @@ html, body {
     transition: background-color 0.3s ease;
 }
 
-#dwttm-new-button:hover, #dwttm-rename-button:hover {
+#dwttm-new-button:hover, #dwttm-rename-button:hover, #dwttm-grid-button:hover {
     background-color: #555;
     color: white;
 }
@@ -212,4 +212,104 @@ html, body {
 
 .dwttm-modal-close:hover, .dwttm-modal-new:hover {
     color: white;
+}
+
+#dwttm-session-list-container {
+    margin:10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+    color: white;
+    overflow: auto;
+}
+
+.dwttm-session-item {
+    position: relative;
+    width: 240px;
+    border: 1px solid #444;
+    padding: 10px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dwttm-session-item:hover {
+    background-color: #3a4a5a;
+}
+
+.dwttm-session-item canvas {
+    display: block;
+    margin: 5px auto 10px;
+    border: 1px solid #555;
+}
+
+.dwttm-session-item .dwttm-fallback-text {
+    font-size: 14px;
+    margin: 5px auto 10px;
+    color: #aaaaaa;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.dwttm-session-item.dwttm-add-new {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dwttm-session-item .dwttm-info-header {
+    display: inline-block;
+    font-family: monospace;
+    font-weight: bold;
+    cursor: text;
+}
+
+.dwttm-session-item .dwttm-info-header:hover {
+    text-decoration: underline;
+}
+
+.dwttm-session-item .dwttm-info-footer {
+    font-family: monospace;
+}
+
+.dwttm-add-new-text {
+    font-size: 14px;
+    color: #5ac8fa;
+    margin-top: 10px;
+}
+
+.dwttm-grid-plus-icon {
+    font-size: 50px;
+    color: #5ac8fa;
+}
+
+.dwttm-popup-icon {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 13px;
+    color: #5ac8fa;
+    transition: color 0.2s ease;
+}
+
+.dwttm-popup-icon:hover {
+    color: #3aaee6;
+}
+
+.dwttm-trash-icon {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font-size: 13px;
+    color: #ff5252;
+    transition: color 0.2s ease;
+}
+
+.dwttm-trash-icon:hover {
+    color: #ff0000;
 }

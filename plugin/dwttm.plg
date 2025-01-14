@@ -3,14 +3,14 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "dwttm">
 <!ENTITY author    "desertwitch">
-<!ENTITY version   "2025.01.11">
+<!ENTITY version   "2025.01.14">
 <!ENTITY launch    "Settings/dwTTM">
 <!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/main">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
 <!ENTITY pkgURL    "&gitURL;/packages">
 <!ENTITY plgPATH   "/boot/config/plugins/&name;">
-<!ENTITY plgNAME   "dwttm-2025.01.11-x86_64-1">
-<!ENTITY plgMD5    "87c7bb02584a6042ebb19724776d9af6">
+<!ENTITY plgNAME   "dwttm-2025.01.14-x86_64-1">
+<!ENTITY plgMD5    "d8523d17947e73d585ffa8f795b02cf6">
 <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
 ]>
 
@@ -18,6 +18,9 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.01.14
+- new: distinguish between TTM(-created) and non-TTM sessions in GUI
+- new: added a session grid with previews and management options to the popup
 ###2025.01.11
 - new: added a link to a tmux cheat sheet (thanks Barry Staes)
 - fix: changed default array stop behavior for new installations

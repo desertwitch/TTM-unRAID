@@ -346,7 +346,8 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
     <dl>
         <dt>
-            <input type="button" class="dwttm-run" id="KILLSESSIONS" value="Kill All Sessions">
+            <input type="button" class="dwttm-run" id="KILLSESSIONS" value="Kill all TTM">
+            <input type="button" class="dwttm-run" id="KILLSESSIONS2" value="Kill all Tmux">
             <input type="submit" class="dwttm-not-run" name="#default" value="Restore Defaults">
         </dt>
         <dd>
@@ -464,7 +465,7 @@ function KillSessions() {
     if (typeof swal === "function") {
         swal({
             title: "!!! DANGER !!!",
-            text: "This will terminate all sessions and running programs inside.<br>Are you really sure that you want to do this?",
+            text: "This will kill all TTM sessions and running programs inside.<br><br>(Note that non-TTM sessions will <u>not</u> be killed.)<br><br>Are you really sure that you want to do this?",
             type: "error",
             html: true,
             confirmButtonText: "Terminate Sessions",
@@ -474,8 +475,29 @@ function KillSessions() {
             $('#dwttm-settings').submit();
         });
     } else {
-        if (confirm("--- DANGER --- DANGER --- DANGER ---\n\nThis will terminate all sessions and running programs inside.\n\nAre you sure that you want to do this?")) {
+        if (confirm("--- DANGER --- DANGER --- DANGER ---\n\nThis will kill all TTM sessions and running programs inside.\n\n(Note that non-TTM sessions will not be killed.)\n\nAre you sure that you want to do this?")) {
             $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/killsessions');
+            $('#dwttm-settings').submit();
+        }
+    }
+}
+
+function KillSessions2() {
+    if (typeof swal === "function") {
+        swal({
+            title: "!!! DANGER !!!",
+            text: "This will kill all Tmux sessions and running programs inside.<br><br>(Note that preclear sessions will <u>not</u> be killed.)<br><br>Are you really sure that you want to do this?",
+            type: "error",
+            html: true,
+            confirmButtonText: "Terminate Sessions",
+            showCancelButton: true
+        }, function() {
+            $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/killsessions2');
+            $('#dwttm-settings').submit();
+        });
+    } else {
+        if (confirm("--- DANGER --- DANGER --- DANGER ---\n\nThis will kill all Tmux sessions and running programs inside.\n\n(Note that preclear sessions will not be killed.)\n\nAre you sure that you want to do this?")) {
+            $('#dwttm-cmd').val('/usr/local/emhttp/plugins/dwttm/scripts/killsessions2');
             $('#dwttm-settings').submit();
         }
     }
@@ -568,8 +590,10 @@ function fetchSessions(manuallyInvoked) {
             $.each(sessions, function (index, session) {
                 const sessionId = session.session_id;
                 const sessionName = session.session_name;
+                const sessionPreviewSuccess = session.preview_success;
                 const sessionPreview = session.preview;
-                const createdAt = session.created_at;
+                const sessionCreatedAt = session.created_at;
+                const sessionManagedTTM = session.ttm_managed;
 
                 const $sessionItem = $('<div>')
                     .addClass('dwttm-session-item')
@@ -675,7 +699,7 @@ function fetchSessions(manuallyInvoked) {
 
                 $sessionItem.append($popupIcon);
 
-                if (session.preview_success) {
+                if (sessionPreviewSuccess) {
                     let $canvas;
                     try {
                         const canvasWidth = 300;
@@ -730,8 +754,12 @@ function fetchSessions(manuallyInvoked) {
                 }
 
                 const $infoFooter = $('<div>')
-                    .addClass('dwttm-info-footer')
-                    .text(`${session.created_at}`);
+                    .addClass('dwttm-info-footer');
+                if(sessionManagedTTM) {
+                    $infoFooter.text(`${sessionCreatedAt}`);
+                } else {
+                    $infoFooter.text(`${sessionCreatedAt} (non-TTM)`);
+                }
                 $sessionItem.append($infoFooter);
 
                 $sessionListContainer.append($sessionItem);
@@ -1209,6 +1237,7 @@ $(function() {
     });
 
     $('#KILLSESSIONS').click(KillSessions);
+    $('#KILLSESSIONS2').click(KillSessions2);
 
     <?if($dwttm_running):?>
         const terminalContainer = document.getElementById('dwttm-terminal-container');
