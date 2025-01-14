@@ -591,7 +591,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
         }
 
         function handleResize() {
-                    sendTerminalSize();
+            sendTerminalSize();
         }
 
         function fetchSessionMouse(sessionId) {
