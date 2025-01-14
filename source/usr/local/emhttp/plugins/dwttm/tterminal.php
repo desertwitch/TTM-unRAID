@@ -184,7 +184,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                         dropdown.appendChild(fragment);
                     } else {
                         if (data.error) {
-                            console.error('Error processing sessions:', data.error)
+                            console.error('Error processing sessions:', data.error);
                         } else {
                             console.error('Error processing sessions, no error message.');
                         }
@@ -192,7 +192,6 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 })
                 .catch(error => {
                     console.error('Error fetching sessions:', error);
-                    dropdown.innerHTML = '<option value="">Error loading sessions.</option>';
                 })
                 .finally(() => {
                     if(!manuallyInvoked) {
@@ -278,7 +277,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                             popupIcon.innerHTML = '&#x29c9;';
                             popupIcon.addEventListener('click', (e) => {
                                 e.stopPropagation();
-                                popupSession(sessionId)
+                                popupSession(sessionId);
                             });
                             sessionItem.appendChild(popupIcon);
 
