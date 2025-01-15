@@ -189,9 +189,9 @@ func shellWebSocketHandler(w http.ResponseWriter, r *http.Request, mainWG *sync.
 	log.Printf("%s -- Session request received.\n", session)
 
 	if csrfChecking {
-		csrfTokenLock.Lock()
+		csrfTokenLock.RLock()
 		currentToken := csrfToken
-		csrfTokenLock.Unlock()
+		csrfTokenLock.RUnlock()
 
 		authtoken := vars["csrf"]
 		if authtoken == "" {
