@@ -115,7 +115,11 @@ EOT;
                         sessionCounter++;
                         const option = document.createElement('option');
                         option.value = session.session_id;
-                        option.textContent = `${session.session_name} - ${session.created_at}`;
+                        if(session.ttm_managed) {
+                            option.textContent = `${session.session_name} - ${session.created_at}`;
+                        } else {
+                            option.textContent = `${session.session_name} - ${session.created_at} (non-TTM)`;
+                        }
                         fragment.appendChild(option);
                     });
 

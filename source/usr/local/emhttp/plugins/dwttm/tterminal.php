@@ -192,6 +192,7 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 })
                 .catch(error => {
                     console.error('Error fetching sessions:', error);
+                    dropdown.innerHTML = '<option value="">Error loading sessions.</option>';
                 })
                 .finally(() => {
                     if(!manuallyInvoked) {
