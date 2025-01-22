@@ -18,6 +18,8 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.01.22
+- fix: resolved issue with transition between dashboard and settings
 ###2025.01.14
 - new: distinguish between TTM(-created) and non-TTM sessions in GUI
 - new: added a session grid with previews and management options to the popup
