@@ -19,7 +19,7 @@
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
 ###2025.01.24
-- fix: addressed theoretical congestion with multiple connections
+- fix: addressed theoretical congestion with multiple sessions
 ###2025.01.22
 - fix: resolved issue with transition between dashboard and settings
 ###2025.01.14
