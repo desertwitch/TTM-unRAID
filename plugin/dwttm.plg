@@ -18,6 +18,8 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.02.26
+- fix: future-proofing changes to base plugin structure
 ###2025.01.24
 - fix: addressed theoretical congestion with multiple sessions
 ###2025.01.22
@@ -178,7 +180,6 @@ else
     echo "****************************************************************"
 fi
 
-/etc/cron.daily/dwttm-poller conntest >/dev/null 2>&amp;1 &amp;
 echo ""
 echo "----------------------------------------------------------------"
 echo " Tmux Terminal Manager (TTM) has been installed."

@@ -26,7 +26,5 @@ chmod 644 /etc/logrotate.d/ttmd
 
 cp -n $DOCROOT/default.cfg $BOOT/dwttm.cfg >/dev/null 2>&1
 
-# set up plugin-specific polling tasks
+# remove (legacy) plugin-specific polling tasks
 rm -f /etc/cron.daily/dwttm-poller >/dev/null 2>&1
-ln -sf /usr/local/emhttp/plugins/dwttm/scripts/poller /etc/cron.daily/dwttm-poller >/dev/null 2>&1
-chmod +x /etc/cron.daily/dwttm-poller >/dev/null 2>&1
