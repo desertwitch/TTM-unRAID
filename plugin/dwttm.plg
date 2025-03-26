@@ -18,6 +18,9 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.03.26
+- new: added the reptyr command-line tool to the package installation
+- reptyr: allows moving already running non-tmux processes into tmux sessions
 ###2025.02.26
 - fix: future-proofing changes to base plugin structure
 ###2025.01.24
@@ -130,6 +133,11 @@ else
 fi
 exit 0
 </INLINE>
+</FILE>
+
+<FILE Name="&plgPATH;/reptyr-0.10.0-x86_64-1_slack15.0.txz" Min="6.11.0" Run="upgradepkg --install-new">
+<URL>&pkgURL;/reptyr-0.10.0-x86_64-1_slack15.0.txz</URL>
+<MD5>9a58bc6f78e7d46bca8ad4c1fd1ad94c</MD5>
 </FILE>
 
 <!--
