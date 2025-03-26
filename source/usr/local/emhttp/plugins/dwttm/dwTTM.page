@@ -121,8 +121,9 @@ if($dwttm_running && !$dwttm_tmux_functional) {
         <a href="https://tmuxcheatsheet.com/" target="_blank">Tmux Cheat Sheet</a>
     </span>
     <br>
-    <span style="float:right; font-size:x-small;">
-    Not required knowledge for this plugin, but e.g. connecting to your sessions from PuTTY.
+    <span style="float:right;text-align:right;font-size:x-small;margin-top:5px;">
+    Not required knowledge for this plugin, but e.g. connecting to your sessions from PuTTY.<br>
+    CLI tool <strong>reptyr</strong> allows moving non-Tmux processes into Tmux sessions (<strong>comes with TTM</strong>).
     </span>
 </div>
 
