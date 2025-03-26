@@ -3,14 +3,14 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "dwttm">
 <!ENTITY author    "desertwitch">
-<!ENTITY version   "2025.03.26">
+<!ENTITY version   "2025.03.26a">
 <!ENTITY launch    "Settings/dwTTM">
 <!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/main">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
 <!ENTITY pkgURL    "&gitURL;/packages">
 <!ENTITY plgPATH   "/boot/config/plugins/&name;">
-<!ENTITY plgNAME   "dwttm-2025.03.26-x86_64-1">
-<!ENTITY plgMD5    "bfc761d25bb6ad7f86fd6860ee017d83">
+<!ENTITY plgNAME   "dwttm-2025.03.26-x86_64-2">
+<!ENTITY plgMD5    "1b978ead540e264d2e1319946639ad0e">
 <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
 ]>
 
@@ -18,7 +18,7 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
-###2025.03.26
+###2025.03.26a
 - new: added the reptyr command-line tool to the package (see below)
 - reptyr allows moving already running (non-tmux) processes into tmux sessions
 ###2025.02.26
