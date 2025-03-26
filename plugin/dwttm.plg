@@ -19,7 +19,7 @@
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
 ###2025.03.26
-- new: added the reptyr command-line tool to the package
+- new: added the reptyr command-line tool to the package (see below)
 - reptyr allows moving already running (non-tmux) processes into tmux sessions
 ###2025.02.26
 - fix: future-proofing changes to base plugin structure
