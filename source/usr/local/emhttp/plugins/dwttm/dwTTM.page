@@ -119,6 +119,9 @@ if($dwttm_running && !$dwttm_tmux_functional) {
     <span style="float:right">
         <i class="fa fa-map-o"></i>
         <a href="https://tmuxcheatsheet.com/" target="_blank">Tmux Cheat Sheet</a>
+        <span> / </span>
+        <i class="fa fa-wrench"></i>
+        <a href="https://github.com/nelhage/reptyr?tab=readme-ov-file#usage" target="_blank">Reptyr Tool Manual</a>
     </span>
     <br>
     <span style="float:right;text-align:right;font-size:x-small;margin-top:5px;">
