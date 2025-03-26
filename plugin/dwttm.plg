@@ -5,7 +5,7 @@
 <!ENTITY author    "desertwitch">
 <!ENTITY version   "2025.03.26">
 <!ENTITY launch    "Settings/dwTTM">
-<!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/reptyr">
+<!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/main">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
 <!ENTITY pkgURL    "&gitURL;/packages">
 <!ENTITY plgPATH   "/boot/config/plugins/&name;">
