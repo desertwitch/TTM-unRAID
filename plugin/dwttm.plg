@@ -3,14 +3,14 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "dwttm">
 <!ENTITY author    "desertwitch">
-<!ENTITY version   "2025.02.26">
+<!ENTITY version   "2025.03.26">
 <!ENTITY launch    "Settings/dwTTM">
 <!ENTITY gitURL    "https://raw.githubusercontent.com/&author;/TTM-unRAID/main">
 <!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
 <!ENTITY pkgURL    "&gitURL;/packages">
 <!ENTITY plgPATH   "/boot/config/plugins/&name;">
-<!ENTITY plgNAME   "dwttm-2025.02.26-x86_64-1">
-<!ENTITY plgMD5    "b0bedfe01e903f4a678c437247649251">
+<!ENTITY plgNAME   "dwttm-2025.03.26-x86_64-1">
+<!ENTITY plgMD5    "bfc761d25bb6ad7f86fd6860ee017d83">
 <!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
 ]>
 
@@ -18,6 +18,9 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.03.26
+- new: added the reptyr command-line tool to the package (see below)
+- reptyr allows moving already running (non-tmux) processes into tmux sessions
 ###2025.02.26
 - fix: future-proofing changes to base plugin structure
 ###2025.01.24
@@ -130,6 +133,11 @@ else
 fi
 exit 0
 </INLINE>
+</FILE>
+
+<FILE Name="&plgPATH;/reptyr-0.10.0-x86_64-1_slack15.0.txz" Min="6.11.0" Run="upgradepkg --install-new">
+<URL>&pkgURL;/reptyr-0.10.0-x86_64-1_slack15.0.txz</URL>
+<MD5>9a58bc6f78e7d46bca8ad4c1fd1ad94c</MD5>
 </FILE>
 
 <!--
