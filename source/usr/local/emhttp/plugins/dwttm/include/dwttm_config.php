@@ -25,6 +25,7 @@ $dwttm_service_security = trim(isset($dwttm_cfg['SERVICESEC']) ? htmlspecialchar
 $dwttm_service_route = trim(isset($dwttm_cfg['SERVICEROUTE']) ? htmlspecialchars($dwttm_cfg['SERVICEROUTE']) : 'route');
 
 $dwttm_os_button = trim(isset($dwttm_cfg['OSBUTTON']) ? htmlspecialchars($dwttm_cfg['OSBUTTON']) : 'enable');
+$dwttm_os_footer = trim(isset($dwttm_cfg['OSFOOTER']) ? htmlspecialchars($dwttm_cfg['OSFOOTER']) : 'enable');
 $dwttm_os_dashboard = trim(isset($dwttm_cfg['OSDASHBOARD']) ? htmlspecialchars($dwttm_cfg['OSDASHBOARD']) : 'enable');
 $dwttm_close_button = trim(isset($dwttm_cfg['CLOSEBUTTON']) ? htmlspecialchars($dwttm_cfg['CLOSEBUTTON']) : 'confirm');
 $dwttm_plus_button = trim(isset($dwttm_cfg['PLUSBUTTONSETT']) ? htmlspecialchars($dwttm_cfg['PLUSBUTTONSETT']) : 'quick');

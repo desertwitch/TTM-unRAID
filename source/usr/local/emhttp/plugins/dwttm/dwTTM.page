@@ -271,6 +271,20 @@ if($dwttm_running && !$dwttm_tmux_functional) {
             <p>Shows the TTM button in the OS menu for faster access to the TTM terminals.</p>
         </blockquote>
 
+        <dl>
+            <dt>Show TTM in Unraid Footer:</dt>
+            <dd>
+                <select id="OSFOOTER" name="OSFOOTER" size="1">
+                    <?=mk_option($dwttm_os_footer, "disable", "No");?>
+                    <?=mk_option($dwttm_os_footer, "enable", "Yes");?>
+                </select>
+            </dd>
+        </dl>
+
+        <blockquote class="inline_help">
+            <p>Shows TTM in the Unraid footer for faster overview and access to the TTM terminals.</p>
+        </blockquote>
+
         <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'6.12.0-beta5', '>')):?>
         <dl>
             <dt>Show TTM on Unraid Dashboard:</dt>

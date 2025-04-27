@@ -1,0 +1,224 @@
+Menu="Buttons:194"
+Link="nav-user"
+---
+<?
+/* Copyright Derek Macias (parts of code from NUT package)
+ * Copyright macester (parts of code from NUT package)
+ * Copyright gfjardim (parts of code from NUT package)
+ * Copyright SimonF (parts of code from NUT package)
+ * Copyright Dan Landon (parts of code from Web GUI)
+ * Copyright Bergware International (parts of code from Web GUI)
+ * Copyright Lime Technology (any and all other parts of Unraid)
+ *
+ * Copyright desertwitch (as author and maintainer of this file)
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License 2
+ * as published by the Free Software Foundation.
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ */
+?>
+<?
+    $dwttm_ftmp_cfg = @parse_ini_file("/boot/config/plugins/dwttm/dwttm.cfg");
+    $dwttm_ftmp_running = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
+    $dwttm_ftmp_os_footer = trim(isset($dwttm_tmp_cfg['OSFOOTER']) ? htmlspecialchars($dwttm_tmp_cfg['OSFOOTER']) : 'enable');
+?>
+<?if($dwttm_ftmp_running && $dwttm_ftmp_os_footer === "enable"):?>
+
+<style type="text/css">
+#dwttm-footer {
+    display: inline-block;
+    float: right;
+    margin-right: 24px;
+    position: relative;
+}
+
+#dwttm-footer .dwttm-footer-content {
+    background-color: white;
+    bottom: 100%;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    display: none;
+    font-size: x-small;
+    min-width: 250px;
+    position: absolute;
+    right: 0;
+    z-index: 1;
+}
+
+#dwttm-footer .dwttm-footer-content a {
+    background-color: black;
+    color: white;
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+}
+
+#dwttm-footer .dwttm-footer-content a.dwttm-session-manager {
+    font-weight: bold;
+}
+
+#dwttm-footer .dwttm-footer-content a:hover {
+    background-color: gray;
+}
+
+#dwttm-footer .dwttm-footer-separator {
+    background-color: white;
+    height: 1px;
+}
+
+#dwttm-footer .dwttm-footer-sessions {
+    font-size: 1.1rem;
+    font-weight: bold;
+    vertical-align: top;
+}
+
+#dwttm-footer:hover {
+    cursor: pointer;
+}
+
+#dwttm-footer:hover .dwttm-footer-content {
+    display: block;
+}
+</style>
+
+<script type="text/javascript">
+function dwTTMFooterButton(sessionId) {
+    const width = Math.min(screen.availWidth, 1200);
+    const height = Math.min(screen.availHeight, 800);
+
+    let top = (screen.height - height) / 2;
+    if(!top || top < 0) {
+        top = 0;
+    }
+    let left = (screen.width - width) / 2;
+    if(!left || left < 0) {
+        left = 0;
+    }
+
+    if(sessionId && sessionId !== "#") {
+        const windowName = `ttm_sess_${sessionId}`;
+        window.open(
+            `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`,
+            windowName,
+            `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+        );
+    } else if(sessionId && sessionId == "#") {
+        const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
+        window.open(
+            '/plugins/dwttm/tterminal.php?grid',
+            windowName,
+            `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+        );
+    } else {
+        const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
+        window.open(
+            '/plugins/dwttm/tterminal.php?quick',
+            windowName,
+            `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+        );
+    }
+}
+
+function dwTTMFooterFetchSessions() {
+    const dropdownContent = document.querySelector('.dwttm-footer-content');
+    clearTimeout(timers.fetchSessions);
+    fetch('/plugins/dwttm/include/dwttm_sessions.php')
+        .then(response => response.json())
+        .then(data => {
+            if(data.response) {
+                let sessions = data.response;
+                let sessionCounter = sessions.length;
+
+                sessions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                sessions = sessions.slice(0, 10);
+
+                dropdownContent.innerHTML = '';
+
+                const managerLink = document.createElement('a');
+                managerLink.href = '#';
+                managerLink.textContent = 'Session Manager';
+                managerLink.classList.add('dwttm-session-manager');
+                managerLink.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dwTTMFooterButton("#");
+                };
+                dropdownContent.appendChild(managerLink);
+
+                const newSessionLink = document.createElement('a');
+                newSessionLink.href = '#';
+                newSessionLink.textContent = 'New Quick Session';
+                newSessionLink.onclick = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dwTTMFooterButton();
+                };
+                dropdownContent.appendChild(newSessionLink);
+
+                const separatorElement = document.createElement('div');
+                separatorElement.classList.add('dwttm-footer-separator');
+                dropdownContent.appendChild(separatorElement);
+
+                sessions.forEach(session => {
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    if(session.ttm_managed) {
+                        link.textContent = `${session.session_name} - ${session.created_at}`;
+                    } else {
+                        link.textContent = `${session.session_name} - ${session.created_at} (non-TTM)`;
+                    }
+                    link.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dwTTMFooterButton(session.session_id);
+                    };
+                    dropdownContent.appendChild(link);
+                });
+
+                if(sessionCounter === 0) {
+                    const noSessionLink = document.createElement('a');
+                    noSessionLink.href = '#';
+                    noSessionLink.textContent = 'There are no active sessions.';
+                    noSessionLink.style.color = '#999';
+                    noSessionLink.style.fontStyle = 'italic';
+                    dropdownContent.appendChild(noSessionLink);
+                }
+
+                document.querySelector('.dwttm-footer-sessions').innerHTML = sessionCounter;
+            } else {
+                console.error('Error processing sessions:', data.error || 'Unknown error.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching sessions:', error);
+            dropdownContent.innerHTML = '<a href="#">Error loading sessions.</a>';
+        })
+        .finally(() => {
+            timers.dwTTMFooterFetchSessions = setTimeout(dwTTMFooterFetchSessions, 5000);
+        });
+}
+
+$(function() {
+    var dwttm_footer = $(
+            "<span id='dwttm-footer'>" +
+                "<i class='fa fa-tty'></i> " +
+                "<span class='dwttm-footer-sessions'>" +
+                    "<i class='fa fa-spinner fa-spin'></i>" +
+                "</span>" +
+                "<div class='dwttm-footer-content'></div>" +
+            "</span>"
+        ).insertAfter('#footer > span#copyright')
+        .on("click", function(e) {
+            e.preventDefault();
+            if($(e.target).closest('.dwttm-footer-content').length === 0) {
+                dwTTMFooterButton("#");
+            }
+        });
+    dwTTMFooterFetchSessions();
+});
+</script>
+
+<?endif;?>

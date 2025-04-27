@@ -52,6 +52,7 @@ if (!function_exists('autov')) {
 }
 
 $showGrid = isset($_GET['grid']);
+$quickCreate = isset($_GET['quick']);
 $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
 ?>
 
@@ -726,6 +727,9 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
             fetchSessions();
             <?php if ($showGrid): ?>
                 fetchSessionsGrid();
+            <?php endif; ?>
+            <?php if ($quickCreate): ?>
+                createNewSession();
             <?php endif; ?>
         });
 
