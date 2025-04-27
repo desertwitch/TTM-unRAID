@@ -71,6 +71,7 @@ Link="nav-user"
 
 #dwttm-footer .dwttm-footer-sessions {
     font-size: 1.1rem;
+    font-weight: bold;
     vertical-align: top;
 }
 
