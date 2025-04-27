@@ -24,7 +24,7 @@ Link="nav-user"
 <?
     $dwttm_ftmp_cfg = @parse_ini_file("/boot/config/plugins/dwttm/dwttm.cfg");
     $dwttm_ftmp_running = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
-    $dwttm_ftmp_os_footer = trim(isset($dwttm_tmp_cfg['OSFOOTER']) ? htmlspecialchars($dwttm_tmp_cfg['OSFOOTER']) : 'enable');
+    $dwttm_ftmp_os_footer = trim(isset($dwttm_ftmp_cfg['OSFOOTER']) ? htmlspecialchars($dwttm_ftmp_cfg['OSFOOTER']) : 'enable');
 ?>
 <?if($dwttm_ftmp_running && $dwttm_ftmp_os_footer === "enable"):?>
 
@@ -124,7 +124,7 @@ function dwTTMFooterButton(sessionId) {
 
 function dwTTMFooterFetchSessions() {
     const dropdownContent = document.querySelector('.dwttm-footer-content');
-    clearTimeout(timers.fetchSessions);
+    clearTimeout(timers.dwTTMFooterFetchSessions);
     fetch('/plugins/dwttm/include/dwttm_sessions.php')
         .then(response => response.json())
         .then(data => {
