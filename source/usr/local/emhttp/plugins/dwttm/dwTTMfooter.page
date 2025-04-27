@@ -105,7 +105,7 @@ function dwTTMFooterButton(sessionId) {
             windowName,
             `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
         );
-    } else if(sessionId && sessionId == "#") {
+    } else if(sessionId && sessionId === "#") {
         const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
         window.open(
             '/plugins/dwttm/tterminal.php?grid',
