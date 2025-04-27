@@ -26,8 +26,8 @@ Link="nav-user"
     $dwttm_ftmp_running = !empty(shell_exec("pgrep -x ttmd 2>/dev/null"));
     $dwttm_ftmp_os_footer = trim(isset($dwttm_ftmp_cfg['OSFOOTER']) ? htmlspecialchars($dwttm_ftmp_cfg['OSFOOTER']) : 'enable');
 ?>
-<?if($dwttm_ftmp_running && $dwttm_ftmp_os_footer === "enable"):?>
 
+<?if($dwttm_ftmp_running && $dwttm_ftmp_os_footer === "enable"):?>
 <style type="text/css">
 #dwttm-footer {
     display: inline-block;
@@ -220,5 +220,4 @@ $(function() {
     dwTTMFooterFetchSessions();
 });
 </script>
-
 <?endif;?>
