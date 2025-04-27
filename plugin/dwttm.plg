@@ -18,6 +18,8 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.04.27
+- new: add a setting to show a footer menu with the last 10 terminal sessions
 ###2025.04.13
 - fix: major refactor of the ttmd backend with several improvements
 ###2025.03.26a
