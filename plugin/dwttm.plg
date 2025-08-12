@@ -18,6 +18,9 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.08.12
+- fix: footer no longer appearing in latest OS beta version
+- release note: other minor visual problems in latest OS beta are known and will eventually be improved with OS stable releases
 ###2025.04.27a
 - new: add a setting to show a footer menu with the last 10 terminal sessions
 ###2025.04.13
