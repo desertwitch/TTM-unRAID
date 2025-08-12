@@ -209,12 +209,7 @@ $(function() {
                 "</span>" +
                 "<div class='dwttm-footer-content'></div>" +
             "</span>"
-        )
-        <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '>')):?>
-        .appendTo('.footer-right')
-        <?else:?>
-        .insertAfter('#footer > span#copyright')
-        <?endif;?>
+        ).insertAfter('#footer > span#copyright')
         .on("click", function(e) {
             e.preventDefault();
             if($(e.target).closest('.dwttm-footer-content').length === 0) {
