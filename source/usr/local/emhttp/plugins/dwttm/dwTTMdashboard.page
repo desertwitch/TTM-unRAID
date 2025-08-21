@@ -34,6 +34,63 @@ $pluginname = "dwttm";
 $dwttm_dash_border = 'border: 1px solid rgba(' . (($display["theme"] == 'white' || $display["theme"] == 'azure') ? '0, 0, 0, 0.1' : '255, 255, 255, 0.1') . ');';
 $dwttm_dash_color = 'color: rgba(' . (($display["theme"] == 'white' || $display["theme"] == 'azure') ? '0, 0, 0, 0.3' : '255, 255, 255, 0.3') . ');';
 
+if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '>')) {
+// -------------------------------------------------------------
+// RESPONSIVE DASHBOARD
+// -------------------------------------------------------------
+$mytiles[$pluginname]['column2'] =
+<<<EOT
+<tbody id="dwttm-dashboard" title="Tmux Terminal Manager (TTM)">
+    <tr>
+    <td>
+        <span class='tile-header'>
+        <span class='tile-header-left'>
+          <i class='fa fa-tty f32'></i>
+          <div class='section'>
+              <h3 class='tile-header-main'>Tmux Terminal Manager (TTM)</h3>
+              <span>There are <span id="dwttm-dash-sessions" style="font-weight:bold;"><i class="fa fa-spinner fa-spin icon"></i></span> active persistent terminal sessions.</span>
+          </div>
+        </span>
+        <span class='tile-header-right'>
+            <span class='tile-ctrl'>
+            </span>
+            <span class='tile-header-right-controls'>
+            <a href="#" title="_(Open TTerminal)_" id="dwttm-dash-tterminal-button">
+                <i class="fa fa-fw fa-terminal control"></i>
+            </a>
+            <a href='/Settings/dwTTM' title='_(Go to TTM Settings)_'>
+                <i class='fa fa-fw fa-cog control'></i>
+            </a>
+            </span>
+        </span>
+        </span>
+    </td>
+    </tr>
+    <tr>
+        <td style="padding-left:15px;padding-right:15px;padding-top:5px;">
+            <select id="dwttm-dash-sessions-select" style="
+                all: unset;
+                display: block;
+                width: 100%;
+                padding: 0 5px;
+                {$dwttm_dash_border}
+                font-size: 14px;
+                height: 30px;
+                box-sizing: border-box;
+                user-select: none;
+                font-style: italic;
+                {$dwttm_dash_color}
+            ">
+                <option value="">Connect to Session...</option>
+            </select>
+        </td>
+    </tr>
+</tbody>
+EOT;
+} else {
+// -------------------------------------------------------------
+// NON-RESPONSIVE DASHBOARD
+// -------------------------------------------------------------
 $mytiles[$pluginname]['column2'] =
 <<<EOT
 <tbody id="dwttm-dashboard" title="Tmux Terminal Manager (TTM)">
@@ -68,6 +125,7 @@ $mytiles[$pluginname]['column2'] =
     </tr>
 </tbody>
 EOT;
+}
 ?>
 
 <script>

@@ -159,6 +159,7 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                 <?if(file_exists("/var/log/ttmd.log")):?>
                 <a onclick="openTerminal('log','ttmd','ttmd.log')" style="color:inherit;margin-left:5px;cursor:help;">
                     <i class="fa fa-book dwttm-tooltip" title="TTM Service Logs"></i>
+                    <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '>')):?> TTM Service Logs<?endif;?>
                 </a>
                 <?endif;?>
             </dd>
@@ -188,7 +189,10 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                     <?=mk_option($dwttm_service_security, "csrf", "Token-based (CSRF)");?>
                     <?=mk_option($dwttm_service_security, "disable", "None");?>
                 </select>
-                <span style="margin-left:5px;cursor:help;"><i class="fa fa-exclamation-triangle dwttm-tooltip" title="Keep this setting on Token-based, unless frequently running into token problems."></i></span>
+                <span class="dwttm-tooltip" style="margin-left:5px;cursor:help;" title="Keep this setting on Token-based, unless frequently running into token problems.">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '>')):?> Recommended: Token-based (CSRF)<?endif;?>
+                </span>
             </dd>
         </dl>
 
@@ -204,7 +208,10 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                     <?=mk_option($dwttm_service_route, "route", "Default (with Unraid OS)");?>
                     <?=mk_option($dwttm_service_route, "direct", "Fallback (Unsafe/no SSL)");?>
                 </select>
-                <span style="margin-left:5px;cursor:help;"><i class="fa fa-exclamation-triangle dwttm-tooltip" title="Keep this setting on default, unless having fully understood the help description text."></i></span>
+                <span class="dwttm-tooltip" style="margin-left:5px;cursor:help;" title="Keep this setting on default, unless having fully understood the help description text.">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '>')):?> Recommended: Default (with Unraid OS)<?endif;?>
+                </span>
             </dd>
         </dl>
 
@@ -243,7 +250,10 @@ if($dwttm_running && !$dwttm_tmux_functional) {
                     <?=mk_option($dwttm_array_down, "ttm", "TTM incl. Non-Accessing");?>
                     <?=mk_option($dwttm_array_down, "all", "All incl. Non-Accessing");?>
                 </select>
-                <span style="margin-left:5px;cursor:help;"><i class="fa fa-exclamation-triangle dwttm-tooltip" title="This does NOT ensure graceful exit of programs running inside such sessions. Ideally no sessions are accessing the array/pools before stopping the array. This setting is a failsafe to ensure that array shutdown does not block in emergency shutdown situations (e.g. when on UPS battery power)."></i></span>
+                <span class="dwttm-tooltip" style="margin-left:5px;cursor:help;" title="This does NOT ensure graceful exit of programs running inside such sessions. Ideally no sessions are accessing the array/pools before stopping the array. This setting is a failsafe to ensure that array shutdown does not block in emergency shutdown situations (e.g. when on UPS battery power).">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '>')):?> Doesn't ensure graceful exit of programs running inside sessions.<?endif;?>
+                </span>
             </dd>
         </dl>
 
@@ -347,13 +357,17 @@ if($dwttm_running && !$dwttm_tmux_functional) {
 
     <dl>
         <dt>
-            <input type="button" class="dwttm-run" id="KILLSESSIONS" value="Kill all TTM">
-            <input type="button" class="dwttm-run" id="KILLSESSIONS2" value="Kill all Tmux">
-            <input type="submit" class="dwttm-not-run" name="#default" value="Restore Defaults">
+            <span>
+                <input type="button" class="dwttm-run" id="KILLSESSIONS" value="Kill all TTM">
+                <input type="button" class="dwttm-run" id="KILLSESSIONS2" value="Kill all Tmux">
+                <input type="submit" class="dwttm-not-run" name="#default" value="Restore Defaults">
+            </span>
         </dt>
         <dd>
-            <input type="submit" name="#apply" value="Apply">
-            <input type="button" class="dwttm-run" id="RESTART" value="Restart Service">
+            <span>
+                <input type="submit" name="#apply" value="Apply">
+                <input type="button" class="dwttm-run" id="RESTART" value="Restart Service">
+            </span>
         </dd>
     </dl>
 </form>

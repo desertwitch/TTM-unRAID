@@ -32,7 +32,9 @@ Link="nav-user"
 #dwttm-footer {
     display: inline-block;
     float: right;
+    <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '<')):?>
     margin-right: 24px;
+    <?endif;?>
     position: relative;
 }
 
@@ -78,9 +80,11 @@ Link="nav-user"
     cursor: pointer;
 }
 
+<?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '<')):?>
 #dwttm-footer:hover .dwttm-footer-content {
     display: block;
 }
+<?endif;?>
 </style>
 
 <script type="text/javascript">
@@ -209,7 +213,12 @@ $(function() {
                 "</span>" +
                 "<div class='dwttm-footer-content'></div>" +
             "</span>"
-        ).insertAfter('#footer > span#copyright')
+        )
+        <?if(version_compare(parse_ini_file('/etc/unraid-version')['version'],'7.1.99', '>')):?>
+        .appendTo(".footer-right")
+        <?else:?>
+        .insertAfter('#footer > span#copyright')
+        <?endif;?>
         .on("click", function(e) {
             e.preventDefault();
             if($(e.target).closest('.dwttm-footer-content').length === 0) {

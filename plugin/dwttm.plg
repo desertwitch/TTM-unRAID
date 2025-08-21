@@ -18,6 +18,10 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.08.21
+- fix: make pages and dashboards compliant with new responsive UI
+- release note: the footer on-hover popup is no longer supported in the responsive UI
+- release note: this is due to style constraints outside of the plugin developer control
 ###2025.04.27a
 - new: add a setting to show a footer menu with the last 10 terminal sessions
 ###2025.04.13
