@@ -18,6 +18,8 @@
 
 <CHANGES>
 ## Tmux Terminal Manager (TTM)
+###2025.08.25
+- fix: some browsers not allowing to resize the terminal popup window
 ###2025.08.21
 - fix: make pages and dashboards compliant with new responsive UI
 - release note: the footer on-hover popup is no longer supported in the responsive UI

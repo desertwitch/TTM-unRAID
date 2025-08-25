@@ -376,14 +376,14 @@ $currentSession = isset($_GET['session']) ? $_GET['session'] : null;
                 window.open(
                     `/plugins/dwttm/tterminal.php?session=${encodeURIComponent(sessionId)}`,
                     windowName,
-                    `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+                    `width=${width},height=${height},top=${top},left=${left},popup=yes,scrollbars=no`
                 );
             } else {
                 const windowName = "ttm_rand_" + Math.random().toString(36).substr(2, 9);
                 window.open(
                     '/plugins/dwttm/tterminal.php',
                     windowName,
-                    `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`
+                    `width=${width},height=${height},top=${top},left=${left},popup=yes,scrollbars=no`
                 );
             }
         }
